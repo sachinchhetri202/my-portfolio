@@ -118,7 +118,7 @@ export default function AboutPage() {
                 height={220}
                 className="rounded-full ring-4 ring-green-400 object-cover shadow-2xl group-hover:scale-105 transition-transform duration-300"
               />
-              <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-green-500/90 text-gray-900 px-4 py-1 rounded-full text-xs font-bold shadow-lg">Let's Connect!</span>
+              <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-green-500/90 text-gray-900 px-4 py-1 rounded-full text-xs font-bold shadow-lg">Let&apos;s Connect!</span>
             </div>
           </motion.div>
         </motion.section>
@@ -180,7 +180,7 @@ export default function AboutPage() {
                   {/* Show degrees for Weber State University */}
                   {item.degrees && (
                     <ul className="mt-2 space-y-2">
-                      {item.degrees.map((deg, i) => (
+                      {item.degrees.map((deg) => (
                         <li key={deg.title} className="flex items-center gap-2 bg-gray-900/70 rounded-lg px-4 py-2">
                           {deg.icon}
                           <span className="font-bold text-green-200">{deg.title}</span>

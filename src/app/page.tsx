@@ -120,7 +120,7 @@ export default function HomePage() {
           {/* Profile */}
           <div className="relative w-48 h-48 rounded-full ring-4 ring-green-500 overflow-hidden">
             <Image
-              src="https://i.postimg.cc/BvwrK3zD/470196613-9053337998022661-7078147679371523874-n.jpg"
+              src="https://i.postimg.cc/0jbHD5jm/05ae2658-aec3-4526-9e97-1bfe5f5b60f8.jpg"
               alt="Sachin Chhetri"
               fill
               className="object-cover"

@@ -112,10 +112,10 @@ export default function AboutPage() {
           <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} className="flex justify-center md:justify-end">
             <div className="relative group">
               <Image
-                src="https://i.postimg.cc/T3n107xp/488623210-9412459178845000-8887513697227636379-n.jpg"
+                src="https://i.postimg.cc/KjP39B1y/22aa6ca8-f7ad-4cff-8d98-b1b5b39c830b.jpg"
                 alt="Sachin Chhetri"
-                width={220}
-                height={220}
+                width={350}
+                height={390}
                 className="rounded-full ring-4 ring-green-400 object-cover shadow-2xl group-hover:scale-105 transition-transform duration-300"
               />
               <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-green-500/90 text-gray-900 px-4 py-1 rounded-full text-xs font-bold shadow-lg">Let&apos;s Connect!</span>

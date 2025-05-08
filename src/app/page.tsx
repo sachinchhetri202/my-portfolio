@@ -1,103 +1,203 @@
-import Image from "next/image";
+'use client'
+// src/app/page.tsx
+import Image from 'next/image'
+import Link from 'next/link'
+import { SiPython, SiDocker, SiPostgresql, SiCloudflare, SiGit } from 'react-icons/si'
+import { motion } from 'framer-motion'
+import { useRef, useEffect } from 'react'
+import { FC } from 'react'
 
-export default function Home() {
+interface Particle {
+  x: number
+  y: number
+  speedX: number
+  speedY: number
+  update(): void
+  draw(): void
+}
+
+const AnimatedBackground: FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const particles: Particle[] = []
+    const particleCount = 50
+    const particleSize = 2
+
+    class ParticleClass implements Particle {
+      x: number
+      y: number
+      speedX: number
+      speedY: number
+
+      constructor() {
+        this.x = Math.random() * (canvas?.width || 0)
+        this.y = Math.random() * (canvas?.height || 0)
+        this.speedX = 0.1 * (Math.random() - 0.5)
+        this.speedY = 0.1 * (Math.random() - 0.5)
+      }
+
+      update(): void {
+        this.x += this.speedX
+        this.y += this.speedY
+
+        if (this.x < 0 || this.x > (canvas?.width || 0)) {
+          this.x = this.x < 0 ? (canvas?.width || 0) : 0
+        }
+        if (this.y < 0 || this.y > (canvas?.height || 0)) {
+          this.y = this.y < 0 ? (canvas?.height || 0) : 0
+        }
+      }
+
+      draw(): void {
+        if (!ctx) return
+        ctx.fillStyle = 'rgba(0, 255, 0, 0.2)'
+        ctx.beginPath()
+        ctx.arc(this.x, this.y, particleSize, 0, Math.PI * 2)
+        ctx.fill()
+      }
+    }
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new ParticleClass())
+    }
+
+    const animate = () => {
+      if (!ctx || !canvas) return
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+      particles.forEach(particle => {
+        particle.update()
+        particle.draw()
+      })
+
+      requestAnimationFrame(animate)
+    }
+
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+
+    window.addEventListener('resize', () => {
+      if (!canvas) return
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    })
+
+    animate()
+
+    return () => {
+      window.removeEventListener('resize', () => {})
+    }
+  }, [])
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 -z-10"
+    />
+  )
+}
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+export default function HomePage() {
+  return (
+    <div className="relative min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-950">
+      <AnimatedBackground />
+      <div className="relative flex flex-col items-center text-center space-y-12 py-24 px-4 sm:px-6 md:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-transparent to-green-500/10"
+        />
+        <div className="relative z-10 flex flex-col items-center space-y-8">
+          {/* Profile */}
+          <div className="relative w-48 h-48 rounded-full ring-4 ring-green-500 overflow-hidden">
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src="https://i.postimg.cc/BvwrK3zD/470196613-9053337998022661-7078147679371523874-n.jpg"
+              alt="Sachin Chhetri"
+              fill
+              className="object-cover"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </div>
+
+          {/* Terminal command */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="font-mono text-green-400 text-sm sm:text-base"
           >
-            Read our docs
-          </a>
+            $ python manage.py runserver
+          </motion.p>
+
+          {/* Headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-5xl sm:text-6xl font-bold text-white bg-clip-text bg-gradient-to-r from-green-300 to-green-200"
+          >
+            Software Engineer & Backend Developer
+          </motion.h1>
+
+          {/* Icons row */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="flex space-x-6 text-4xl sm:text-5xl text-green-400"
+          >
+            <SiPython />
+            <SiDocker />
+            <SiPostgresql />
+            <SiCloudflare />
+            <SiGit />
+          </motion.div>
+
+          {/* Code snippet */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="relative"
+          >
+            <pre className="bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 font-mono text-left w-full whitespace-pre-wrap break-words shadow-xl">
+              <code className="block text-sm sm:text-base text-green-200">
+                {`def introduce_myself():
+    return "Hello, I am Sachin Chhetri, A Software Engineer."`}
+              </code>
+            </pre>
+          </motion.div>
+
+          {/* Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.0 }}
+            className="flex space-x-4"
+          >
+            <Link
+              href="/projects"
+              className="group relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-r from-green-500 to-green-600 px-8 py-3 text-base font-medium text-white transition-all duration-300 hover:scale-105"
+            >
+              <span className="relative z-10">&lt;/&gt; Projects</span>
+            </Link>
+            <Link
+              href="/about"
+              className="group relative inline-flex items-center justify-center overflow-hidden rounded-lg border-2 border-green-500 px-8 py-3 text-base font-medium text-green-500 transition-all duration-300 hover:bg-green-700 hover:border-green-700 hover:text-white hover:scale-105"
+            >
+              <span className="relative z-10">About Me</span>
+            </Link>
+          </motion.div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
     </div>
-  );
+  )
 }

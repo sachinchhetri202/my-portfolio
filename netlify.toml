@@ -1,12 +1,14 @@
 [build]
   command = "npm run build"
-  publish = ".next"
+  publish = "out"
 
 [build.environment]
-  NETLIFY_NEXT_PLUGIN_SKIP = "true"
+  NODE_VERSION = "18.17.0"
+  NPM_VERSION = "9.6.7"
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+# Uncomment this if you want to use the Netlify Next.js plugin
+# [[plugins]]
+#   package = "@netlify/plugin-nextjs"
 
 [build.processing.html]
   pretty_urls = true

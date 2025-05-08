@@ -2,9 +2,9 @@
 'use client'
 import Image from 'next/image'
 import { FaBriefcase, FaGraduationCap, FaMusic, FaCode, FaGamepad, FaBinoculars } from 'react-icons/fa'
-import { GiBrain, GiWorld } from 'react-icons/gi'
+import { GiWorld } from 'react-icons/gi'
 import AnimatedBackground from '@/components/AnimatedBackground'
-import { SiPython, SiJavascript, SiDjango, SiReact, SiDocker, SiPostgresql, SiHtml5, SiCss3, SiTailwindcss } from 'react-icons/si'
+import { SiPython } from 'react-icons/si'
 import { motion } from 'framer-motion'
 
 export default function AboutPage() {

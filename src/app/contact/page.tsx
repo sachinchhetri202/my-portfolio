@@ -30,7 +30,7 @@ export default function ContactPage() {
       } else {
         setFormStatus('error');
       }
-    } catch (error) {
+    } catch (_error) {
       setFormStatus('error');
     }
   };
@@ -61,7 +61,7 @@ export default function ContactPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-green-300 drop-shadow-lg">Let's Connect</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-green-300 drop-shadow-lg">Let&apos;s Connect</h2>
           <p className="text-gray-300 max-w-2xl mx-auto">
             Get in touch if you want to collaborate on a project or need my expertise in software development, marketing, or community management.
           </p>

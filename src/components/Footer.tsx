@@ -18,7 +18,7 @@ const TechWave = () => {
     if (!ctx) return
     
     let width = canvas.width = canvas.offsetWidth
-    let height = canvas.height = 80
+    const height = canvas.height = 80
     
     const waves = [
       { y: height / 2, length: 0.5, amplitude: 20, speed: 0.01, color: 'rgba(74, 222, 128, 0.2)' },
@@ -134,7 +134,7 @@ export default function Footer() {
           >
             <h3 className="text-xl font-bold text-green-300 border-b border-green-500/30 pb-2">About This Site</h3>
             <p className="text-sm text-gray-300">
-              This portfolio showcases my journey as a developer, featuring projects and skills I've acquired along the way. Built with modern web technologies and a passion for clean code.
+              This portfolio showcases my journey as a developer, featuring projects and skills I&apos;ve acquired along the way. Built with modern web technologies and a passion for clean code.
             </p>
             <div className="pt-2">
               <Link 

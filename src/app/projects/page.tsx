@@ -7,8 +7,19 @@ import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import AnimatedBackground from '@/components/AnimatedBackground'
 
+interface GitHubRepo {
+  id: number;
+  name: string;
+  html_url: string;
+  description: string | null;
+  stargazers_count: number;
+  forks_count: number;
+  language: string | null;
+  updated_at: string;
+}
+
 export default function ProjectsPage() {
-  const [repos, setRepos] = useState<any[]>([])
+  const [repos, setRepos] = useState<GitHubRepo[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -82,7 +93,7 @@ export default function ProjectsPage() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-10"
           >
-          {repos.map((repo: any, idx: number) => (
+          {repos.map((repo, idx: number) => (
             <motion.div
               key={repo.id}
               className="group bg-gray-900/80 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-green-900/30 hover:border-green-400 hover:shadow-green-900/20 transition-all duration-300 overflow-hidden relative"

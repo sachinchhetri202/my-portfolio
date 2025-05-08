@@ -45,8 +45,8 @@ export default function Nav() {
     { href: '/projects', icon: <FiGitBranch />, label: 'projects' },
   ]
 
-  // Keyboard accessibility for mobile menu
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+  // We'll use this function in the mobile menu div
+  const handleEscapeKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Escape') setIsOpen(false)
   }
 
@@ -131,6 +131,8 @@ export default function Nav() {
           md:hidden absolute top-full left-0 w-full bg-gray-900 shadow-lg
           ${isOpen ? 'block' : 'hidden'}
         `}
+        onKeyDown={handleEscapeKey}
+        tabIndex={isOpen ? 0 : -1}
       >
         <ul className="flex flex-col items-start space-y-4 p-6">
           {links.map(({ href, icon, label }) => (

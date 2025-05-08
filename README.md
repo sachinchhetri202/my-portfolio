@@ -1,6 +1,6 @@
 # Sachin Chhetri’s Portfolio Template
 
-[Live Demo »](https://comfy-fenglisu-5b047b.netlify.app/)
+[Live Demo »](https://sachinpc202.netlify.app/)
 
 A modern, dark-themed Next.js + Tailwind CSS portfolio.
 

@@ -37,7 +37,6 @@ export default function AboutPage() {
       bullets: [
         'Assist students with course materials and assignments.',
         'Provide one-on-one tutoring in programming and algorithms.',
-        'Help develop study guides and sample problems for exams.',
       ],
     },
   ]

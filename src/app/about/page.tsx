@@ -234,6 +234,14 @@ export default function AboutPage() {
                 <li>Figma</li>
               </ul>
             </div>
+            <div className="bg-gray-800/80 rounded-xl p-5 shadow-md border-l-4 border-green-500">
+              <h3 className="text-lg font-bold text-green-200">Prompt Engineering</h3>
+              <ul className="list-disc pl-5 text-sm text-gray-300 mt-2 space-y-1">
+                <li>Crafting effective prompts for AI models</li>
+                <li>Optimizing AI responses for specific use cases</li>
+                <li>Experience with GPT-based models</li>
+              </ul>
+            </div>
           </div>
         </section>
       </div>

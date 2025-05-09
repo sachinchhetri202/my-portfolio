@@ -17,7 +17,7 @@ const robotoMono = Roboto_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "My Portfolio",
+  title: "Sachin Chhetri",
   description: "Sachin Chhetri — Backend Developer",
 }
 

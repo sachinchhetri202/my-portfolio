@@ -5,6 +5,7 @@ import "./globals.css"
 import Nav from "../components/Nav"
 import Footer from "../components/Footer"
 import type { ReactNode } from "react"
+import { ChatBot } from "../components/chat/ChatBot"
 
 // Load your Google fonts as CSS variables
 const inter = Inter({
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </main>
 
         <Footer />
+        <ChatBot />
       </body>
     </html>
   )

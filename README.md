@@ -1,4 +1,4 @@
-# Sachin Chhetri’s Portfolio Template
+# Sachin Chhetri's Portfolio Template
 
 [Live Demo »](https://sachinpc202.netlify.app/)
 
@@ -15,6 +15,7 @@ A modern, dark-themed Next.js + Tailwind CSS portfolio.
 - **Responsive** layout — mobile, tablet & desktop ready  
 - **Easy customization** of colors, fonts & sections  
 - **Pages included**: Home, About, Services, Projects, Contact  
+- **Custom AI Chatbot**: Integrated a personalized AI assistant (Sachin's AI Assistant) powered by Google Gemini for interactive user engagement.
 
 ---
 

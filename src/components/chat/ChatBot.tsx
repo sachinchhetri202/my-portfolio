@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PaperAirplaneIcon, ChatBubbleOvalLeftEllipsisIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { FaRobot, FaUser } from 'react-icons/fa';
+import { FaUser } from 'react-icons/fa';
+import { FiCpu } from 'react-icons/fi';
 
 // Interface for chat messages remains the same for now
 // We might enhance this later if we store more metadata
@@ -21,7 +22,7 @@ const RETRY_DELAY = 1000; // 1 second
 const MAX_MESSAGE_LENGTH = 1000;
 const TEASER_DELAY = 2000; // 2 seconds for teaser to appear
 
-const BOT_NAME = "Sachin's AI Assistant";
+const BOT_NAME = "SC.dev Assistant";
 const WELCOME_MESSAGE_CONTENT = `नमस्ते! こんにちは! Hello! 👋
 I am ${BOT_NAME}, here to help you learn about Sachin, his skills, and projects. Feel free to ask me anything!`;
 
@@ -125,6 +126,11 @@ export function ChatBot() {
     if (isOpen) {
         setShowTeaser(false); // Ensure teaser is hidden when chat is open
         sessionStorage.setItem('chatInteracted', 'true'); // Mark interaction
+    } else {
+        // When chat is closed, always show the teaser again
+        // We can add a small delay if we want it to reappear a moment after closing
+        // For now, show immediately on close:
+        setShowTeaser(true);
     }
   }, [isOpen]);
 
@@ -249,8 +255,60 @@ export function ChatBot() {
   };
   
   const teaserVariants = {
-    hidden: { opacity: 0, y: 10, transition: { duration: 0.2 } },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.3, delay: 0.1 } }, // Added slight delay for entry animation
+    hidden: { opacity: 0, y: 10, scale: 0.95, transition: { duration: 0.2 } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1, // End scale for the initial animation, pulse will take over
+      transition: {
+        opacity: { duration: 0.3, delay: 0.1 },
+        y: { duration: 0.3, delay: 0.1 },
+        scale: { // Define the pulse here
+          delay: 0.5, // Start pulsing shortly after appearing
+          duration: 1.5, // Duration of one part of the pulse (e.g., to 1.03)
+          yoyo: Infinity, // Repeats by reversing the animation (1 -> 1.03 -> 1 -> 1.03 ...)
+          ease: "easeInOut",
+          // The actual scale change will be applied by animating to a different target scale for the pulse
+          // This is often handled by setting a different target in the animate prop itself for repeating animations
+          // or by using keyframes directly in the variant.
+        }
+      }
+    },
+  };
+
+  // We will use keyframes for the scale pulse directly in the visible variant.
+  const updatedTeaserVariants = {
+    hidden: { opacity: 0, y: 10, scale: 0.95, transition: { duration: 0.2 } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: [1, 1.03, 1], // Keyframes for pulsing scale
+      transition: {
+        // Transitions for opacity and y (run once)
+        opacity: { duration: 0.3, delay: 0.1 },
+        y: { duration: 0.3, delay: 0.1 },
+        // Transition for scale (repeating for the keyframes)
+        scale: {
+          duration: 2.0, // Total duration for one cycle of [1, 1.03, 1]
+          ease: "easeInOut",
+          repeat: Infinity,
+          delay: 0.5, // Delay before the scale animation starts
+          repeatDelay: 1.0 // Delay before each repeat cycle
+        }
+      }
+    },
+  };
+
+  // Define a separate animation for the pulse to keep variants clean
+  const pulseAnimation = {
+    scale: [1, 1.03, 1], // Slightly more noticeable pulse
+    transition: {
+      duration: 2.5, // Duration of one pulse cycle
+      repeat: Infinity,
+      ease: "easeInOut",
+      delay: 1, // Start pulsing 1s after initial appearance
+      repeatDelay: 1 // Delay between pulse repeats
+    }
   };
 
   return (
@@ -259,10 +317,10 @@ export function ChatBot() {
       <AnimatePresence>
         {showTeaser && !isOpen && (
           <motion.div
-            variants={teaserVariants}
+            variants={updatedTeaserVariants}
             initial="hidden"
             animate="visible"
-            exit="hidden" // Use hidden variant for exit to ensure smooth transition
+            exit="hidden"
             className="fixed bottom-6 right-6 z-50 p-3 bg-gradient-to-br from-green-500 to-teal-600 dark:from-green-600 dark:to-teal-700 text-white rounded-lg shadow-xl cursor-pointer hover:from-green-600 hover:to-teal-700 dark:hover:from-green-700 dark:hover:to-teal-800 flex items-center space-x-2 transition-all duration-300 ease-in-out"
             onClick={() => {
               setIsOpen(true);
@@ -273,7 +331,14 @@ export function ChatBot() {
             whileTap={{ scale: 0.95 }}
           >
             <ChatBubbleOvalLeftEllipsisIcon className="w-6 h-6" />
-            <span className="text-sm font-medium">Hey, ask me something!</span>
+            <span className="text-sm font-medium">Welcome! Ask me about Sachin.</span>
+            {/* Notification Dot */}
+            <motion.span
+              className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white dark:border-gray-800"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1, transition: { delay: 0.3, type: 'spring', stiffness: 300, damping: 15 } }}
+              exit={{ scale: 0, opacity: 0 }}
+            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -286,7 +351,7 @@ export function ChatBot() {
             setIsOpen(true);
             sessionStorage.setItem('chatInteracted', 'true');
           }}
-            className="fixed bottom-6 right-6 bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-full p-4 shadow-xl hover:from-blue-700 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-blue-400 dark:focus:ring-blue-700 transition-all duration-300 ease-in-out"
+            className="fixed bottom-6 right-6 bg-gradient-to-br from-green-500 to-teal-600 text-white rounded-full p-4 shadow-xl hover:from-green-600 hover:to-teal-700 focus:outline-none focus:ring-4 focus:ring-green-400 dark:focus:ring-green-600 transition-all duration-300 ease-in-out"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
@@ -303,31 +368,31 @@ export function ChatBot() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            key="chat-window" // Added key for AnimatePresence
+            key="chat-window"
             variants={chatWindowVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 md:bottom-10 md:right-10 z-50 w-[calc(100%-3rem)] max-w-md overflow-hidden chat-window-open" // Added class for easier querySelector checks if needed
+            className="fixed inset-x-0 bottom-0 sm:inset-auto sm:bottom-6 sm:right-6 md:bottom-10 md:right-10 z-50 w-full sm:w-[calc(100%-3rem)] sm:max-w-md overflow-hidden chat-window-open"
           >
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl flex flex-col h-[60vh] max-h-[700px] min-h-[300px]">
+            <div className="bg-white/95 backdrop-blur-sm flex flex-col h-[100dvh] sm:h-[60vh] sm:max-h-[700px] sm:min-h-[300px] sm:rounded-xl shadow-2xl">
               {/* Header */}
-              <div className="p-4 bg-gradient-to-r from-blue-600 to-indigo-700 text-white flex items-center justify-between rounded-t-xl shadow-sm">
+              <div className="p-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-between sm:rounded-t-xl">
                 <div className="flex items-center gap-2">
-                  <FaRobot className="w-6 h-6" />
+                  <FiCpu className="w-6 h-6 text-white" />
                   <h3 className="text-lg font-semibold">{BOT_NAME}</h3>
                 </div>
-                  <button
-                    onClick={() => setIsOpen(false)} // This is the only place that should set isOpen to false
-                  className="p-1.5 rounded-full text-white/80 hover:bg-white/20 focus:outline-none focus:bg-white/30 transition-colors"
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="p-1.5 rounded-full text-white/80 hover:text-white hover:bg-white/20 focus:outline-none focus:bg-white/20 transition-colors"
                   aria-label="Close chat"
-                  >
+                >
                   <XMarkIcon className="w-6 h-6" />
-                  </button>
-                  </div>
+                </button>
+              </div>
 
               {/* Messages Area */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900">
+              <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 pb-safe">
                 <AnimatePresence initial={false}>
                     {messages.map((message) => (
                     <motion.div
@@ -349,38 +414,34 @@ export function ChatBot() {
                         >
                         {message.role !== 'user' && message.id !== 'init' && ( // Don't show icon for initial welcome message
                           <div
-                            className={`p-2 rounded-full flex items-center justify-center text-white shadow-md shrink-0 ${
-                              message.role === 'assistant' ? 'bg-gradient-to-br from-indigo-500 to-purple-600' 
-                                : message.role === 'error' ? 'bg-red-500' 
-                                : 'bg-gray-400'
-                            }`}
+                            className={`p-2 rounded-full flex items-center justify-center text-white shadow-md shrink-0 bg-gradient-to-r from-blue-600 to-indigo-600`}
                           >
-                            <FaRobot className="w-5 h-5" />
+                            <FiCpu className="w-5 h-5" />
                           </div>
                         )}
-                         {message.id === 'init' && ( // Special styling for initial message if needed, or just a placeholder for icon space
-                            <div className="w-9 h-9 shrink-0"> {/* Matches approx size of icon + padding */}
-                                <ChatBubbleOvalLeftEllipsisIcon className="w-7 h-7 text-indigo-500 dark:text-indigo-400 opacity-80 ml-1 mt-1" />
+                         {message.id === 'init' && ( // Special styling for initial message
+                            <div className="w-9 h-9 shrink-0 flex items-center justify-center"> 
+                                <FiCpu className="w-7 h-7 text-blue-600 opacity-90" />
                             </div>
                          )}
                           <div
-                          className={`px-4 py-2.5 rounded-xl whitespace-pre-wrap break-words shadow ${
+                          className={`px-4 py-2.5 rounded-xl whitespace-pre-wrap break-words shadow-sm ${ // General bubble styling
                               message.role === 'user'
-                              ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-br-none'
+                              ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-br-none' // User message style (Light Theme)
                               : message.role === 'assistant' && message.id === 'init'
-                              ? 'bg-transparent dark:bg-transparent text-gray-800 dark:text-gray-100 shadow-none -ml-2' // Custom for welcome: less prominent bg
+                              ? 'bg-blue-50 text-gray-800 shadow-none -ml-2' // Welcome message style (Light Theme)
                               : message.role === 'assistant' 
-                              ? 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-bl-none'
+                              ? 'bg-white text-gray-800 rounded-bl-none border border-gray-100' // Assistant message style (Light Theme)
                               : message.role === 'error'
-                              ? 'bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-200 rounded-bl-none'
-                              : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-bl-none' 
+                              ? 'bg-red-50 text-red-600 rounded-bl-none border border-red-100' // Error remains distinct
+                              : 'bg-white text-gray-800 rounded-bl-none border border-gray-100' // Fallback (shouldn't be hit often)
                             }`}
                           >
                             {message.content}
                           {message.status === 'error' && message.role !== 'error' && ( // Don't show retry for the error message itself
                             <button
                               onClick={() => handleSend(undefined, message.content)}
-                              className="ml-2 text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                              className="ml-2 text-sm text-blue-600 hover:underline"
                             >
                               Retry
                             </button>
@@ -396,14 +457,14 @@ export function ChatBot() {
 
               {/* Starter Questions */}
               {messages.filter(m => m.role ==='user').length === 0 && (
-                <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-2 text-center">Or try a starter question:</p>
+                <div className="p-3 border-t border-gray-100 bg-white/80">
+                  <p className="text-xs text-gray-500 mb-2 text-center">Or try a starter question:</p>
                   <div className="flex flex-wrap justify-center gap-2">
                     {STARTER_QUESTIONS.map((q, i) => (
                       <motion.button
                         key={i}
                         onClick={() => handleStarterQuestion(q)}
-                        className="px-3 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-full text-sm hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                        className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-blue-50 hover:text-blue-700 transition-colors"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
@@ -415,11 +476,11 @@ export function ChatBot() {
                   )}
 
               {/* Input Area */}
-              <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-b-xl">
-                <form onSubmit={(e) => handleSend(e)} className="flex flex-col space-y-2">
+              <div className="p-3 border-t border-gray-100 bg-white sm:rounded-b-xl">
+                <form onSubmit={(e) => handleSend(e)} className="flex flex-col space-y-2 pb-safe">
                   {error && (
                     <motion.div 
-                      className="text-sm text-red-500 dark:text-red-400"
+                      className="text-sm text-red-500"
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                     >
@@ -436,7 +497,7 @@ export function ChatBot() {
                         setError(null);
                       }}
                       placeholder="Ask something..."
-                      className="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-shadow focus:shadow-md"
+                      className="flex-1 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white text-gray-900 transition-shadow focus:shadow-md placeholder-gray-400"
                         disabled={isLoading}
                       maxLength={MAX_MESSAGE_LENGTH}
                       onKeyPress={(e) => {
@@ -449,7 +510,7 @@ export function ChatBot() {
                       <button
                       type="submit"
                       disabled={isLoading || !input.trim()}
-                      className="p-3 bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-lg shadow hover:from-blue-700 hover:to-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-4 focus:ring-blue-400 dark:focus:ring-blue-700 transition-all duration-300 ease-in-out transform active:scale-95"
+                      className="p-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg shadow hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-4 focus:ring-blue-500/50 transition-all duration-300 ease-in-out transform active:scale-95"
                     >
                       {isLoading ? (
                         <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

@@ -4,6 +4,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useAnimation, useInView } from 'framer-motion'
 import { FaGithub, FaLinkedin, FaEnvelope, FaCode, FaHeart } from 'react-icons/fa'
+import { FaFacebook, FaXTwitter } from 'react-icons/fa6'
 import { SiPython, SiReact, SiNextdotjs, SiTailwindcss, SiTypescript, SiJavascript, SiCplusplus, SiDjango, SiDocker, SiGit } from 'react-icons/si'
 import Link from 'next/link'
 
@@ -201,6 +202,30 @@ export default function Footer() {
               >
                 <FaLinkedin size={20} />
               </motion.a>
+              <motion.a 
+                href="https://www.facebook.com/sachin.chettri2/" 
+                className="bg-gray-800 hover:bg-green-600 p-3 rounded-full text-green-400 hover:text-white transition-all duration-300 shadow-lg"
+                aria-label="Facebook" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                onHoverStart={() => setHoveredIcon('facebook')}
+                onHoverEnd={() => setHoveredIcon(null)}
+              >
+                <FaFacebook size={20} />
+              </motion.a>
+              <motion.a 
+                href="https://x.com/ghost__rider7" 
+                className="bg-gray-800 hover:bg-green-600 p-3 rounded-full text-green-400 hover:text-white transition-all duration-300 shadow-lg"
+                aria-label="X" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                onHoverStart={() => setHoveredIcon('x')}
+                onHoverEnd={() => setHoveredIcon(null)}
+              >
+                <FaXTwitter size={20} />
+              </motion.a>
             </div>
             <div className="pt-2">
               {hoveredIcon === 'email' && (
@@ -228,6 +253,24 @@ export default function Footer() {
                   className="text-sm text-gray-400"
                 >
                   Connect on LinkedIn
+                </motion.p>
+              )}
+              {hoveredIcon === 'facebook' && (
+                <motion.p 
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-sm text-gray-400"
+                >
+                  Connect on Facebook
+                </motion.p>
+              )}
+              {hoveredIcon === 'x' && (
+                <motion.p 
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-sm text-gray-400"
+                >
+                  Follow on X
                 </motion.p>
               )}
             </div>

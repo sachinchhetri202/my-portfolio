@@ -22,7 +22,8 @@ const AnimatedBackground: FC = () => {
     if (!ctx) return
 
     const particles: Particle[] = []
-    const particleCount = 50
+    const isMobile = window.innerWidth < 768; // md breakpoint in Tailwind
+    const particleCount = isMobile ? 25 : 50; 
     const particleSize = 2
 
     class ParticleClass implements Particle {

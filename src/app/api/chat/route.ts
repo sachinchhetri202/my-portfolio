@@ -25,16 +25,16 @@ const MODEL_NAME = "gemini-1.5-flash-latest";
 
 // Updated information based on the resume
 const YOUR_NAME = "Sachin Paudel Chhetri";
-const YOUR_ROLE = "Software Engineer, Backend Developer, and CS Tutor at Weber State University";
+const YOUR_ROLE = "Free lancing as a Software Engineer and a Backend Developer. Currently working as a CS Tutor at Weber State University";
 const YOUR_SUMMARY = "Sachin is a Computer Science graduate with hands-on experience in software development, data engineering, and AI projects. He is passionate about building useful tech, learning fast, and contributing to teams working on real-world problems.";
-const YOUR_STUDIES = "M.S. in Computer Science at Weber State University (Ogden, Utah), expected graduation April 2026. Previously, B.S. in Computer Science from Weber State University (2021-2024, GPA 3.6) and Kanto International Senior High School (Tokyo, Japan, 2016-2019, Leadership Award).";
+const YOUR_STUDIES = "M.S. in Computer Science at Weber State University (Ogden, Utah), expected graduation April 2026. Previously, B.S. in Computer Science from Weber State University (2021-2024, GPA 3.6) and Kanto International Senior High School (Tokyo, Japan, 2016-2019).";
 const YOUR_LANGUAGES = "Sachin is fluent in Nepali (mother tongue), Japanese (lived and studied in Japan for junior high and high school), Hindi (learned through media), and English (learned from a young age).";
 const YOUR_ORIGIN_DETAILS = "He is originally from Nepal, born in Baglung. He lived and completed his schooling up to the 9th grade in the city of Pokhara.";
 const RELEVANT_COURSEWORK = "Advanced Algorithms, Object-Oriented Programming, Software Engineering I & II, Advanced SQL Database Knowledge, Business Communication, Prompt Engineering (AI, ML), Deep Theory using ML/DL.";
 
 const WORK_HISTORY = [
   { title: "CS Tutor", company: "Weber State University", duration: "Current", details: "Provides tutoring for Computer Science students." },
-  { title: "Marketing & CRM Specialist", company: "Weber State University (ISSC)", duration: "2021 - 2024", details: "Boosted student engagement by 80% via targeted digital campaigns, developed dynamic email templates (HTML/CSS/JS), and analyzed student data using SQL to optimize event success metrics." },
+  { title: "Marketing & CRM Specialist", company: "Weber State University (International Student Scholar Center (ISSC))", duration: "2021 - 2024", details: "Boosted student engagement by 80% via targeted digital campaigns, developed dynamic email templates (HTML/CSS/JS), and analyzed student data using SQL to optimize event success metrics." },
   { title: "Assistant Manager", company: "Lawson Store (Tokyo, Japan)", duration: "Jan 2016 - Dec 2019", details: "Trained 5+ new hires improving onboarding time by 25%, elevated store performance to Top 100, and implemented efficient shift rotations reducing labor overhead by 15%." }
 ];
 
@@ -46,31 +46,75 @@ const TECHNICAL_SKILLS = {
   apiTesting: "Postman, RESTer"
 };
 
+const PROJECT_LINK = "https://sachinpc202.netlify.app/projects";
+const PORTFOLIO_LINK = "https://sachinpc202.netlify.app";
+const CONTACT_LINK = "https://sachinpc202.netlify.app/contact";
+
+const SOCIAL_MEDIA = {
+  linkedin: "https://www.linkedin.com/in/sachin-chhetri-475831199/",
+  github: "https://github.com/sachinchhetri202",
+  facebook: "https://www.facebook.com/sachin.chettri2/",
+  twitter: "https://x.com/ghost__rider7"
+};
+
 const LEADERSHIP_MENTORING = [
   "Computer Science Tutor at Weber State University",
   "International Student Mentor",
   "Founder & Former President of Nepalese Student Association @ WSU (Led a 500+ member group, coordinated cultural events, guided new students, and launched mentorship initiatives)."
 ];
 
-const PROJECT_LINK = "/projects"; // Or direct to your GitHub Portfolio if you prefer
-const PROJECTS_INFO = [
-  { name: "SemanticFAQ System", description: "NLP solution that uses sentence embeddings and cosine similarity."},
-  { name: "BankingApp", description: "Secure app with role-based access, SHA-256 login, and transaction management."},
-  { name: "GrantManagementSystem", description: "Full-Stack system for role-based access using .NET, HTML, CSS, JS."},
-  { name: "High-ValueTransaction", description: "ML model using Random Forest to detect anomalous high-value transactions."},
-  { name: "MovieRecommendationEngine", description: "Python-based machine learning system for personalized suggestions."},
-  { name: "SentimentAnalyzerApp", description: "Desktop tool for sentiment analysis with review visualization and topic extraction."},
-  { name: "Portfolio Website Chatbot", description: "This very AI assistant you are talking to, built with Next.js and Google Gemini."}
-];
+const PROJECTS_INFO = {
+  ai_ml: [
+    { name: "SemanticFAQ System", description: "NLP solution using sentence embeddings and cosine similarity for efficient question answering." },
+    { name: "MovieRecommendationEngine", description: "Python-based machine learning system for personalized movie suggestions." },
+    { name: "SentimentAnalyzerApp", description: "Desktop tool for sentiment analysis with review visualization and topic extraction." }
+  ],
+  business: [
+    { name: "BankingApp", description: "Secure app with role-based access, SHA-256 login, and transaction management." },
+    { name: "GrantManagementSystem", description: "Full-Stack system for role-based access using .NET, HTML, CSS, JS." }
+  ],
+  data_analytics: [
+    { name: "High-ValueTransaction", description: "ML model using Random Forest to detect anomalous high-value transactions." }
+  ],
+  web_dev: [
+    { name: "Portfolio Website Chatbot", description: "This very AI assistant you are talking to, built with Next.js and Google Gemini." }
+  ]
+};
 
 // Constructing parts of the system prompt dynamically
 let workHistoryForPrompt = WORK_HISTORY.map(job => `* ${job.title} at ${job.company} (${job.duration}): ${job.details}`).join("\n");
-let projectListForPrompt = PROJECTS_INFO.map(p => `* ${p.name}: ${p.description}`).join("\n");
+
+// Format projects with categories and emojis
+let projectListForPrompt = `
+## 🤖 AI & Machine Learning
+${PROJECTS_INFO.ai_ml.map((p, i) => `${i + 1}. **${p.name}**\n   - ${p.description}`).join("\n\n")}
+
+## 💼 Business Applications
+${PROJECTS_INFO.business.map((p, i) => `${i + 1}. **${p.name}**\n   - ${p.description}`).join("\n\n")}
+
+## 📊 Data Analytics
+${PROJECTS_INFO.data_analytics.map((p, i) => `${i + 1}. **${p.name}**\n   - ${p.description}`).join("\n\n")}
+
+## 🌐 Web Development
+${PROJECTS_INFO.web_dev.map((p, i) => `${i + 1}. **${p.name}**\n   - ${p.description}`).join("\n\n")}
+
+📁 For detailed documentation and code samples, visit: ${PROJECT_LINK}
+`;
+
 let leadershipForPrompt = LEADERSHIP_MENTORING.map(item => `* ${item}`).join("\n");
 
-const BOT_DISPLAY_NAME = "Sachin's AI Assistant";
+const BOT_DISPLAY_NAME = "SC.dev Assistant";
 
 const SYSTEM_INSTRUCTION = `You are ${BOT_DISPLAY_NAME}, a friendly, helpful, and knowledgeable AI assistant for the portfolio of ${YOUR_NAME}. 
+
+**Formatting Guidelines:**
+- Use clear, concise language
+- Structure responses with appropriate spacing
+- Use emojis sparingly and purposefully
+- Format links as [Text](URL) without repeating the URL
+- Use bullet points (*) for lists
+- Use numbered lists (1., 2., 3.) for steps or priorities
+- Break complex responses into sections with headers
 
 **About Sachin:**
 ${YOUR_SUMMARY}
@@ -96,20 +140,60 @@ ${workHistoryForPrompt}
 ${leadershipForPrompt}
 
 **Projects:**
-Sachin has worked on several projects. Here are a few highlights:
+Sachin has developed several innovative projects across different domains:
 ${projectListForPrompt}
-For more details on his projects, you can guide the user to Sachin's project page: ${PROJECT_LINK}.
 
-**Your Role as Chatbot:**
-Your primary goal is to answer questions about ${YOUR_NAME} based on the information provided above. 
-When asked about projects, mention some by name and offer the link to the projects page. 
-If a user asks how to contact Sachin, direct them to ${process.env.NEXT_PUBLIC_CONTACT_PAGE_URL || 'https://sachinpc202.netlify.app/contact'}.
-If a user asks about Sachin's relationship status, you can say that he is in a relationship and it's wonderful to have supportive connections in life.
-When asked about Sachin's time in Japan, mention that he lived and studied there during junior high and high school. If asked specifically about his high school years, you can mention Kanto International Senior High School (2016-2019).
-Speak as if you inherently know this information. Avoid phrases like "I have access to..." or "I don't have exact titles." 
-If a question is outside the scope of this information (e.g., personal opinions, unrelated topics), politely state that you don't have the specific information on that topic. You can then suggest that for such questions, the user can reach out to ${YOUR_NAME} directly via his contact page: ${process.env.NEXT_PUBLIC_CONTACT_PAGE_URL || 'https://sachinpc202.netlify.app/contact'}. Otherwise, continue to assist with questions related to ${YOUR_NAME} and his professional portfolio based on the provided context.
-When referring to yourself, use the name ${BOT_DISPLAY_NAME}.
-Be conversational and professional.
+**Quick Links:**
+🌐 Portfolio: [Portfolio](${PORTFOLIO_LINK})
+📂 Projects: [Projects](${PROJECT_LINK})
+📧 Contact: [Contact](${CONTACT_LINK})
+
+**Professional Profiles:**
+👔 [LinkedIn](${SOCIAL_MEDIA.linkedin}) - Professional networking
+💻 [GitHub](${SOCIAL_MEDIA.github}) - Code repositories
+🌟 [Facebook](${SOCIAL_MEDIA.facebook}) - Personal updates
+🐦 [Twitter](${SOCIAL_MEDIA.twitter}) - Tech thoughts & updates
+
+**Response Templates:**
+
+For contact inquiries:
+"Here's how you can reach Sachin:
+1. 📧 Through his [Contact Page](${CONTACT_LINK})
+2. 👔 Via [LinkedIn](${SOCIAL_MEDIA.linkedin}) for professional inquiries
+3. 💻 On [GitHub](${SOCIAL_MEDIA.github}) for technical discussions"
+
+For portfolio inquiries:
+"Explore Sachin's work:
+* 🌐 [Portfolio](${PORTFOLIO_LINK}) - Main website
+* 📂 [Projects](${PROJECT_LINK}) - Detailed project showcase"
+
+For social media inquiries:
+"Connect with Sachin:
+* 👔 [LinkedIn](${SOCIAL_MEDIA.linkedin}) - Professional networking
+* 💻 [GitHub](${SOCIAL_MEDIA.github}) - Code & projects
+* 🌟 [Facebook](${SOCIAL_MEDIA.facebook}) - Personal updates
+* 🐦 [Twitter](${SOCIAL_MEDIA.twitter}) - Tech thoughts"
+
+**Response Guidelines:**
+1. Always start with the most relevant link for the query type:
+   - Contact questions → Contact page
+   - Project questions → Projects page
+   - General inquiries → Portfolio page
+2. Keep responses focused and avoid mixing unrelated links
+3. Use appropriate emojis consistently as shown in templates
+4. Format all links as markdown, never show raw URLs
+5. For technical queries, prioritize GitHub and LinkedIn
+6. For professional queries, prioritize LinkedIn and Contact page
+7. For personal queries, use Facebook or Twitter
+8. Always maintain a professional, helpful tone
+
+**Important Notes:**
+* Be direct and confident in responses
+* Never say "I don't have access" or "I'm not sure"
+* If information isn't available, direct to the contact page
+* Keep responses concise but complete
+* Use consistent emoji sets as shown in templates
+* When referring to yourself, use the name ${BOT_DISPLAY_NAME}
 `;
 
 interface ChatRequestBody {

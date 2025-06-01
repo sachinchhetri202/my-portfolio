@@ -492,20 +492,26 @@ export function ChatBot() {
                       ref={inputRef}
                         type="text"
                         value={input}
-                      onChange={(e) => {
-                        setInput(e.target.value);
-                        setError(null);
-                      }}
-                      placeholder="Ask something..."
-                      className="flex-1 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white text-gray-900 transition-shadow focus:shadow-md placeholder-gray-400"
+                        onChange={(e) => {
+                          setInput(e.target.value);
+                          setError(null);
+                        }}
+                        onFocus={() => {
+                          // Scroll the input into view, especially for mobile when keyboard appears
+                          setTimeout(() => {
+                            inputRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+                          }, 100); // Small delay to allow keyboard to animate in
+                        }}
+                        placeholder="Ask something..."
+                        className="flex-1 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white text-gray-900 transition-shadow focus:shadow-md placeholder-gray-400"
                         disabled={isLoading}
-                      maxLength={MAX_MESSAGE_LENGTH}
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault();
-                          handleSend(e);
-                        }
-                      }}
+                        maxLength={MAX_MESSAGE_LENGTH}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSend(e);
+                          }
+                        }}
                       />
                       <button
                       type="submit"

@@ -222,7 +222,7 @@ export function ChatBot() {
       }
 
       const data = await response.json();
-      return data.reply;
+      return data.message;
     } catch (error: any) {
       if (error.name === 'AbortError') {
         throw new Error('Request was cancelled.');

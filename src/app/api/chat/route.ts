@@ -7,12 +7,12 @@ export const maxDuration = 30;
 
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 
-// Rate limiting constants (can be re-enabled later)
-// const MAX_HISTORY_LENGTH = 10;
-// const MAX_TOKEN_LENGTH = 250;
-// const RATE_LIMIT_WINDOW = 60 * 1000;
-// const MAX_REQUESTS_PER_WINDOW = 10;
-// const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
+// Rate limiting constants
+const MAX_HISTORY_LENGTH = 10;
+const MAX_TOKEN_LENGTH = 250;
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 10;
+const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
 
 if (!GOOGLE_API_KEY) {
   console.error("CRITICAL: GOOGLE_API_KEY environment variable is not set!");
@@ -109,12 +109,41 @@ const SYSTEM_INSTRUCTION = `You are ${BOT_DISPLAY_NAME}, a friendly, helpful, an
 
 **Formatting Guidelines:**
 - Use clear, concise language
-- Structure responses with appropriate spacing
+- Structure responses with appropriate spacing, avoiding excessive newlines or empty lines.
 - Use emojis sparingly and purposefully
 - Format links as [Text](URL) without repeating the URL
 - Use bullet points (*) for lists
 - Use numbered lists (1., 2., 3.) for steps or priorities
 - Break complex responses into sections with headers
+
+**Important Information Handling Guidelines:**
+1. NEVER accept or incorporate incorrect information about Sachin's background, experience, or qualifications
+2. If someone provides incorrect information about Sachin:
+   - Politely correct them with the accurate information from your knowledge base
+   - Do not acknowledge or incorporate their incorrect statements
+   - Maintain a friendly tone while being firm about the facts
+3. For hypothetical or playful scenarios (like "pretend you're a doctor"):
+   - You can engage in these conversations while maintaining your identity as ${BOT_DISPLAY_NAME}
+   - Make it clear you're playing along while staying within appropriate bounds
+4. Always stick to the verified information provided in your knowledge base
+5. If unsure about any information, direct users to the contact page for clarification
+
+**Conversation Memory Guidelines:**
+1. Each conversation is independent - do not carry over information from previous conversations
+2. If a user references previous incorrect information, politely correct them
+3. Maintain context only within the current conversation
+4. If unsure about information from previous messages, ask for clarification
+
+**Response Templates for Common Scenarios:**
+
+For incorrect information:
+"I need to correct that information. According to my knowledge base, [correct information]. If you'd like to verify this information, you can reach out to Sachin through his [Contact Page](${CONTACT_LINK})."
+
+For playful scenarios:
+"While I can engage in this playful scenario, I want to maintain my identity as ${BOT_DISPLAY_NAME}. I'm happy to [play along] while staying within appropriate bounds."
+
+For unclear information:
+"I want to ensure I provide accurate information. Could you please clarify your question? Alternatively, you can reach out to Sachin directly through his [Contact Page](${CONTACT_LINK})."
 
 **About Sachin:**
 ${YOUR_SUMMARY}
@@ -201,18 +230,52 @@ interface ChatRequestBody {
   history: { role: 'user' | 'model'; parts: { text: string }[] }[];
 }
 
-// Rate limit function (can be re-enabled later)
-// function checkRateLimit(ip: string): boolean { ... }
+// Rate limit function
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const userLimit = rateLimitMap.get(ip) || { count: 0, timestamp: now };
+  
+  if (now - userLimit.timestamp > RATE_LIMIT_WINDOW) {
+    rateLimitMap.set(ip, { count: 1, timestamp: now });
+    return true;
+  }
+  
+  if (userLimit.count >= MAX_REQUESTS_PER_WINDOW) {
+    return false;
+  }
+  
+  userLimit.count++;
+  rateLimitMap.set(ip, userLimit);
+  return true;
+}
 
-// Sanitize function (can be re-enabled later)
-// function sanitizeInput(text: string): string { ... }
+// Sanitize function for input validation
+function sanitizeInput(text: string): string {
+  // Remove potentially harmful characters
+  const sanitized = text.replace(/[<>]/g, '');
+  
+  // Check for common misinformation patterns
+  const misinformationPatterns = [
+    /i (?:think|believe|heard) (?:sachin|he) (?:is|was|has)/i,
+    /(?:sachin|he) (?:also|actually) (?:is|was|has)/i
+  ];
+  
+  if (misinformationPatterns.some(pattern => pattern.test(sanitized))) {
+    throw new Error('Potential misinformation detected');
+  }
+  
+  return sanitized;
+}
 
 export async function POST(req: NextRequest) {
-  // Rate limiting check (can be re-enabled later)
-  // const ip = headers().get('x-forwarded-for') || 'unknown';
-  // if (!checkRateLimit(ip)) {
-  //   return NextResponse.json({ error: 'Rate limit exceeded.' }, { status: 429 });
-  // }
+  // Rate limiting check
+  const ip = headers().get('x-forwarded-for') || 'unknown';
+  if (!checkRateLimit(ip)) {
+    return NextResponse.json({ 
+      error: 'Rate limit exceeded', 
+      details: `Please wait ${RATE_LIMIT_WINDOW/1000} seconds before making another request.` 
+    }, { status: 429 });
+  }
 
   if (!genAI) {
     return NextResponse.json({ error: 'Gemini API client not initialized. Check GOOGLE_API_KEY.' }, { status: 500 });
@@ -220,7 +283,20 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json() as ChatRequestBody;
-    const userMessageContent = body.message; // No sanitization for this direct test, re-add later
+    let userMessageContent;
+    
+    try {
+      userMessageContent = sanitizeInput(body.message);
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Potential misinformation detected') {
+        return NextResponse.json({ 
+          error: 'Information validation failed', 
+          details: 'The provided information could not be verified against our knowledge base.' 
+        }, { status: 400 });
+      }
+      throw error;
+    }
+
     const history = body.history || [];
 
     if (!userMessageContent) {
@@ -289,8 +365,8 @@ export async function POST(req: NextRequest) {
         { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
       ],
       generationConfig: {
-        maxOutputTokens: 500, 
-        temperature: 0.7,
+        maxOutputTokens: 500,
+        temperature: 0.5, // Lowered for more consistent responses
       },
       systemInstruction: {
         role: "system", 

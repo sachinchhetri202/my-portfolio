@@ -2,9 +2,9 @@
 
 import { useState, useRef, useEffect, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PaperAirplaneIcon, ChatBubbleOvalLeftEllipsisIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { FaUser } from 'react-icons/fa';
-import { FiCpu } from 'react-icons/fi';
+import { PaperAirplaneIcon, ChatBubbleOvalLeftEllipsisIcon, XMarkIcon, Bars3Icon } from '@heroicons/react/24/outline';
+import { FaUser, FaRobot } from 'react-icons/fa';
+import { FiCpu, FiSend } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 
@@ -24,71 +24,186 @@ const RETRY_DELAY = 1000; // 1 second
 const MAX_MESSAGE_LENGTH = 1000;
 const TEASER_DELAY = 2000; // 2 seconds for teaser to appear
 
-const BOT_NAME = "SC.dev Assistant";
+const BOT_NAME = "Sachin.dev Assistant";
 const WELCOME_MESSAGE_CONTENT = `नमस्ते! こんにちは! Hello! 👋
 I am ${BOT_NAME}, here to help you learn about Sachin, his skills, and projects. Feel free to ask me anything!`;
 
-const STARTER_QUESTIONS = [
-  "What projects has Sachin worked on?",
-  "Tell me about Sachin's skills.",
-  "What is Sachin studying?",
-  "Where did Sachin go to high school?"
+const QUICK_REPLIES = [
+  "Show latest projects",
+  "Tell me about skills",
+  "Educational background",
+  "Work experience"
 ];
 
-const TypingIndicator = () => (
-  <div className="flex items-center space-x-1.5 p-3">
-    <span className="text-sm text-gray-500 dark:text-gray-400">Assistant is typing</span>
-    <motion.div 
-      className="w-1.5 h-1.5 bg-gray-400 dark:bg-gray-500 rounded-full" 
-      animate={{ y: ["-25%", "0%", "-25%"] }} 
-      transition={{ duration: 0.7, repeat: Infinity, ease: "easeInOut" }} 
-    />
-    <motion.div 
-      className="w-1.5 h-1.5 bg-gray-400 dark:bg-gray-500 rounded-full" 
-      animate={{ y: ["-25%", "0%", "-25%"] }} 
-      transition={{ duration: 0.7, delay: 0.15, repeat: Infinity, ease: "easeInOut" }} 
-    />
-    <motion.div 
-      className="w-1.5 h-1.5 bg-gray-400 dark:bg-gray-500 rounded-full" 
-      animate={{ y: ["-25%", "0%", "-25%"] }} 
-      transition={{ duration: 0.7, delay: 0.3, repeat: Infinity, ease: "easeInOut" }} 
-    />
-  </div>
+// Premium Typing Indicator
+const TypingIndicator = ({ isDarkMode }: { isDarkMode: boolean }) => (
+  <motion.div 
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -10 }}
+    className={`flex items-center space-x-2 p-4 rounded-2xl rounded-bl-md max-w-[80%] mb-4 transition-all duration-200 ${
+      isDarkMode ? 'bg-gray-800' : 'bg-gray-50'
+    }`}
+  >
+    <div className="flex space-x-1">
+      <motion.div 
+        className="w-2 h-2 bg-gray-400 rounded-full" 
+        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }} 
+        transition={{ duration: 1, repeat: Infinity, delay: 0 }} 
+      />
+      <motion.div 
+        className="w-2 h-2 bg-gray-400 rounded-full" 
+        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }} 
+        transition={{ duration: 1, repeat: Infinity, delay: 0.2 }} 
+      />
+      <motion.div 
+        className="w-2 h-2 bg-gray-400 rounded-full" 
+        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }} 
+        transition={{ duration: 1, repeat: Infinity, delay: 0.4 }} 
+      />
+    </div>
+    <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Assistant is typing...</span>
+  </motion.div>
 );
 
-const teaserVariants = {
-  hidden: { 
-    opacity: 0, 
-    y: 10, 
-    scale: 0.95, 
-    transition: { duration: 0.2 } 
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: [1, 1.03, 1],
-    transition: {
-      opacity: { duration: 0.3, delay: 0.1 },
-      y: { duration: 0.3, delay: 0.1 },
-      scale: {
-        duration: 2.0,
-        ease: "easeInOut",
-        repeat: Infinity,
-        delay: 0.5,
-        repeatDelay: 1.0
-      }
-    }
-  },
+// Quick Reply Chips Component
+const QuickReplyChips = ({ onReplyClick, show }: { onReplyClick: (reply: string) => void; show: boolean }) => (
+  <AnimatePresence>
+    {show && (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        className="flex flex-wrap gap-2 p-4 pt-0"
+      >
+        {QUICK_REPLIES.map((reply, index) => (
+          <motion.button
+            key={reply}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.1 }}
+            onClick={() => onReplyClick(reply)}
+            className="px-3 py-2 bg-white border-2 border-violet-200 text-violet-700 rounded-full text-sm font-medium hover:bg-violet-50 hover:border-violet-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {reply}
+          </motion.button>
+        ))}
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
+// Message Bubble Component
+const MessageBubble = ({ message, isUser, isDarkMode }: { message: ChatMessage; isUser: boolean; isDarkMode: boolean }) => {
+  const markdownComponents: Components = {
+    a: ({ href, children }) => (
+      <a 
+        href={href} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="text-violet-600 hover:text-violet-800 underline font-medium break-all"
+      >
+        {children}
+      </a>
+    ),
+    p: ({ children }) => <p className="mb-3 last:mb-0 leading-relaxed">{children}</p>,
+    ul: ({ children }) => <ul className="list-none ml-6 mb-3 space-y-2">{children}</ul>,
+    ol: ({ children }) => <ol className="list-none ml-6 mb-3 space-y-2">{children}</ol>,
+    li: ({ children }) => <li className="text-sm leading-relaxed relative">{children}</li>,
+    strong: ({ children }) => <strong className={`font-semibold ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>{children}</strong>,
+    em: ({ children }) => <em className="italic">{children}</em>,
+    h1: ({ children }) => <h1 className={`text-lg font-bold mb-2 mt-3 ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>{children}</h1>,
+    h2: ({ children }) => <h2 className={`text-base font-semibold mb-2 mt-3 ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>{children}</h2>,
+    h3: ({ children }) => <h3 className={`text-sm font-semibold mb-1 mt-2 ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>{children}</h3>,
+    code: ({ children }) => (
+      <code className={`px-1 py-0.5 rounded text-sm font-mono ${
+        isDarkMode 
+          ? 'bg-gray-700 text-violet-300' 
+          : 'bg-gray-100 text-violet-700'
+      }`}>
+        {children}
+      </code>
+    ),
+    blockquote: ({ children }) => (
+      <blockquote className={`border-l-4 pl-3 py-1 my-2 italic ${
+        isDarkMode 
+          ? 'border-violet-400 text-gray-300' 
+          : 'border-violet-200 text-gray-600'
+      }`}>
+        {children}
+      </blockquote>
+    ),
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}
+    >
+      <div className={`flex items-start space-x-3 max-w-[90%] ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`}>
+        {/* Avatar */}
+        <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+          isUser 
+            ? 'bg-violet-600 text-white' 
+            : 'bg-gradient-to-br from-blue-600 to-indigo-700 text-white'
+        }`}>
+          {isUser ? <FaUser className="w-4 h-4" /> : <FaRobot className="w-4 h-4" />}
+        </div>
+        
+        {/* Message Content */}
+        <div className={`rounded-2xl px-4 py-4 transition-all duration-200 ${
+          isUser 
+            ? isDarkMode
+              ? 'bg-gray-800 border-2 border-violet-400 text-white rounded-br-md'
+              : 'bg-white border-2 border-violet-200 text-gray-900 rounded-br-md'
+            : isDarkMode
+              ? 'bg-gray-800 text-gray-100 rounded-bl-md'
+              : 'bg-gray-50 text-gray-900 rounded-bl-md'
+        }`}>
+          {isUser ? (
+            <p className="text-sm font-medium leading-relaxed break-words">{message.content}</p>
+          ) : (
+            <div className="text-sm leading-relaxed prose prose-sm max-w-none break-words prose-p:my-2 prose-li:my-1 chatbot-message">
+              <ReactMarkdown components={markdownComponents}>
+                {message.content}
+              </ReactMarkdown>
+            </div>
+          )}
+          
+          {/* Status indicator for user messages */}
+          {isUser && message.status && (
+            <div className="flex justify-end mt-2">
+              <span className={`text-xs ${
+                message.status === 'sending' ? 'text-gray-400' :
+                message.status === 'sent' ? 'text-green-500' :
+                'text-red-500'
+              }`}>
+                {message.status === 'sending' ? 'Sending...' :
+                 message.status === 'sent' ? '✓' :
+                 'Failed'}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
 };
 
 export function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [showTeaser, setShowTeaser] = useState(false); // New state for teaser
+  const [showTeaser, setShowTeaser] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showQuickReplies, setShowQuickReplies] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -104,80 +219,43 @@ export function ChatBot() {
       },
     ]);
 
-    const teaserTimer = setTimeout(() => {
-      // Show teaser only if chat is not already open and no user messages have been sent yet.
-      // This check ensures that `messages` state used here is the one from the effect's closure after setMessages.
-      // For a more robust check against messages updated asynchronously, one might pass messages in dependency array,
-      // but for one-time teaser, this should be fine.
-      if (!isOpen && messages.filter(m => m.role === 'user').length === 0) {
-         // A slight delay to ensure messages state is likely updated before this check
-         // This is a bit of a workaround for the immediate check after setMessages.
-         // A more React-idiomatic way would involve another useEffect dependent on messages.
-         // However, for simplicity and one-time effect:
-         setTimeout(() => {
-            // Re-check messages state here, ensuring it's the most current.
-            // This is still tricky. The most robust way is to check initial messages.
-            // The original messages array is empty before setMessages, so any user interaction would add to it.
-            // Let's rely on the initial state of `messages` being effectively empty of user messages.
-             if (!document.querySelector('.chat-window-open') && // Check if chat window isn't already visibly open by some other means
-                 messages.filter(m => m.role === 'user').length === 0 // Check against the current state of messages.
-             ) {
-                // Safest check might be simpler: if chat not open, show teaser
-                // The `messages.filter` ensures it doesn't pop up if user is already chatting from a restored session (future).
-                // For now, `!isOpen` and `messages.length <=1` (initial welcome message) is a good proxy.
-                // Let's use the initially set messages for the check, as it's more stable for this effect.
-                const currentMessages = messagesRef.current; // Need to use a ref for messages if checking its latest value inside setTimeout
-                                                            // Or, simplify the condition for now.
-                if (!isOpen && !sessionStorage.getItem('chatInteracted')) { // Use session storage as a proxy for interaction
-                     setShowTeaser(true);
-                }
-             }
-         }, 50); // Small delay for state to propagate for the check
+    const finalTeaserTimer = setTimeout(() => {
+      if (!isOpen && !sessionStorage.getItem('chatInteracted')) {
+        setShowTeaser(true);
       }
     }, TEASER_DELAY);
-    
-    // Simpler logic for teaser:
-    const finalTeaserTimer = setTimeout(() => {
-        if (!isOpen && !sessionStorage.getItem('chatInteracted')) {
-            setShowTeaser(true);
-        }
-    }, TEASER_DELAY)
-
 
     return () => {
       clearTimeout(finalTeaserTimer);
       abortControllerRef.current?.abort();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // isOpen dependency removed to prevent re-triggering teaser on chat close.
+  }, []);
 
-
-  const messagesRef = useRef(messages); // Ref to access current messages in setTimeout
+  const messagesRef = useRef(messages);
   useEffect(() => {
     messagesRef.current = messages;
   }, [messages]);
-
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
       inputRef.current.focus();
     }
     if (isOpen) {
-        setShowTeaser(false); // Ensure teaser is hidden when chat is open
-        sessionStorage.setItem('chatInteracted', 'true'); // Mark interaction
+      setShowTeaser(false);
+      sessionStorage.setItem('chatInteracted', 'true');
     } else {
-        // When chat is closed, always show the teaser again
-        // We can add a small delay if we want it to reappear a moment after closing
-        // For now, show immediately on close:
-        setShowTeaser(true);
+      setShowTeaser(true);
     }
   }, [isOpen]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   };
 
-  useEffect(scrollToBottom, [messages]);
+  useEffect(() => {
+    const timer = setTimeout(scrollToBottom, 100);
+    return () => clearTimeout(timer);
+  }, [messages]);
 
   const validateMessage = (message: string): string | null => {
     if (!message.trim()) {
@@ -231,19 +309,20 @@ export function ChatBot() {
     }
   };
 
-  const handleStarterQuestion = (question: string) => {
-    setInput(question);
-    inputRef.current?.focus();
-    // Optionally send immediately:
-    // handleSend(undefined, question); 
-    // For now, user clicks send.
+  const handleQuickReply = (reply: string) => {
+    setInput(reply);
+    setShowQuickReplies(false);
+    handleSend(undefined, reply);
   };
-  
+
   const handleSend = async (e?: FormEvent, messageOverride?: string) => {
     if (e) e.preventDefault();
     const messageToSend = messageOverride || input;
     const validationError = validateMessage(messageToSend);
-    if (validationError) { setError(validationError); return; }
+    if (validationError) { 
+      setError(validationError); 
+      return; 
+    }
     if (isLoading && !messageOverride) return;
     
     setError(null);
@@ -253,16 +332,28 @@ export function ChatBot() {
     setInput(''); 
     setIsLoading(true);
     setIsTyping(true);
-    sessionStorage.setItem('chatInteracted', 'true'); // Mark interaction
-    setShowTeaser(false); // Hide teaser on send
+    setShowQuickReplies(false);
+    sessionStorage.setItem('chatInteracted', 'true');
 
-    const userMessage: ChatMessage = { id: Date.now().toString(), content: messageText, role: 'user', timestamp: new Date(), status: 'sending' };
+    const userMessage: ChatMessage = { 
+      id: Date.now().toString(), 
+      content: messageText, 
+      role: 'user', 
+      timestamp: new Date(), 
+      status: 'sending' 
+    };
     setMessages(prev => [...prev, userMessage]);
 
     try {
-      const conversationHistory = messagesRef.current.filter(msg => msg.role !== 'error' && msg.id !== 'init').slice(-6); // Use ref for latest messages
+      const conversationHistory = messagesRef.current.filter(msg => msg.role !== 'error' && msg.id !== 'init').slice(-6);
       const reply = await sendMessageToAPI(messageText, conversationHistory);
-      const botMessage: ChatMessage = { id: (Date.now() + 1).toString(), content: reply, role: 'assistant', timestamp: new Date(), status: 'sent' };
+      const botMessage: ChatMessage = { 
+        id: (Date.now() + 1).toString(), 
+        content: reply, 
+        role: 'assistant', 
+        timestamp: new Date(), 
+        status: 'sent' 
+      };
       setMessages(prev => {
         const updatedMessages = prev.map(msg => msg.id === userMessage.id ? { ...msg, status: 'sent' as const } : msg);
         return [...updatedMessages, botMessage];
@@ -273,7 +364,13 @@ export function ChatBot() {
       setError(errorMessageText);
       setMessages(prev => {
         const updatedMessages = prev.map(msg => msg.id === userMessage.id ? { ...msg, status: 'error' as const } : msg);
-        return [ ...updatedMessages, { id: (Date.now() + 1).toString(), content: errorMessageText, role: 'error' as const, timestamp: new Date(), status: 'error' as const }];
+        return [...updatedMessages, { 
+          id: (Date.now() + 1).toString(), 
+          content: errorMessageText, 
+          role: 'error' as const, 
+          timestamp: new Date(), 
+          status: 'error' as const 
+        }];
       });
     } finally {
       setIsLoading(false);
@@ -282,54 +379,53 @@ export function ChatBot() {
     }
   };
 
+  // Animation variants
+  const teaserVariants = {
+    hidden: { opacity: 0, y: 20, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 20
+      }
+    },
+  };
+
   const chatWindowVariants = {
-    hidden: { opacity: 0, y: 20, scale: 0.95 },
+    hidden: { 
+      opacity: 0, 
+      y: 30, 
+      scale: 0.95,
+      transformOrigin: "bottom right"
+    },
     visible: { 
       opacity: 1, 
       y: 0, 
-      scale: 1, 
+      scale: 1,
       transition: { 
         type: 'spring', 
-        damping: 20, 
-        stiffness: 200 
+        stiffness: 300, 
+        damping: 25,
+        mass: 0.8
       } 
     },
     exit: { 
       opacity: 0, 
-      y: 20, 
-      scale: 0.95, 
+      y: 30, 
+      scale: 0.95,
       transition: { 
-        duration: 0.2 
+        duration: 0.2,
+        ease: "easeInOut"
       } 
     },
-  };
-
-  const messageVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { 
-        duration: 0.3 
-      } 
-    },
-  };
-  
-  // Remove redundant animation
-  const pulseAnimation = {
-    scale: [1, 1.03, 1],
-    transition: {
-      duration: 2.5,
-      repeat: Infinity,
-      ease: "easeInOut",
-      delay: 1,
-      repeatDelay: 1
-    }
   };
 
   return (
     <>
-      {/* Teaser Message */}
+      {/* Premium Teaser Message */}
       <AnimatePresence>
         {showTeaser && !isOpen && (
           <motion.div
@@ -337,219 +433,206 @@ export function ChatBot() {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className="fixed bottom-6 right-6 z-50 p-3 bg-gradient-to-br from-green-500 to-teal-600 dark:from-green-600 dark:to-teal-700 text-white rounded-lg shadow-xl cursor-pointer hover:from-green-600 hover:to-teal-700 dark:hover:from-green-700 dark:hover:to-teal-800 flex items-center space-x-2 transition-all duration-300 ease-in-out"
-            onClick={() => {
-              setIsOpen(true);
-              setShowTeaser(false);
-              sessionStorage.setItem('chatInteracted', 'true');
-            }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            className="fixed bottom-24 right-4 sm:right-6 z-40 max-w-xs"
           >
-            <ChatBubbleOvalLeftEllipsisIcon className="w-6 h-6" />
-            <span className="text-sm font-medium">Welcome! Ask me about Sachin.</span>
-            {/* Notification Dot */}
-            <motion.span
-              className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white dark:border-gray-800"
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1, transition: { delay: 0.3, type: 'spring', stiffness: 300, damping: 15 } }}
-              exit={{ scale: 0, opacity: 0 }}
-            />
+            <div
+              className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-2xl p-4 shadow-2xl cursor-pointer hover:shadow-3xl transition-all duration-300 border border-blue-500/20"
+              onClick={() => {
+                setIsOpen(true);
+                setShowTeaser(false);
+                sessionStorage.setItem('chatInteracted', 'true');
+              }}
+            >
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                  <FaRobot className="w-5 h-5" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-sm">Hi! I'm Sachin's AI Assistant</p>
+                  <p className="text-blue-100 text-xs mt-1">Ask me anything about his work!</p>
+                </div>
+              </div>
+              {/* Notification dot */}
+              <motion.div
+                className="absolute -top-1 -right-1 w-4 h-4 bg-violet-500 rounded-full border-2 border-white"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Main Chat Toggle Button (FAB) */}
+      {/* Premium FAB Button */}
       <AnimatePresence>
         {!isOpen && !showTeaser && (
-        <motion.button
-          onClick={() => {
-            setIsOpen(true);
-            sessionStorage.setItem('chatInteracted', 'true');
-          }}
-            className="fixed bottom-6 right-6 bg-gradient-to-br from-green-500 to-teal-600 text-white rounded-full p-4 shadow-xl hover:from-green-600 hover:to-teal-700 focus:outline-none focus:ring-4 focus:ring-green-400 dark:focus:ring-green-600 transition-all duration-300 ease-in-out"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            whileHover={{ scale: 1.1, rotate: 5 }}
+          <motion.button
+            onClick={() => {
+              setIsOpen(true);
+              sessionStorage.setItem('chatInteracted', 'true');
+            }}
+            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-full shadow-2xl hover:shadow-3xl focus:outline-none focus:ring-4 focus:ring-blue-400/50 transition-all duration-300 z-50"
+            initial={{ opacity: 0, scale: 0.8, rotate: -180 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            exit={{ opacity: 0, scale: 0.8, rotate: 180 }}
+            whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            aria-label="Open chat"
+            aria-label="Open chat assistant"
           >
-            <ChatBubbleOvalLeftEllipsisIcon className="w-7 h-7" />
-        </motion.button>
+            <ChatBubbleOvalLeftEllipsisIcon className="w-8 h-8 mx-auto" />
+          </motion.button>
         )}
       </AnimatePresence>
 
-      {/* Chat Window */}
+      {/* Premium Chat Window */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            key="chat-window"
+            key="premium-chat-window"
             variants={chatWindowVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed inset-x-0 bottom-0 sm:inset-auto sm:bottom-6 sm:right-6 md:bottom-10 md:right-10 z-50 w-full sm:w-[calc(100%-3rem)] sm:max-w-md overflow-hidden chat-window-open"
+            className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[min(320px,calc(100vw-2rem))] h-[450px] sm:w-[380px] sm:h-[540px] lg:w-[420px] lg:h-[580px] flex flex-col rounded-2xl shadow-2xl border overflow-hidden transition-all duration-300 ${
+              isDarkMode 
+                ? 'bg-gray-900 border-gray-700/50' 
+                : 'bg-white border-gray-200/50'
+            }`}
+            style={{
+              backdropFilter: 'blur(20px)',
+              background: isDarkMode ? 'rgba(17, 24, 39, 0.98)' : 'rgba(255, 255, 255, 0.98)'
+            }}
           >
-            <div className="bg-white/95 backdrop-blur-sm flex flex-col h-[100dvh] sm:h-[60vh] sm:max-h-[700px] sm:min-h-[300px] sm:rounded-xl shadow-2xl">
-              {/* Header */}
-              <div className="p-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-between sm:rounded-t-xl">
-                <div className="flex items-center gap-2">
-                  <FiCpu className="w-6 h-6 text-white" />
-                  <h3 className="text-lg font-semibold">{BOT_NAME}</h3>
+            {/* Premium Header */}
+            <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 text-white p-4 flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                {/* Avatar */}
+                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center ring-2 ring-white/30">
+                  <FaRobot className="w-5 h-5" />
                 </div>
+                {/* Title */}
+                <div>
+                  <h3 className="font-semibold text-lg tracking-tight font-montserrat">
+                    {BOT_NAME}
+                  </h3>
+                  <p className="text-blue-100 text-xs">Online • Ready to help</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                {/* Dark Mode Toggle */}
+                <button
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className="p-2 rounded-full text-white/80 hover:text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200"
+                  aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+                >
+                  {isDarkMode ? (
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                    </svg>
+                  )}
+                </button>
+                
+                {/* Close Button */}
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-1.5 rounded-full text-white/80 hover:text-white hover:bg-white/20 focus:outline-none focus:bg-white/20 transition-colors"
+                  className="p-2 rounded-full text-white/80 hover:text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200"
                   aria-label="Close chat"
                 >
-                  <XMarkIcon className="w-6 h-6" />
+                  <XMarkIcon className="w-5 h-5" />
                 </button>
               </div>
+            </div>
 
-              {/* Messages Area */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 pb-safe">
-                <AnimatePresence initial={false}>
-                  {messages.map((message) => (
-                    <motion.div
-                      key={message.id}
-                      variants={messageVariants}
-                      initial="hidden"
-                      animate="visible"
-                      layout
-                      className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                    >
-                      <div className={`flex items-end space-x-2 max-w-[85%] ${
-                        message.role === 'user' ? 'flex-row-reverse space-x-reverse' : 'flex-row'
-                      }`}>
-                        {message.role !== 'user' && message.id !== 'init' && (
-                          <div className="p-2 rounded-full flex items-center justify-center text-white shadow-md shrink-0 bg-gradient-to-r from-blue-600 to-indigo-600">
-                            <FiCpu className="w-5 h-5" />
-                          </div>
-                        )}
-                        {message.id === 'init' && (
-                          <div className="w-9 h-9 shrink-0 flex items-center justify-center">
-                            <FiCpu className="w-7 h-7 text-blue-600 opacity-90" />
-                          </div>
-                        )}
-                        <div className={`px-4 py-2.5 rounded-xl whitespace-pre-wrap break-words shadow-sm ${
-                          message.role === 'user'
-                            ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-br-none'
-                            : message.role === 'assistant' && message.id === 'init'
-                            ? 'bg-blue-50 text-gray-800 shadow-none -ml-2'
-                            : message.role === 'assistant'
-                            ? 'bg-white text-gray-800 rounded-bl-none border border-gray-100'
-                            : message.role === 'error'
-                            ? 'bg-red-50 text-red-600 rounded-bl-none border border-red-100'
-                            : 'bg-white text-gray-800 rounded-bl-none border border-gray-100'
-                        }`}>
-                          <ReactMarkdown
-                            components={{
-                              a: ({ href, children }) => (
-                                <a
-                                  href={href}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-blue-600 hover:text-blue-800 underline"
-                                >
-                                  {children}
-                                </a>
-                              ),
-                            }}
-                          >
-                            {message.content}
-                          </ReactMarkdown>
-                          {message.status === 'error' && message.role !== 'error' && (
-                            <button
-                              onClick={() => handleSend(undefined, message.content)}
-                              className="ml-2 text-sm text-blue-600 hover:underline"
-                            >
-                              Retry
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-                {isTyping && <TypingIndicator />}
-                <div ref={messagesEndRef} />
-              </div>
+            {/* Messages Area */}
+            <div className={`flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-1 transition-all duration-300 ${
+              isDarkMode 
+                ? 'bg-gradient-to-b from-gray-800/50 to-gray-900' 
+                : 'bg-gradient-to-b from-gray-50/50 to-white'
+            }`}>
+              <AnimatePresence initial={false}>
+                {messages.map((message) => (
+                  <MessageBubble
+                    key={message.id}
+                    message={message}
+                    isUser={message.role === 'user'}
+                    isDarkMode={isDarkMode}
+                  />
+                ))}
+              </AnimatePresence>
+              
+              {/* Typing Indicator */}
+              <AnimatePresence>
+                {isTyping && <TypingIndicator isDarkMode={isDarkMode} />}
+              </AnimatePresence>
+              
+              {/* Quick Reply Chips */}
+              <QuickReplyChips 
+                onReplyClick={handleQuickReply} 
+                show={showQuickReplies && messages.length === 1 && !isLoading}
+              />
+              
+              <div ref={messagesEndRef} />
+            </div>
 
-              {/* Starter Questions */}
-              {messages.filter(m => m.role === 'user').length === 0 && (
-                <div className="p-3 border-t border-gray-100 bg-white/80">
-                  <p className="text-xs text-gray-500 mb-2 text-center">Or try a starter question:</p>
-                  <div className="flex flex-wrap justify-center gap-2">
-                    {STARTER_QUESTIONS.map((q, i) => (
-                      <motion.button
-                        key={i}
-                        onClick={() => handleStarterQuestion(q)}
-                        className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-blue-50 hover:text-blue-700 transition-colors"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        {q}
-                      </motion.button>
-                    ))}
-                  </div>
-                </div>
+            {/* Error Display */}
+            <AnimatePresence>
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="px-4 py-2 bg-red-50 border-t border-red-200"
+                >
+                  <p className="text-red-600 text-sm">{error}</p>
+                </motion.div>
               )}
+            </AnimatePresence>
 
-              {/* Input Area */}
-              <div className="p-3 border-t border-gray-100 bg-white sm:rounded-b-xl">
-                <form onSubmit={handleSend} className="flex flex-col space-y-2 pb-safe">
-                  {error && (
-                    <motion.div 
-                      className="text-sm text-red-500"
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                    >
-                      {error}
-                    </motion.div>
-                  )}
-                  <div className="flex items-center space-x-2">
-                    <input
-                      ref={inputRef}
-                      type="text"
-                      value={input}
-                      onChange={(e) => {
-                        setInput(e.target.value);
-                        setError(null);
-                      }}
-                      onFocus={() => {
-                        setTimeout(() => {
-                          inputRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-                        }, 100);
-                      }}
-                      placeholder="Ask something..."
-                      className="flex-1 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white text-gray-900 transition-shadow focus:shadow-md placeholder-gray-400"
-                      disabled={isLoading}
-                      maxLength={MAX_MESSAGE_LENGTH}
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault();
-                          handleSend(e);
-                        }
-                      }}
+            {/* Premium Input Bar */}
+            <div className={`p-4 border-t transition-all duration-300 ${
+              isDarkMode 
+                ? 'bg-gray-900 border-gray-700' 
+                : 'bg-white border-gray-100'
+            }`}>
+              <form onSubmit={handleSend} className="relative">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Ask me anything..."
+                  disabled={isLoading}
+                  className={`w-full h-12 pl-4 pr-12 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition-all duration-200 disabled:opacity-50 ${
+                    isDarkMode 
+                      ? 'bg-gray-800 border border-gray-600 text-white placeholder-gray-400' 
+                      : 'bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-500'
+                  }`}
+                  style={{ fontSize: '16px' }} // Prevents zoom on iOS
+                />
+                
+                {/* Send Button */}
+                <button
+                  type="submit"
+                  disabled={isLoading || !input.trim()}
+                  className="absolute right-2 top-2 w-8 h-8 bg-violet-600 hover:bg-violet-700 disabled:bg-gray-300 text-white rounded-full flex items-center justify-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 disabled:cursor-not-allowed"
+                  aria-label="Send message"
+                >
+                  {isLoading ? (
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
                     />
-                    <button
-                      type="submit"
-                      disabled={isLoading || !input.trim()}
-                      className="p-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg shadow hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-4 focus:ring-blue-500/50 transition-all duration-300 ease-in-out transform active:scale-95"
-                    >
-                      {isLoading ? (
-                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                      ) : (
-                        <PaperAirplaneIcon className="w-5 h-5" />
-                      )}
-                    </button>
-                  </div>
-                </form>
-              </div>
+                  ) : (
+                    <FiSend className="w-4 h-4" />
+                  )}
+                </button>
+              </form>
             </div>
           </motion.div>
         )}

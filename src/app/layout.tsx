@@ -1,6 +1,6 @@
 // src/app/layout.tsx
 import type { Metadata } from "next"
-import { Inter, Roboto_Mono } from "next/font/google"
+import { Inter, Roboto_Mono, Montserrat } from "next/font/google"
 import "./globals.css"
 import Nav from "../components/Nav"
 import Footer from "../components/Footer"
@@ -16,6 +16,11 @@ const robotoMono = Roboto_Mono({
   variable: "--font-roboto-mono",
   subsets: ["latin"],
 })
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+})
 
 export const metadata: Metadata = {
   title: "Sachin Chhetri",
@@ -26,7 +31,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${robotoMono.variable}`}
+      className={`${inter.variable} ${robotoMono.variable} ${montserrat.variable}`}
     >
       <body className="
         bg-gray-950 

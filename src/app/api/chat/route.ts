@@ -306,7 +306,7 @@ async function getProjectListForPrompt(): Promise<string> {
 let workHistoryForPrompt = WORK_HISTORY.map(job => `* ${job.title} at ${job.company} (${job.duration}): ${job.details}`).join("\n");
 let leadershipForPrompt = LEADERSHIP_MENTORING.map(item => `* ${item}`).join("\n");
 
-const BOT_DISPLAY_NAME = "SC.dev Assistant";
+const BOT_DISPLAY_NAME = "Sachin.dev Assistant";
 
 // We'll build the system instruction dynamically in the POST function
 // since we need to fetch GitHub data first

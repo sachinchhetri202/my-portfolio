@@ -26,3 +26,38 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Chatbot specific styles for better formatting */
+.chatbot-message ol {
+  counter-reset: list-counter;
+}
+
+.chatbot-message ol > li {
+  counter-increment: list-counter;
+  position: relative;
+  padding-left: 0.5rem;
+}
+
+.chatbot-message ol > li::before {
+  content: counter(list-counter) ".";
+  position: absolute;
+  left: -1.5rem;
+  font-weight: 600;
+  color: inherit;
+}
+
+.chatbot-message ul > li::before {
+  content: "•";
+  position: absolute;
+  left: -1.5rem;
+  font-weight: bold;
+  color: inherit;
+}
+
+.chatbot-message p:first-child {
+  margin-top: 0;
+}
+
+.chatbot-message p:last-child {
+  margin-bottom: 0;
+}

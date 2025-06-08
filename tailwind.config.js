@@ -13,6 +13,9 @@ module.exports = {
       animation: {
         // Custom animations if needed
       },
+      fontFamily: {
+        'montserrat': ['var(--font-montserrat)', 'sans-serif'],
+      },
     },
   },
   plugins: [],

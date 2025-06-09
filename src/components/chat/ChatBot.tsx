@@ -191,15 +191,31 @@ const MessageBubble = ({ message, isUser, isDarkMode }: {
           {/* Status indicator for user messages */}
           {isUser && message.status && (
             <div className="flex justify-end mt-1">
-              <span className={`text-xs ${
-                message.status === 'sending' ? 'text-violet-200' :
-                message.status === 'sent' ? 'text-violet-200' :
-                'text-red-300'
-              }`}>
-                {message.status === 'sending' ? 'Sending...' :
-                 message.status === 'sent' ? '✓' :
-                 'Failed'}
-              </span>
+              {message.status === 'sending' && (
+                <div className="flex items-center space-x-1">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="w-3 h-3 border border-violet-200 border-t-transparent rounded-full"
+                  />
+                  <span className="text-xs text-violet-200">Sending</span>
+                </div>
+              )}
+              {message.status === 'sent' && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  className="flex items-center"
+                >
+                  <svg className="w-4 h-4 text-violet-200" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </motion.div>
+              )}
+              {message.status === 'error' && (
+                <span className="text-xs text-red-300">Failed</span>
+              )}
             </div>
           )}
         </div>
@@ -268,14 +284,106 @@ export function ChatBot() {
     }
   }, [isOpen]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  const scrollToBottom = (force = false) => {
+    const performScroll = () => {
+      const scrollElement = messagesEndRef.current;
+      
+      // Try multiple methods to ensure scrolling works
+      const methods = [
+        // Method 1: Direct container targeting
+        () => {
+          const isMobile = window.innerWidth < 640;
+          const containerId = isMobile ? 'mobile-messages-container' : 'desktop-messages-container';
+          const container = document.getElementById(containerId);
+          if (container) {
+            const scrollTop = container.scrollHeight - container.clientHeight;
+            if (force) {
+              container.scrollTop = scrollTop;
+            } else {
+              container.scrollTo({ top: scrollTop, behavior: 'smooth' });
+            }
+            return true;
+          }
+          return false;
+        },
+        
+        // Method 2: scrollIntoView on end element
+        () => {
+          if (scrollElement) {
+            scrollElement.scrollIntoView({ 
+              behavior: force ? "auto" : "smooth", 
+              block: "end",
+              inline: "nearest"
+            });
+            return true;
+          }
+          return false;
+        },
+        
+        // Method 3: Find closest overflow container
+        () => {
+          if (scrollElement) {
+            const container = scrollElement.closest('.overflow-y-auto');
+            if (container) {
+              const scrollTop = container.scrollHeight - container.clientHeight;
+              if (force) {
+                container.scrollTop = scrollTop;
+              } else {
+                container.scrollTo({ top: scrollTop, behavior: 'smooth' });
+              }
+              return true;
+            }
+          }
+          return false;
+        }
+      ];
+      
+      // Try each method until one succeeds
+      for (let i = 0; i < methods.length; i++) {
+        try {
+          if (methods[i]()) {
+            break;
+          }
+        } catch (error) {
+          // Silently continue to next method
+        }
+      }
+    };
+
+    // Use requestAnimationFrame for better timing
+    if (force) {
+      performScroll();
+      requestAnimationFrame(performScroll);
+    } else {
+      requestAnimationFrame(performScroll);
+    }
   };
 
   useEffect(() => {
-    const timer = setTimeout(scrollToBottom, 100);
-    return () => clearTimeout(timer);
+    // Scroll when messages change
+    scrollToBottom(true); // Immediate
+    const timer = setTimeout(() => scrollToBottom(), 200);
+    
+    return () => {
+      clearTimeout(timer);
+    };
   }, [messages]);
+
+  // Additional scroll trigger for typing state changes
+  useEffect(() => {
+    if (isTyping) {
+      const timer = setTimeout(() => scrollToBottom(), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isTyping]);
+
+  // Scroll to bottom when chat opens
+  useEffect(() => {
+    if (isOpen) {
+      const timer = setTimeout(() => scrollToBottom(), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
 
   const validateMessage = (message: string): string | null => {
     if (!message.trim()) {
@@ -352,7 +460,6 @@ export function ChatBot() {
     setInput(''); 
     setInputHeight(48);
     setIsLoading(true);
-    setIsTyping(true);
     setShowQuickReplies(false);
     sessionStorage.setItem('chatInteracted', 'true');
 
@@ -364,10 +471,27 @@ export function ChatBot() {
       status: 'sending' 
     };
     setMessages(prev => [...prev, userMessage]);
+    
+    // Force immediate scroll when user sends a message
+    setTimeout(() => scrollToBottom(true), 100);
 
     try {
+      // Step 1: Wait a moment, then mark message as sent
+      await new Promise(resolve => setTimeout(resolve, 800));
+      setMessages(prev => 
+        prev.map(msg => msg.id === userMessage.id ? { ...msg, status: 'sent' as const } : msg)
+      );
+      
+      // Step 2: Wait another moment, then start typing indicator
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setIsTyping(true);
+      
+      // Step 3: Get the bot response
       const conversationHistory = messagesRef.current.filter(msg => msg.role !== 'error' && msg.id !== 'init').slice(-6);
       const reply = await sendMessageToAPI(messageText, conversationHistory);
+      
+      // Step 4: Stop typing and show bot response
+      setIsTyping(false);
       const botMessage: ChatMessage = { 
         id: (Date.now() + 1).toString(), 
         content: reply, 
@@ -375,14 +499,15 @@ export function ChatBot() {
         timestamp: new Date(), 
         status: 'sent' 
       };
-      setMessages(prev => {
-        const updatedMessages = prev.map(msg => msg.id === userMessage.id ? { ...msg, status: 'sent' as const } : msg);
-        return [...updatedMessages, botMessage];
-      });
+      setMessages(prev => [...prev, botMessage]);
+      
+      // Force immediate scroll when bot responds
+      setTimeout(() => scrollToBottom(true), 200);
     } catch (error: any) {
       console.error('Error sending message:', error);
       const errorMessageText = error.message || 'An error occurred while sending your message.';
       setError(errorMessageText);
+      setIsTyping(false);
       setMessages(prev => {
         const updatedMessages = prev.map(msg => msg.id === userMessage.id ? { ...msg, status: 'error' as const } : msg);
         return [...updatedMessages, { 
@@ -584,11 +709,14 @@ export function ChatBot() {
             </div>
 
             {/* Desktop Messages Area */}
-            <div className={`flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-1 transition-all duration-300 ${
-              isDarkMode 
-                ? 'bg-gradient-to-b from-gray-800/50 to-gray-900' 
-                : 'bg-gradient-to-b from-gray-50/50 to-white'
-            }`}>
+            <div 
+              id="desktop-messages-container"
+              className={`flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-1 transition-all duration-300 ${
+                isDarkMode 
+                  ? 'bg-gradient-to-b from-gray-800/50 to-gray-900' 
+                  : 'bg-gradient-to-b from-gray-50/50 to-white'
+              }`}
+            >
               <AnimatePresence initial={false}>
                 {messages.map((message) => (
                   <MessageBubble
@@ -778,7 +906,11 @@ export function ChatBot() {
               </div>
 
               {/* Mobile Messages Area */}
-              <div className="flex-1 overflow-y-auto overflow-x-hidden overscroll-bounce" style={{ WebkitOverflowScrolling: 'touch' }}>
+              <div 
+                id="mobile-messages-container"
+                className="flex-1 overflow-y-auto overflow-x-hidden overscroll-bounce" 
+                style={{ WebkitOverflowScrolling: 'touch' }}
+              >
                 <div className="py-4">
                   <AnimatePresence initial={false}>
                     {messages.map((message) => (

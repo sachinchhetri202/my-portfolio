@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useRef, useEffect, FormEvent } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { PaperAirplaneIcon, ChatBubbleOvalLeftEllipsisIcon, XMarkIcon, Bars3Icon } from '@heroicons/react/24/outline';
+import { motion, AnimatePresence, PanInfo } from 'framer-motion';
+import { PaperAirplaneIcon, ChatBubbleOvalLeftEllipsisIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { FaUser, FaRobot } from 'react-icons/fa';
-import { FiCpu, FiSend } from 'react-icons/fi';
+import { FiSend } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 
@@ -35,14 +35,14 @@ const QUICK_REPLIES = [
   "Work experience"
 ];
 
-// Premium Typing Indicator
+// Mobile-optimized Typing Indicator
 const TypingIndicator = ({ isDarkMode }: { isDarkMode: boolean }) => (
   <motion.div 
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -10 }}
-    className={`flex items-center space-x-2 p-4 rounded-2xl rounded-bl-md max-w-[80%] mb-4 transition-all duration-200 ${
-      isDarkMode ? 'bg-gray-800' : 'bg-gray-50'
+    className={`flex items-center space-x-2 p-3 rounded-2xl rounded-bl-md max-w-[85%] mb-3 ${
+      isDarkMode ? 'bg-gray-800' : 'bg-gray-100'
     }`}
   >
     <div className="flex space-x-1">
@@ -62,41 +62,55 @@ const TypingIndicator = ({ isDarkMode }: { isDarkMode: boolean }) => (
         transition={{ duration: 1, repeat: Infinity, delay: 0.4 }} 
       />
     </div>
-    <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Assistant is typing...</span>
+    <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+      Assistant is typing...
+    </span>
   </motion.div>
 );
 
-// Quick Reply Chips Component
-const QuickReplyChips = ({ onReplyClick, show }: { onReplyClick: (reply: string) => void; show: boolean }) => (
+// Mobile Quick Reply Chips
+const QuickReplyChips = ({ onReplyClick, show, isDarkMode }: { 
+  onReplyClick: (reply: string) => void; 
+  show: boolean;
+  isDarkMode: boolean;
+}) => (
   <AnimatePresence>
     {show && (
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
-        className="flex flex-wrap gap-2 p-4 pt-0"
+        className="px-4 pb-3"
       >
-        {QUICK_REPLIES.map((reply, index) => (
-          <motion.button
-            key={reply}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: index * 0.1 }}
-            onClick={() => onReplyClick(reply)}
-            className="px-3 py-2 bg-white border-2 border-violet-200 text-violet-700 rounded-full text-sm font-medium hover:bg-violet-50 hover:border-violet-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {reply}
-          </motion.button>
-        ))}
+        <div className="flex flex-wrap gap-2">
+          {QUICK_REPLIES.map((reply, index) => (
+            <motion.button
+              key={reply}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1 }}
+              onClick={() => onReplyClick(reply)}
+              className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                isDarkMode
+                  ? 'bg-gray-800 text-gray-200 border border-gray-600 active:bg-gray-700'
+                  : 'bg-white text-violet-700 border border-violet-200 active:bg-violet-50'
+              }`}
+            >
+              {reply}
+            </motion.button>
+          ))}
+        </div>
       </motion.div>
     )}
   </AnimatePresence>
 );
 
-// Message Bubble Component
-const MessageBubble = ({ message, isUser, isDarkMode }: { message: ChatMessage; isUser: boolean; isDarkMode: boolean }) => {
+// Mobile-optimized Message Bubble
+const MessageBubble = ({ message, isUser, isDarkMode }: { 
+  message: ChatMessage; 
+  isUser: boolean; 
+  isDarkMode: boolean;
+}) => {
   const markdownComponents: Components = {
     a: ({ href, children }) => (
       <a 
@@ -108,17 +122,17 @@ const MessageBubble = ({ message, isUser, isDarkMode }: { message: ChatMessage; 
         {children}
       </a>
     ),
-    p: ({ children }) => <p className="mb-3 last:mb-0 leading-relaxed">{children}</p>,
-    ul: ({ children }) => <ul className="list-none ml-6 mb-3 space-y-2">{children}</ul>,
-    ol: ({ children }) => <ol className="list-none ml-6 mb-3 space-y-2">{children}</ol>,
+    p: ({ children }) => <p className="mb-2 last:mb-0 leading-relaxed">{children}</p>,
+    ul: ({ children }) => <ul className="list-none ml-4 mb-2 space-y-1">{children}</ul>,
+    ol: ({ children }) => <ol className="list-none ml-4 mb-2 space-y-1">{children}</ol>,
     li: ({ children }) => <li className="text-sm leading-relaxed relative">{children}</li>,
     strong: ({ children }) => <strong className={`font-semibold ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>{children}</strong>,
     em: ({ children }) => <em className="italic">{children}</em>,
-    h1: ({ children }) => <h1 className={`text-lg font-bold mb-2 mt-3 ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>{children}</h1>,
-    h2: ({ children }) => <h2 className={`text-base font-semibold mb-2 mt-3 ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>{children}</h2>,
-    h3: ({ children }) => <h3 className={`text-sm font-semibold mb-1 mt-2 ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>{children}</h3>,
+    h1: ({ children }) => <h1 className={`text-base font-bold mb-2 mt-2 ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>{children}</h1>,
+    h2: ({ children }) => <h2 className={`text-sm font-semibold mb-1 mt-2 ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>{children}</h2>,
+    h3: ({ children }) => <h3 className={`text-sm font-semibold mb-1 mt-1 ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>{children}</h3>,
     code: ({ children }) => (
-      <code className={`px-1 py-0.5 rounded text-sm font-mono ${
+      <code className={`px-1 py-0.5 rounded text-xs font-mono ${
         isDarkMode 
           ? 'bg-gray-700 text-violet-300' 
           : 'bg-gray-100 text-violet-700'
@@ -127,7 +141,7 @@ const MessageBubble = ({ message, isUser, isDarkMode }: { message: ChatMessage; 
       </code>
     ),
     blockquote: ({ children }) => (
-      <blockquote className={`border-l-4 pl-3 py-1 my-2 italic ${
+      <blockquote className={`border-l-2 pl-2 py-1 my-1 italic text-sm ${
         isDarkMode 
           ? 'border-violet-400 text-gray-300' 
           : 'border-violet-200 text-gray-600'
@@ -139,35 +153,35 @@ const MessageBubble = ({ message, isUser, isDarkMode }: { message: ChatMessage; 
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      initial={{ opacity: 0, y: 15, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
-      className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3 px-4`}
     >
-      <div className={`flex items-start space-x-3 max-w-[90%] ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`}>
+      <div className={`flex items-start space-x-2 max-w-[90%] w-full ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`}>
         {/* Avatar */}
-        <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+        <div className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center ${
           isUser 
             ? 'bg-violet-600 text-white' 
             : 'bg-gradient-to-br from-blue-600 to-indigo-700 text-white'
         }`}>
-          {isUser ? <FaUser className="w-4 h-4" /> : <FaRobot className="w-4 h-4" />}
+          {isUser ? <FaUser className="w-3 h-3" /> : <FaRobot className="w-3 h-3" />}
         </div>
         
         {/* Message Content */}
-        <div className={`rounded-2xl px-4 py-4 transition-all duration-200 ${
+        <div className={`rounded-2xl px-3 py-3 ${
           isUser 
             ? isDarkMode
-              ? 'bg-gray-800 border-2 border-violet-400 text-white rounded-br-md'
-              : 'bg-white border-2 border-violet-200 text-gray-900 rounded-br-md'
+              ? 'bg-violet-600 text-white rounded-br-md'
+              : 'bg-violet-600 text-white rounded-br-md'
             : isDarkMode
               ? 'bg-gray-800 text-gray-100 rounded-bl-md'
-              : 'bg-gray-50 text-gray-900 rounded-bl-md'
+              : 'bg-gray-100 text-gray-900 rounded-bl-md'
         }`}>
           {isUser ? (
-            <p className="text-sm font-medium leading-relaxed break-words">{message.content}</p>
+            <p className="text-sm leading-relaxed break-words">{message.content}</p>
           ) : (
-            <div className="text-sm leading-relaxed prose prose-sm max-w-none break-words prose-p:my-2 prose-li:my-1 chatbot-message">
+            <div className="text-sm leading-relaxed break-words chatbot-message">
               <ReactMarkdown components={markdownComponents}>
                 {message.content}
               </ReactMarkdown>
@@ -176,11 +190,11 @@ const MessageBubble = ({ message, isUser, isDarkMode }: { message: ChatMessage; 
           
           {/* Status indicator for user messages */}
           {isUser && message.status && (
-            <div className="flex justify-end mt-2">
+            <div className="flex justify-end mt-1">
               <span className={`text-xs ${
-                message.status === 'sending' ? 'text-gray-400' :
-                message.status === 'sent' ? 'text-green-500' :
-                'text-red-500'
+                message.status === 'sending' ? 'text-violet-200' :
+                message.status === 'sent' ? 'text-violet-200' :
+                'text-red-300'
               }`}>
                 {message.status === 'sending' ? 'Sending...' :
                  message.status === 'sent' ? '✓' :
@@ -204,8 +218,10 @@ export function ChatBot() {
   const [error, setError] = useState<string | null>(null);
   const [showQuickReplies, setShowQuickReplies] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [inputHeight, setInputHeight] = useState(48);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const mobileInputRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -237,10 +253,14 @@ export function ChatBot() {
   }, [messages]);
 
   useEffect(() => {
-    if (isOpen && inputRef.current) {
-      inputRef.current.focus();
-    }
     if (isOpen) {
+      // Focus appropriate input based on screen size
+      const isMobile = window.innerWidth < 640; // sm breakpoint
+      if (isMobile && mobileInputRef.current) {
+        mobileInputRef.current.focus();
+      } else if (!isMobile && inputRef.current) {
+        inputRef.current.focus();
+      }
       setShowTeaser(false);
       sessionStorage.setItem('chatInteracted', 'true');
     } else {
@@ -330,6 +350,7 @@ export function ChatBot() {
     if (!messageText) return;
 
     setInput(''); 
+    setInputHeight(48);
     setIsLoading(true);
     setIsTyping(true);
     setShowQuickReplies(false);
@@ -375,7 +396,31 @@ export function ChatBot() {
     } finally {
       setIsLoading(false);
       setIsTyping(false);
-      if (isOpen) inputRef.current?.focus();
+      if (isOpen) {
+        const isMobile = window.innerWidth < 640;
+        if (isMobile) {
+          mobileInputRef.current?.focus();
+        } else {
+          inputRef.current?.focus();
+        }
+      }
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
+    
+    // Auto-resize textarea
+    const textarea = e.target;
+    textarea.style.height = 'auto';
+    const newHeight = Math.min(Math.max(textarea.scrollHeight, 48), 120); // Min 48px, max 120px (3 lines)
+    textarea.style.height = `${newHeight}px`;
+    setInputHeight(newHeight);
+  };
+
+  const handleDragEnd = (event: any, info: PanInfo) => {
+    if (info.offset.y > 100) {
+      setIsOpen(false);
     }
   };
 
@@ -394,38 +439,11 @@ export function ChatBot() {
     },
   };
 
-  const chatWindowVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 30, 
-      scale: 0.95,
-      transformOrigin: "bottom right"
-    },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      scale: 1,
-      transition: { 
-        type: 'spring', 
-        stiffness: 300, 
-        damping: 25,
-        mass: 0.8
-      } 
-    },
-    exit: { 
-      opacity: 0, 
-      y: 30, 
-      scale: 0.95,
-      transition: { 
-        duration: 0.2,
-        ease: "easeInOut"
-      } 
-    },
-  };
+
 
   return (
     <>
-      {/* Premium Teaser Message */}
+      {/* Mobile Teaser Notification */}
       <AnimatePresence>
         {showTeaser && !isOpen && (
           <motion.div
@@ -433,10 +451,10 @@ export function ChatBot() {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className="fixed bottom-24 right-4 sm:right-6 z-40 max-w-xs"
+            className="fixed bottom-20 left-4 right-4 z-40 sm:left-auto sm:right-6 sm:max-w-xs"
           >
             <div
-              className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-2xl p-4 shadow-2xl cursor-pointer hover:shadow-3xl transition-all duration-300 border border-blue-500/20"
+              className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-2xl p-4 shadow-2xl cursor-pointer"
               onClick={() => {
                 setIsOpen(true);
                 setShowTeaser(false);
@@ -452,7 +470,6 @@ export function ChatBot() {
                   <p className="text-blue-100 text-xs mt-1">Ask me anything about his work!</p>
                 </div>
               </div>
-              {/* Notification dot */}
               <motion.div
                 className="absolute -top-1 -right-1 w-4 h-4 bg-violet-500 rounded-full border-2 border-white"
                 animate={{ scale: [1, 1.2, 1] }}
@@ -463,7 +480,7 @@ export function ChatBot() {
         )}
       </AnimatePresence>
 
-      {/* Premium FAB Button */}
+      {/* Mobile FAB Button */}
       <AnimatePresence>
         {!isOpen && !showTeaser && (
           <motion.button
@@ -471,29 +488,51 @@ export function ChatBot() {
               setIsOpen(true);
               sessionStorage.setItem('chatInteracted', 'true');
             }}
-            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-full shadow-2xl hover:shadow-3xl focus:outline-none focus:ring-4 focus:ring-blue-400/50 transition-all duration-300 z-50"
-            initial={{ opacity: 0, scale: 0.8, rotate: -180 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            exit={{ opacity: 0, scale: 0.8, rotate: 180 }}
-            whileHover={{ scale: 1.1 }}
+            className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-full shadow-2xl z-50 flex items-center justify-center"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
             whileTap={{ scale: 0.95 }}
             aria-label="Open chat assistant"
+            style={{ minWidth: '44px', minHeight: '44px' }}
           >
-            <ChatBubbleOvalLeftEllipsisIcon className="w-8 h-8 mx-auto" />
+            <ChatBubbleOvalLeftEllipsisIcon className="w-7 h-7" />
           </motion.button>
         )}
       </AnimatePresence>
 
-      {/* Premium Chat Window */}
+      {/* Desktop Chat Window */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            key="premium-chat-window"
-            variants={chatWindowVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[min(320px,calc(100vw-2rem))] h-[450px] sm:w-[380px] sm:h-[540px] lg:w-[420px] lg:h-[580px] flex flex-col rounded-2xl shadow-2xl border overflow-hidden transition-all duration-300 ${
+            key="desktop-chat-window"
+            initial={{ 
+              opacity: 0, 
+              y: 30, 
+              scale: 0.95,
+              transformOrigin: "bottom right"
+            }}
+            animate={{ 
+              opacity: 1, 
+              y: 0, 
+              scale: 1,
+              transition: { 
+                type: 'spring', 
+                stiffness: 300, 
+                damping: 25,
+                mass: 0.8
+              } 
+            }}
+            exit={{ 
+              opacity: 0, 
+              y: 30, 
+              scale: 0.95,
+              transition: { 
+                duration: 0.2,
+                ease: "easeInOut"
+              } 
+            }}
+            className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[min(320px,calc(100vw-2rem))] h-[450px] sm:w-[380px] sm:h-[540px] lg:w-[420px] lg:h-[580px] flex flex-col rounded-2xl shadow-2xl border overflow-hidden transition-all duration-300 hidden sm:flex ${
               isDarkMode 
                 ? 'bg-gray-900 border-gray-700/50' 
                 : 'bg-white border-gray-200/50'
@@ -503,14 +542,12 @@ export function ChatBot() {
               background: isDarkMode ? 'rgba(17, 24, 39, 0.98)' : 'rgba(255, 255, 255, 0.98)'
             }}
           >
-            {/* Premium Header */}
+            {/* Desktop Header */}
             <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 text-white p-4 flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                {/* Avatar */}
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center ring-2 ring-white/30">
                   <FaRobot className="w-5 h-5" />
                 </div>
-                {/* Title */}
                 <div>
                   <h3 className="font-semibold text-lg tracking-tight font-montserrat">
                     {BOT_NAME}
@@ -520,7 +557,6 @@ export function ChatBot() {
               </div>
               
               <div className="flex items-center space-x-2">
-                {/* Dark Mode Toggle */}
                 <button
                   onClick={() => setIsDarkMode(!isDarkMode)}
                   className="p-2 rounded-full text-white/80 hover:text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200"
@@ -537,7 +573,6 @@ export function ChatBot() {
                   )}
                 </button>
                 
-                {/* Close Button */}
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-2 rounded-full text-white/80 hover:text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200"
@@ -548,7 +583,7 @@ export function ChatBot() {
               </div>
             </div>
 
-            {/* Messages Area */}
+            {/* Desktop Messages Area */}
             <div className={`flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-1 transition-all duration-300 ${
               isDarkMode 
                 ? 'bg-gradient-to-b from-gray-800/50 to-gray-900' 
@@ -565,21 +600,20 @@ export function ChatBot() {
                 ))}
               </AnimatePresence>
               
-              {/* Typing Indicator */}
               <AnimatePresence>
                 {isTyping && <TypingIndicator isDarkMode={isDarkMode} />}
               </AnimatePresence>
               
-              {/* Quick Reply Chips */}
               <QuickReplyChips 
                 onReplyClick={handleQuickReply} 
                 show={showQuickReplies && messages.length === 1 && !isLoading}
+                isDarkMode={isDarkMode}
               />
               
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Error Display */}
+            {/* Desktop Error Display */}
             <AnimatePresence>
               {error && (
                 <motion.div
@@ -593,7 +627,7 @@ export function ChatBot() {
               )}
             </AnimatePresence>
 
-            {/* Premium Input Bar */}
+            {/* Desktop Input Bar */}
             <div className={`p-4 border-t transition-all duration-300 ${
               isDarkMode 
                 ? 'bg-gray-900 border-gray-700' 
@@ -612,10 +646,9 @@ export function ChatBot() {
                       ? 'bg-gray-800 border border-gray-600 text-white placeholder-gray-400' 
                       : 'bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-500'
                   }`}
-                  style={{ fontSize: '16px' }} // Prevents zoom on iOS
+                  style={{ fontSize: '16px' }}
                 />
                 
-                {/* Send Button */}
                 <button
                   type="submit"
                   disabled={isLoading || !input.trim()}
@@ -635,6 +668,206 @@ export function ChatBot() {
               </form>
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Bottom Sheet */}
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            {/* Mobile Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 z-40 sm:hidden"
+              onClick={() => setIsOpen(false)}
+            />
+            
+            {/* Mobile Bottom Sheet */}
+            <motion.div
+              key="mobile-bottom-sheet"
+              initial={{ y: "100%", opacity: 0 }}
+              animate={{ 
+                y: 0, 
+                opacity: 1,
+                transition: { 
+                  type: 'spring', 
+                  stiffness: 300, 
+                  damping: 30,
+                  mass: 0.8
+                } 
+              }}
+              exit={{ 
+                y: "100%", 
+                opacity: 0,
+                transition: { 
+                  duration: 0.3,
+                  ease: "easeInOut"
+                } 
+              }}
+              drag="y"
+              dragConstraints={{ top: 0, bottom: 0 }}
+              dragElastic={0.2}
+              onDragEnd={handleDragEnd}
+              className={`fixed bottom-0 left-0 right-0 z-50 flex flex-col max-h-[85vh] w-full sm:hidden ${
+                isDarkMode ? 'bg-gray-900' : 'bg-white'
+              }`}
+              style={{
+                borderTopLeftRadius: '24px',
+                borderTopRightRadius: '24px',
+                paddingBottom: 'env(safe-area-inset-bottom)',
+                boxShadow: '0 -10px 25px -5px rgba(0, 0, 0, 0.1), 0 -4px 6px -2px rgba(0, 0, 0, 0.05)'
+              }}
+            >
+              {/* Mobile Header */}
+              <div className={`flex items-center justify-between px-4 py-3 border-b ${
+                isDarkMode ? 'border-gray-700' : 'border-gray-200'
+              }`} style={{ minHeight: '48px' }}>
+                {/* Mobile Drag Handle */}
+                <div className="absolute top-2 left-1/2 transform -translate-x-1/2">
+                  <div className={`w-10 h-1 rounded-full ${
+                    isDarkMode ? 'bg-gray-600' : 'bg-gray-300'
+                  }`} />
+                </div>
+                
+                <div className="flex items-center space-x-3 mt-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-full flex items-center justify-center">
+                    <FaRobot className="w-4 h-4 text-white" />
+                  </div>
+                  <h3 className={`font-semibold text-base ${
+                    isDarkMode ? 'text-white' : 'text-gray-900'
+                  }`}>
+                    {BOT_NAME}
+                  </h3>
+                </div>
+                
+                <div className="flex items-center space-x-2 mt-2">
+                  {/* Dark Mode Toggle */}
+                  <button
+                    onClick={() => setIsDarkMode(!isDarkMode)}
+                    className={`p-2 rounded-full transition-colors ${
+                      isDarkMode ? 'text-gray-300 hover:bg-gray-800' : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                    aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+                    style={{ minWidth: '44px', minHeight: '44px' }}
+                  >
+                    {isDarkMode ? (
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                      </svg>
+                    )}
+                  </button>
+                  
+                  {/* Close Button */}
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className={`p-2 rounded-full transition-colors ${
+                      isDarkMode ? 'text-gray-300 hover:bg-gray-800' : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                    aria-label="Close chat"
+                    style={{ minWidth: '44px', minHeight: '44px' }}
+                  >
+                    <XMarkIcon className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Mobile Messages Area */}
+              <div className="flex-1 overflow-y-auto overflow-x-hidden overscroll-bounce" style={{ WebkitOverflowScrolling: 'touch' }}>
+                <div className="py-4">
+                  <AnimatePresence initial={false}>
+                    {messages.map((message) => (
+                      <MessageBubble
+                        key={message.id}
+                        message={message}
+                        isUser={message.role === 'user'}
+                        isDarkMode={isDarkMode}
+                      />
+                    ))}
+                  </AnimatePresence>
+                  
+                  <AnimatePresence>
+                    {isTyping && (
+                      <div className="px-4">
+                        <TypingIndicator isDarkMode={isDarkMode} />
+                      </div>
+                    )}
+                  </AnimatePresence>
+                  
+                  <div ref={messagesEndRef} />
+                </div>
+              </div>
+
+              {/* Mobile Quick Reply Chips */}
+              <QuickReplyChips 
+                onReplyClick={handleQuickReply} 
+                show={showQuickReplies && messages.length === 1 && !isLoading}
+                isDarkMode={isDarkMode}
+              />
+
+              {/* Mobile Error Display */}
+              <AnimatePresence>
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="px-4 py-2 bg-red-50 border-t border-red-200"
+                  >
+                    <p className="text-red-600 text-sm">{error}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Mobile Input Bar */}
+              <div className={`border-t ${isDarkMode ? 'border-gray-700 bg-gray-900' : 'border-gray-200 bg-white'}`}>
+                <form onSubmit={handleSend} className="p-4">
+                  <div className={`flex items-end space-x-2 rounded-2xl ${
+                    isDarkMode ? 'bg-gray-800' : 'bg-gray-50'
+                  }`} style={{ minHeight: '48px' }}>
+                    <textarea
+                      ref={mobileInputRef}
+                      value={input}
+                      onChange={handleInputChange}
+                      placeholder="Ask me anything..."
+                      disabled={isLoading}
+                      rows={1}
+                      className={`flex-1 resize-none border-0 bg-transparent px-3 py-3 text-sm placeholder-gray-500 focus:outline-none ${
+                        isDarkMode ? 'text-white' : 'text-gray-900'
+                      }`}
+                      style={{ 
+                        height: `${inputHeight}px`,
+                        maxHeight: '120px',
+                        fontSize: '16px' // Prevents zoom on iOS
+                      }}
+                    />
+                    
+                    <button
+                      type="submit"
+                      disabled={isLoading || !input.trim()}
+                      className="flex-shrink-0 w-10 h-10 bg-violet-600 hover:bg-violet-700 disabled:bg-gray-300 text-white rounded-full flex items-center justify-center transition-colors mr-1 mb-1"
+                      aria-label="Send message"
+                    >
+                      {isLoading ? (
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                          className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                        />
+                      ) : (
+                        <FiSend className="w-5 h-5" />
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

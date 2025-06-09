@@ -61,3 +61,19 @@ body {
 .chatbot-message p:last-child {
   margin-bottom: 0;
 }
+
+/* Mobile scrollbar hiding */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile overscroll behavior */
+.overscroll-bounce {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}

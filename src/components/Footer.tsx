@@ -120,180 +120,124 @@ export default function Footer() {
     }
   }, [isInView, controls])
 
+  const socialLinks = [
+    { icon: <FaEnvelope size={20} />, href: "mailto:sachinpc202@gmail.com", label: "Email", name: "email" },
+    { icon: <FaGithub size={20} />, href: "https://github.com/sachinchhetri202", label: "GitHub", name: "github" },
+    { icon: <FaLinkedin size={20} />, href: "https://www.linkedin.com/in/sachin-chhetri-475831199/", label: "LinkedIn", name: "linkedin" },
+    { icon: <FaFacebook size={20} />, href: "https://www.facebook.com/sachin.chettri2/", label: "Facebook", name: "facebook" },
+    { icon: <FaXTwitter size={20} />, href: "https://x.com/ghost__rider7", label: "Twitter", name: "twitter" }
+  ]
+
+  const quickLinks = [
+    { text: "Home", href: "/" },
+    { text: "Projects", href: "/projects" },
+    { text: "About", href: "/about" },
+    { text: "Services", href: "/services" },
+    { text: "Contact", href: "/contact" }
+  ]
+
   return (
     <footer ref={footerRef} className="relative w-full bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-green-200 pt-16 pb-8 px-4 sm:px-6 shadow-2xl mt-12 overflow-hidden">
       {/* Animated Wave Effect */}
       <TechWave />
       
-      <div className="max-w-5xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* About Section */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={controls}
-            className="space-y-4"
+            className="space-y-4 md:col-span-2"
           >
             <h3 className="text-xl font-bold text-green-300 border-b border-green-500/30 pb-2">About This Site</h3>
-            <p className="text-sm text-gray-300">
-              This portfolio showcases my journey as a developer, featuring projects and skills I&apos;ve acquired along the way. Built with modern web technologies and a passion for clean code.
+            <p className="text-sm text-gray-300 leading-relaxed">
+              This portfolio showcases my journey as a developer, featuring projects and skills I&apos;ve acquired along the way. Built with modern web technologies and a passion for clean code. I specialize in creating efficient, scalable, and user-friendly applications using cutting-edge technologies.
             </p>
-            <div className="pt-2">
+            <div className="pt-2 space-y-2">
               <Link 
                 href="/contact"
-                className="text-green-400 hover:text-green-300 text-sm font-medium flex items-center gap-1 group"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/10 hover:bg-green-500/20 text-green-400 rounded-lg text-sm font-medium transition-all duration-300 group"
               >
+                <FaEnvelope className="text-green-500" />
                 <span>Get in touch</span>
                 <span className="transition-transform group-hover:translate-x-1">→</span>
               </Link>
             </div>
           </motion.div>
           
-          {/* Tech Stack */}
+          {/* Quick Links */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={controls}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.1 }}
             className="space-y-4"
           >
-            <h3 className="text-xl font-bold text-green-300 border-b border-green-500/30 pb-2">Tech Stack</h3>
-            <TechStack />
+            <h3 className="text-xl font-bold text-green-300 border-b border-green-500/30 pb-2">Quick Links</h3>
+            <nav className="space-y-2">
+              {quickLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block text-gray-300 hover:text-green-400 transition-colors duration-300 text-sm py-1"
+                >
+                  {link.text}
+                </Link>
+              ))}
+            </nav>
           </motion.div>
           
           {/* Connect */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={controls}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.2 }}
             className="space-y-4"
           >
             <h3 className="text-xl font-bold text-green-300 border-b border-green-500/30 pb-2">Connect</h3>
-            <div className="flex gap-4 pt-2">
-              <motion.a 
-                href="mailto:sachinpc202@gmail.com" 
-                className="bg-gray-800 hover:bg-green-600 p-3 rounded-full text-green-400 hover:text-white transition-all duration-300 shadow-lg"
-                aria-label="Email"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                onHoverStart={() => setHoveredIcon('email')}
-                onHoverEnd={() => setHoveredIcon(null)}
-              >
-                <FaEnvelope size={20} />
-              </motion.a>
-              <motion.a 
-                href="https://github.com/sachinchhetri202" 
-                className="bg-gray-800 hover:bg-green-600 p-3 rounded-full text-green-400 hover:text-white transition-all duration-300 shadow-lg"
-                aria-label="GitHub" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                onHoverStart={() => setHoveredIcon('github')}
-                onHoverEnd={() => setHoveredIcon(null)}
-              >
-                <FaGithub size={20} />
-              </motion.a>
-              <motion.a 
-                href="https://www.linkedin.com/in/sachin-chhetri-475831199/" 
-                className="bg-gray-800 hover:bg-green-600 p-3 rounded-full text-green-400 hover:text-white transition-all duration-300 shadow-lg"
-                aria-label="LinkedIn" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                onHoverStart={() => setHoveredIcon('linkedin')}
-                onHoverEnd={() => setHoveredIcon(null)}
-              >
-                <FaLinkedin size={20} />
-              </motion.a>
-              <motion.a 
-                href="https://www.facebook.com/sachin.chettri2/" 
-                className="bg-gray-800 hover:bg-green-600 p-3 rounded-full text-green-400 hover:text-white transition-all duration-300 shadow-lg"
-                aria-label="Facebook" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                onHoverStart={() => setHoveredIcon('facebook')}
-                onHoverEnd={() => setHoveredIcon(null)}
-              >
-                <FaFacebook size={20} />
-              </motion.a>
-              <motion.a 
-                href="https://x.com/ghost__rider7" 
-                className="bg-gray-800 hover:bg-green-600 p-3 rounded-full text-green-400 hover:text-white transition-all duration-300 shadow-lg"
-                aria-label="X" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                onHoverStart={() => setHoveredIcon('x')}
-                onHoverEnd={() => setHoveredIcon(null)}
-              >
-                <FaXTwitter size={20} />
-              </motion.a>
-            </div>
-            <div className="pt-2">
-              {hoveredIcon === 'email' && (
-                <motion.p 
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-sm text-gray-400"
+            <div className="grid grid-cols-3 gap-3 pt-2">
+              {socialLinks.map((social) => (
+                <motion.a 
+                  key={social.name}
+                  href={social.href}
+                  className="flex items-center justify-center bg-gray-800 hover:bg-green-600 p-3 rounded-xl text-green-400 hover:text-white transition-all duration-300 shadow-lg"
+                  aria-label={social.label}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  onHoverStart={() => setHoveredIcon(social.name)}
+                  onHoverEnd={() => setHoveredIcon(null)}
                 >
-                  sachinpc202@gmail.com
-                </motion.p>
-              )}
-              {hoveredIcon === 'github' && (
-                <motion.p 
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-sm text-gray-400"
-                >
-                  github.com/sachinchhetri202
-                </motion.p>
-              )}
-              {hoveredIcon === 'linkedin' && (
-                <motion.p 
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-sm text-gray-400"
-                >
-                  Connect on LinkedIn
-                </motion.p>
-              )}
-              {hoveredIcon === 'facebook' && (
-                <motion.p 
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-sm text-gray-400"
-                >
-                  Connect on Facebook
-                </motion.p>
-              )}
-              {hoveredIcon === 'x' && (
-                <motion.p 
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-sm text-gray-400"
-                >
-                  Follow on X
-                </motion.p>
-              )}
+                  {social.icon}
+                </motion.a>
+              ))}
             </div>
           </motion.div>
         </div>
-        
-        {/* Copyright */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6, duration: 1 }}
-          className="border-t border-green-500/20 pt-6 mt-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400"
+
+        {/* Tech Stack */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={controls}
+          transition={{ delay: 0.3 }}
+          className="border-t border-green-500/10 pt-8 pb-4"
         >
-          <div className="flex items-center gap-1 mb-2 md:mb-0">
-            <span>© {year} Sachin Chhetri</span>
-            <span className="px-1">•</span>
-            <span className="flex items-center gap-1">
-              <FaCode className="text-green-500" size={14} /> with <FaHeart className="text-green-500" size={14} />
-            </span>
-          </div>
-          <div className="text-xs">
-            <span className="bg-gray-800 px-2 py-1 rounded-full text-green-300 font-mono">v2.0.0</span>
-          </div>
+          <h3 className="text-xl font-bold text-green-300 mb-6 text-center">Tech Stack</h3>
+          <TechStack />
+        </motion.div>
+
+        {/* Copyright */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={controls}
+          transition={{ delay: 0.4 }}
+          className="text-center pt-8 border-t border-green-500/10 text-sm text-gray-400"
+        >
+          <p className="flex items-center justify-center gap-2">
+            <span>© {year} Sachin Chhetri. Built with</span>
+            <FaHeart className="text-green-500 animate-pulse" />
+            <span>using</span>
+            <FaCode className="text-green-400" />
+          </p>
         </motion.div>
       </div>
     </footer>

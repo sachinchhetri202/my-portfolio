@@ -74,8 +74,8 @@ export default function ServicesPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <h2 className="text-4xl font-bold mb-8 text-center text-green-300 drop-shadow-lg">What I Do</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-center text-green-300 drop-shadow-lg">What I Do</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {technicalServices.map(({ icon, title, items }, idx) => (
               <motion.div
                 key={title}
@@ -112,7 +112,7 @@ export default function ServicesPage() {
           transition={{ duration: 0.7, delay: 0.3 }}
           className="mt-20"
         >
-          <h2 className="text-3xl font-bold mb-8 text-center text-green-200 drop-shadow">Soft Skills</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-center text-green-200 drop-shadow">Soft Skills</h2>
           <div className="flex flex-wrap justify-center gap-6">
             {softSkills.map(({ icon, label }, idx) => (
               <motion.div

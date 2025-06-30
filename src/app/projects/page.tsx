@@ -226,10 +226,10 @@ export default function ProjectsPage() {
           transition={{ duration: 0.7 }}
           className="text-center"
         >
-          <h1 className="text-4xl font-bold text-green-300 drop-shadow-lg mb-4">
+          <h1 className="text-3xl sm:text-4xl font-bold text-green-300 drop-shadow-lg mb-4">
             My Projects
           </h1>
-          <p className="text-gray-400 text-lg">
+          <p className="text-gray-400 text-base sm:text-lg">
             Automatically synced from GitHub • {repos.length} projects shown
           </p>
           {lastFetch && (
@@ -267,7 +267,7 @@ export default function ProjectsPage() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8"
           >
             {repos.map((repo, idx: number) => {
               const isFeatured = GITHUB_CONFIG.featuredRepos.includes(repo.name)

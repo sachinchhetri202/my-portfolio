@@ -26,12 +26,13 @@ const TEASER_DELAY = 2000; // 2 seconds for teaser to appear
 
 const BOT_NAME = "Sachin.dev Assistant";
 const WELCOME_MESSAGE_CONTENT = `नमस्ते! こんにちは! Hello! 👋
-I am ${BOT_NAME}, here to help you learn about Sachin, his skills, and projects. Feel free to ask me anything!`;
+I am ${BOT_NAME}, here to help you learn about Sachin, his skills, and projects. You can also ask me about his CV/resume - I can show you what's included and help you download it! Feel free to ask me anything!`;
 
 const QUICK_REPLIES = [
+  "How can I get Sachin's CV?",
+  "What's in the CV?",
   "Show latest projects",
   "Tell me about skills",
-  "Educational background",
   "Work experience"
 ];
 

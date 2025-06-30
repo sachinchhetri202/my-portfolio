@@ -27,6 +27,46 @@ const MODEL_NAME = "gemini-1.5-flash-latest";
 const YOUR_NAME = "Sachin Paudel Chhetri";
 const YOUR_ROLE = "Free lancing as a Software Engineer and a Backend Developer. Currently working as a CS Tutor at Weber State University";
 const YOUR_SUMMARY = "Sachin is a Computer Science graduate with hands-on experience in software development, data engineering, and AI projects. He is passionate about building useful tech, learning fast, and contributing to teams working on real-world problems.";
+
+// CV/Resume Information
+const CV_DETAILS = {
+  downloadLink: "/resume/Sachin_CV.pdf",
+  lastUpdated: "2024",
+  format: "PDF",
+  description: "A comprehensive CV detailing Sachin's education, work experience, technical skills, projects, and achievements. The CV is regularly updated to reflect his latest accomplishments and skills.",
+  sections: {
+    education: "Detailed academic journey from Japan to USA, including GPA and relevant coursework",
+    experience: "Professional experience as CS Tutor and previous roles with quantifiable achievements",
+    skills: "Comprehensive list of technical skills, programming languages, and tools",
+    projects: "Notable projects with technologies used and impact metrics",
+    leadership: "Leadership roles and community involvement",
+    languages: "Multilingual proficiency in Nepali, Japanese, Hindi, and English"
+  },
+  highlights: [
+    "🎓 Master's in Computer Science (in progress)",
+    "💻 Full-stack development expertise",
+    "🌏 International education and work experience",
+    "🚀 Multiple successful projects",
+    "👥 Leadership in student organizations"
+  ]
+};
+
+const CV_RELATED_RESPONSES = {
+  howToGet: `You can download my CV directly from my website. Just click this link: [Download CV](/resume/Sachin_CV.pdf). The CV is in PDF format and was last updated in ${CV_DETAILS.lastUpdated}.`,
+  whatIncludes: "My CV includes detailed information about my education, work experience, technical skills, notable projects, and achievements. It's regularly updated to reflect my latest accomplishments.",
+  format: `The CV is available in ${CV_DETAILS.format} format, making it easy to view and print while maintaining consistent formatting across different devices.`,
+  highlights: `Here are some key highlights from my CV:\n${CV_DETAILS.highlights.join('\n')}`,
+  sections: `My CV is organized into several key sections:\n${Object.entries(CV_DETAILS.sections).map(([key, value]) => `* **${key.charAt(0).toUpperCase() + key.slice(1)}**: ${value}`).join('\n')}`,
+  education: `The education section of my CV details my unique international academic journey: ${CV_DETAILS.sections.education}`,
+  experience: `My professional experience section showcases: ${CV_DETAILS.sections.experience}`,
+  skills: `The skills section comprehensively covers: ${CV_DETAILS.sections.skills}`,
+  contextual: {
+    forRecruiters: "My CV is tailored to highlight my technical achievements, project impacts, and quantifiable results that would be relevant for technical roles.",
+    forAcademic: "The CV includes detailed academic achievements, research interests, and relevant coursework in Computer Science.",
+    forNetworking: "You'll find a good overview of my professional journey, technical expertise, and areas of interest for potential collaboration."
+  }
+};
+
 const YOUR_STUDIES = "M.S. in Computer Science at Weber State University (Ogden, Utah), expected graduation April 2026. Previously, B.S. in Computer Science from Weber State University (2021-2024, GPA 3.6) and Kanto International Senior High School (Tokyo, Japan, 2016-2019).";
 const YOUR_LANGUAGES = "Sachin is fluent in Nepali (mother tongue), Japanese (lived and studied in Japan for junior high and high school), Hindi (learned through media), and English (learned from a young age).";
 const YOUR_ORIGIN_DETAILS = "He is originally from Nepal, born in Baglung. He lived and completed his schooling up to the 9th grade in the city of Pokhara.";
@@ -506,6 +546,26 @@ ${latestProjectsInfo.latest.length > 0 ? `⭐ **Latest Projects**: ${latestProje
 🌐 Portfolio: [Portfolio](${PORTFOLIO_LINK})
 📂 Projects: [Projects](${PROJECT_LINK})
 📧 Contact: [Contact](${CONTACT_LINK})
+📄 CV: [Download CV](${CV_DETAILS.downloadLink})
+
+**CV/Resume Information:**
+${CV_DETAILS.description}
+* Last Updated: ${CV_DETAILS.lastUpdated}
+* Format: ${CV_DETAILS.format}
+* Key Highlights:
+${CV_DETAILS.highlights.map(highlight => `  ${highlight}`).join('\n')}
+
+**CV-Related Response Guidelines:**
+- If asked about "CV" or "resume": provide download link and key highlights
+- If asked "how to get CV": share direct download link with format information
+- If asked about CV contents: provide organized section breakdown
+- If asked about specific sections: give detailed information about that section
+- If context indicates purpose (recruiting/academic/networking): provide contextual response
+- If asked about updates: mention last update date and regular maintenance
+- For technical roles: emphasize projects and quantifiable achievements
+- For academic queries: focus on education and research interests
+- Keep responses focused while highlighting relevant achievements
+- Always include the download link when discussing CV contents
 
 **Professional Profiles:**
 👔 [LinkedIn](${SOCIAL_MEDIA.linkedin}) - Professional networking

@@ -25,6 +25,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
 }
 
 /* Chatbot specific styles for better formatting */
@@ -76,4 +77,36 @@ body {
 .overscroll-bounce {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+}
+
+/* Touch-friendly improvements */
+@media (max-width: 768px) {
+  /* Ensure minimum touch target size */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent zoom on input focus */
+  input, textarea, select {
+    font-size: 16px;
+  }
+  
+  /* Better mobile spacing */
+  .mobile-padding {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Improved mobile scrolling */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Better mobile image handling */
+img {
+  max-width: 100%;
+  height: auto;
 }

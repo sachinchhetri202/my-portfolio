@@ -6,6 +6,8 @@ import Nav from "../components/Nav"
 import Footer from "../components/Footer"
 import type { ReactNode } from "react"
 import { ChatBot } from "../components/chat/ChatBot"
+import { ErrorBoundary } from "../components/ErrorBoundary"
+import PlausibleProvider from 'next-plausible'
 
 // Load your Google fonts as CSS variables
 const inter = Inter({
@@ -92,30 +94,36 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} ${robotoMono.variable} ${montserrat.variable}`}
-    >
-      <body className="
-        bg-gray-950 
-        text-green-300 
-        font-sans               /* uses --font-geist-sans */
-        flex flex-col min-h-screen
-      ">
+    <PlausibleProvider domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN || 'sachinpc202.netlify.app'}>
+      <html
+        lang="en"
+        className={`${inter.variable} ${robotoMono.variable} ${montserrat.variable}`}
+      >
+        <body className="
+          bg-gray-950 
+          text-green-300 
+          font-sans               /* uses --font-geist-sans */
+          flex flex-col min-h-screen
+        ">
         <Nav />
 
-        <main className="
-          flex-grow 
-          max-w-4xl mx-auto 
-          px-4 sm:px-6 md:px-8 
-          py-4 sm:py-8
-        ">
-          {children}
-        </main>
+        <ErrorBoundary>
+          <main className="
+            flex-grow 
+            max-w-4xl mx-auto 
+            px-4 sm:px-6 md:px-8 
+            py-4 sm:py-8
+          ">
+            {children}
+          </main>
+        </ErrorBoundary>
 
         <Footer />
-        <ChatBot />
-      </body>
-    </html>
+        <ErrorBoundary>
+          <ChatBot />
+        </ErrorBoundary>
+        </body>
+      </html>
+    </PlausibleProvider>
   )
 }

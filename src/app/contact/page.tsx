@@ -5,6 +5,7 @@ import { FaFacebookF, FaLinkedinIn, FaGithub, FaEnvelope, FaMapMarkerAlt, FaPhon
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import AnimatedBackground from '@/components/AnimatedBackground'
+import { useAnalytics } from '@/components/Analytics'
 
 const socialLinks = [
   { icon: <FaFacebookF />, href: "https://www.facebook.com/sachin.chettri2", label: "Facebook" },
@@ -42,6 +43,7 @@ export default function ContactPage() {
     subject: '',
     message: ''
   });
+  const { trackEvent } = useAnalytics();
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
@@ -67,6 +69,9 @@ export default function ContactPage() {
       
       if (response.ok) {
         setFormStatus('success');
+        trackEvent('Contact Form Submitted', { 
+          form: 'main_contact_form'
+        });
         form.reset();
         setFormData({ name: '', email: '', subject: '', message: '' });
         setTimeout(() => setFormStatus('idle'), 5000);

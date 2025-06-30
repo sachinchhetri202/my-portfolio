@@ -14,8 +14,14 @@ const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const MAX_REQUESTS_PER_WINDOW = 10;
 const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
 
+// Enhanced API key validation
 if (!GOOGLE_API_KEY) {
   console.error("CRITICAL: GOOGLE_API_KEY environment variable is not set!");
+}
+
+// Validate API key format (basic check)
+if (GOOGLE_API_KEY && !GOOGLE_API_KEY.startsWith('AIza')) {
+  console.warn("WARNING: GOOGLE_API_KEY may not be valid format");
 }
 
 const genAI = GOOGLE_API_KEY ? new GoogleGenerativeAI(GOOGLE_API_KEY) : null;
@@ -375,10 +381,27 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-// Sanitize function for input validation
+// Enhanced sanitize function for input validation
 function sanitizeInput(text: string): string {
-  // Remove potentially harmful characters
-  const sanitized = text.replace(/[<>]/g, '');
+  // Remove potentially harmful characters and patterns
+  let sanitized = text
+    .replace(/[<>]/g, '') // Remove angle brackets
+    .replace(/javascript:/gi, '') // Remove javascript: protocol
+    .replace(/on\w+\s*=/gi, '') // Remove event handlers like onclick=
+    .replace(/data:/gi, '') // Remove data: protocol
+    .trim();
+  
+  // Length check after sanitization
+  if (sanitized.length === 0) {
+    throw new Error('Empty message after sanitization');
+  }
+  
+  // Check for excessive repetition (potential spam)
+  const words = sanitized.split(/\s+/);
+  const uniqueWords = new Set(words);
+  if (words.length > 10 && uniqueWords.size / words.length < 0.3) {
+    throw new Error('Message appears to be spam');
+  }
   
   // Check for common misinformation patterns
   const misinformationPatterns = [
@@ -394,8 +417,22 @@ function sanitizeInput(text: string): string {
 }
 
 export async function POST(req: NextRequest) {
-  // Rate limiting check
-  const ip = headers().get('x-forwarded-for') || 'unknown';
+  // Enhanced IP extraction for rate limiting
+  const forwardedFor = headers().get('x-forwarded-for');
+  const realIP = headers().get('x-real-ip');
+  const cfConnectingIP = headers().get('cf-connecting-ip');
+  
+  // Use the most reliable IP source available
+  const ip = cfConnectingIP || realIP || forwardedFor?.split(',')[0] || 'unknown';
+  
+  // Basic IP validation (IPv4/IPv6)
+  if (ip !== 'unknown' && !/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$|^[0-9a-fA-F:]+$/.test(ip)) {
+    return NextResponse.json({ 
+      error: 'Invalid request', 
+      details: 'Request validation failed.' 
+    }, { status: 400 });
+  }
+  
   if (!checkRateLimit(ip)) {
     return NextResponse.json({ 
       error: 'Rate limit exceeded', 

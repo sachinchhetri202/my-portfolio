@@ -5,10 +5,17 @@ import Link from 'next/link'
 import { SiPython, SiDocker, SiPostgresql, SiCloudflare, SiGit } from 'react-icons/si'
 import { motion } from 'framer-motion'
 import AnimatedBackground from '../components/AnimatedBackground'
+import { PersonSchema, WebsiteSchema } from '../components/SchemaMarkup'
+import { useResumeDownload } from '../components/Analytics'
 
 export default function HomePage() {
+  const trackResumeDownload = useResumeDownload()
+  
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-950">
+    <>
+      <PersonSchema />
+      <WebsiteSchema />
+      <div className="relative min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-950">
       <AnimatedBackground />
       <div className="relative flex flex-col items-center text-center space-y-12 py-8 sm:py-12 px-4 sm:px-6 md:px-8">
         <motion.div
@@ -113,6 +120,7 @@ export default function HomePage() {
               href="/resume/Sachin_CV.pdf"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackResumeDownload('homepage_hero')}
               className="group relative flex items-center justify-center rounded-xl bg-gray-900 border-2 border-green-500/30 transition-all duration-300 hover:border-green-400 hover:scale-105 hover:shadow-[0_0_2rem_-0.5rem_#4ade80] w-full sm:w-auto"
               role="button"
               aria-label="Download CV"
@@ -146,5 +154,6 @@ export default function HomePage() {
         </div>
       </div>
     </div>
+    </>
   )
 }

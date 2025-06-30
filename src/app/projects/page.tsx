@@ -6,6 +6,8 @@ import { FaGithub, FaExternalLinkAlt, FaStar, FaCodeBranch, FaEye, FaCalendarAlt
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import AnimatedBackground from '@/components/AnimatedBackground'
+import { ProjectsGridSkeleton, LoadingSpinner } from '@/components/LoadingStates'
+import { ProjectSchema } from '@/components/SchemaMarkup'
 
 interface GitHubRepo {
   id: number;
@@ -240,9 +242,7 @@ export default function ProjectsPage() {
         </motion.div>
         
         {isLoading && (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
-          </div>
+          <ProjectsGridSkeleton count={6} />
         )}
         
         {error && (

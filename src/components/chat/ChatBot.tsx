@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, FormEvent } from 'react';
+import { useState, useRef, useEffect, FormEvent, useCallback } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { PaperAirplaneIcon, ChatBubbleOvalLeftEllipsisIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { FaUser, FaRobot } from 'react-icons/fa';
@@ -283,9 +283,10 @@ export function ChatBot() {
     } else {
       setShowTeaser(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  const scrollToBottom = (force = false) => {
+  const scrollToBottom = useCallback((force = false) => {
     const performScroll = () => {
       const scrollElement = messagesEndRef.current;
       
@@ -358,7 +359,7 @@ export function ChatBot() {
     } else {
       requestAnimationFrame(performScroll);
     }
-  };
+  }, []);
 
   useEffect(() => {
     // Scroll when messages change
@@ -368,7 +369,7 @@ export function ChatBot() {
     return () => {
       clearTimeout(timer);
     };
-  }, [messages]);
+  }, [messages, scrollToBottom]);
 
   // Additional scroll trigger for typing state changes
   useEffect(() => {
@@ -376,7 +377,7 @@ export function ChatBot() {
       const timer = setTimeout(() => scrollToBottom(), 100);
       return () => clearTimeout(timer);
     }
-  }, [isTyping]);
+  }, [isTyping, scrollToBottom]);
 
   // Scroll to bottom when chat opens
   useEffect(() => {
@@ -384,7 +385,7 @@ export function ChatBot() {
       const timer = setTimeout(() => scrollToBottom(), 300);
       return () => clearTimeout(timer);
     }
-  }, [isOpen]);
+  }, [isOpen, scrollToBottom]);
 
   const validateMessage = (message: string): string | null => {
     if (!message.trim()) {

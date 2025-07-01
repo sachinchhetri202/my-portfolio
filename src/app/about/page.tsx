@@ -95,15 +95,15 @@ export default function AboutPage() {
               Hello, I'm <span className="text-green-400">Sachin Chhetri</span>
             </h1>
             <p className="mt-4 text-base sm:text-lg text-gray-300">
-              I'm a motivated Computer Science major at Weber State University, specializing in
-              backend development with Python & Django. With hands-on experience in web development,
-              data engineering, and API design.
+              AI Engineer with 4+ years of experience building intelligent applications. I specialize in crafting AI-powered solutions using Python and modern frameworks, from real-time music classifiers to Gemini-powered chatbots. Currently pursuing an MS in Computer Science, I combine technical expertise with a passion for turning complex data into practical solutions that drive business value.
             </p>
             <div className="flex flex-wrap gap-2 mt-4">
-              <span className="px-3 py-1 rounded-full bg-green-900/40 text-green-300 font-mono text-xs">Full-Stack Web Developer</span>
               <span className="px-3 py-1 rounded-full bg-green-900/40 text-green-300 font-mono text-xs">Software Developer</span>
+              <span className="px-3 py-1 rounded-full bg-green-900/40 text-green-300 font-mono text-xs">Full-Stack Web Developer</span>
+              <span className="px-3 py-1 rounded-full bg-green-900/40 text-green-300 font-mono text-xs">AI Engineer</span>
               <span className="px-3 py-1 rounded-full bg-green-900/40 text-green-300 font-mono text-xs">API Designer</span>
-              <span className="px-3 py-1 rounded-full bg-green-900/40 text-green-300 font-mono text-xs">Database Engineer</span>
+              <span className="px-3 py-1 rounded-full bg-green-900/40 text-green-300 font-mono text-xs">Prompt Engineering Expert</span>
+              <span className="px-3 py-1 rounded-full bg-green-900/40 text-green-300 font-mono text-xs">Cloud Solutions Architect</span>
             </div>
           </motion.div>
 

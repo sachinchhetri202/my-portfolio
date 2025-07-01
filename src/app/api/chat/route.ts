@@ -31,34 +31,34 @@ const MODEL_NAME = "gemini-1.5-flash-latest";
 
 // Updated information based on the resume
 const YOUR_NAME = "Sachin Paudel Chhetri";
-const YOUR_ROLE = "Free lancing as a Software Engineer and a Backend Developer. Currently working as a CS Tutor at Weber State University";
-const YOUR_SUMMARY = "Sachin is a Computer Science graduate with hands-on experience in software development, data engineering, and AI projects. He is passionate about building useful tech, learning fast, and contributing to teams working on real-world problems.";
+const YOUR_ROLE = "Software/AI-Driven Applications Engineer, currently working as a CS Tutor at Weber State University.";
+const YOUR_SUMMARY = "Sachin is an AI Engineer with 4+ years of experience crafting intelligent applications. He combines his software engineering expertise with AI capabilities to build practical solutions - from real-time music classifiers to conversational AI chatbots. Currently pursuing his Master's in Computer Science with a focus on ML/DL, he's passionate about turning complex data into valuable insights that solve real-world problems.";
 
 // CV/Resume Information
 const CV_DETAILS = {
-  downloadLink: "/resume/Sachin_CV.pdf",
-  lastUpdated: "2024",
+  downloadLink: "/resume/Resume.pdf",
+  lastUpdated: "2025-06",
   format: "PDF",
   description: "A comprehensive CV detailing Sachin's education, work experience, technical skills, projects, and achievements. The CV is regularly updated to reflect his latest accomplishments and skills.",
   sections: {
-    education: "Detailed academic journey from Japan to USA, including GPA and relevant coursework",
-    experience: "Professional experience as CS Tutor and previous roles with quantifiable achievements",
-    skills: "Comprehensive list of technical skills, programming languages, and tools",
-    projects: "Notable projects with technologies used and impact metrics",
-    leadership: "Leadership roles and community involvement",
+    education: "Detailed academic journey from Japan to USA, including GPA and relevant coursework in AI/ML",
+    experience: "Professional experience as CS Tutor and previous roles, highlighting AI project implementations and achievements",
+    skills: "Comprehensive list of technical skills, including AI/ML frameworks, programming languages, and cloud platforms",
+    projects: "Notable AI-driven and software engineering projects with technologies used and impact metrics",
+    leadership: "Leadership roles and community involvement in tech communities",
     languages: "Multilingual proficiency in Nepali, Japanese, Hindi, and English"
   },
   highlights: [
-    "🎓 Master's in Computer Science (in progress)",
+    "🤖 4+ years of AI/ML development experience",
+    "🎓 Master's in Computer Science",
     "💻 Full-stack development expertise",
     "🌏 International education and work experience",
-    "🚀 Multiple successful projects",
-    "👥 Leadership in student organizations"
+    "🚀 Multiple successful AI-driven applications"
   ]
 };
 
 const CV_RELATED_RESPONSES = {
-  howToGet: `You can download my CV directly from my website. Just click this link: [Download CV](/resume/Sachin_CV.pdf). The CV is in PDF format and was last updated in ${CV_DETAILS.lastUpdated}.`,
+  howToGet: `You can download my CV directly from my website. Just click this link: [Download CV](/resume/Resume.pdf). The CV is in PDF format and was last updated in ${CV_DETAILS.lastUpdated}.`,
   whatIncludes: "My CV includes detailed information about my education, work experience, technical skills, notable projects, and achievements. It's regularly updated to reflect my latest accomplishments.",
   format: `The CV is available in ${CV_DETAILS.format} format, making it easy to view and print while maintaining consistent formatting across different devices.`,
   highlights: `Here are some key highlights from my CV:\n${CV_DETAILS.highlights.join('\n')}`,
@@ -80,17 +80,35 @@ const YOUR_EDUCATION_JOURNEY = "After completing 9th grade in Pokhara, Nepal, Sa
 const RELEVANT_COURSEWORK = "Advanced Algorithms, Object-Oriented Programming, Software Engineering I & II, Advanced SQL Database Knowledge, Business Communication, Prompt Engineering (AI, ML), Deep Theory using ML/DL.";
 
 const WORK_HISTORY = [
-  { title: "CS Tutor", company: "Weber State University", duration: "Current", details: "Provides tutoring for Computer Science students." },
-  { title: "Marketing & CRM Specialist", company: "Weber State University (International Student Scholar Center (ISSC))", duration: "2021 - 2024", details: "Boosted student engagement by 80% via targeted digital campaigns, developed dynamic email templates (HTML/CSS/JS), and analyzed student data using SQL to optimize event success metrics." },
-  { title: "Assistant Manager", company: "Lawson Store (Tokyo, Japan)", duration: "Jan 2016 - Dec 2019", details: "Trained 5+ new hires improving onboarding time by 25%, elevated store performance to Top 100, and implemented efficient shift rotations reducing labor overhead by 15%." }
+  { 
+    title: "CS Tutor", 
+    company: "Weber State University", 
+    duration: "Current", 
+    details: "Provides tutoring for Computer Science students, specializing in AI/ML concepts, algorithms, and programming fundamentals. Helps students understand and implement machine learning projects." 
+  },
+  { 
+    title: "Marketing & CRM Specialist", 
+    company: "Weber State University (International Student Scholar Center)", 
+    duration: "2021 - 2024", 
+    details: "Implemented data-driven marketing strategies, developed automated email systems, and used SQL analytics to optimize student engagement. Created predictive models to improve event attendance." 
+  },
+  { 
+    title: "Assistant Manager", 
+    company: "Lawson Store (Tokyo, Japan)", 
+    duration: "Jan 2016 - Dec 2019", 
+    details: "Led store operations, trained staff, and implemented efficient systems that improved performance metrics. Developed strong leadership and problem-solving skills." 
+  }
 ];
 
 const TECHNICAL_SKILLS = {
-  programmingLanguages: "Python, SQL, HTML5, CSS, JS, C++, C#",
-  frameworks: "Django, Node.js, React, Express",
-  databases: "MySQL, MongoDB",
-  softwareTools: "MS Office 365, GitHub, Canva, Adobe, Figma",
-  apiTesting: "Postman, RESTer"
+  programmingLanguages: "Python (primary), TypeScript, JavaScript, SQL, C++, C#",
+  aiFrameworks: "TensorFlow, PyTorch, Scikit-learn, Hugging Face Transformers",
+  webFrameworks: "Django, Next.js, React, Express",
+  aiTools: "Google Gemini, OpenAI GPT, LangChain",
+  databases: "MySQL, PostgreSQL, MongoDB",
+  cloudPlatforms: "AWS, Google Cloud Platform",
+  devTools: "Git, Docker, Postman, Jupyter Notebooks",
+  dataProcessing: "Pandas, NumPy, SciPy"
 };
 
 const PROJECT_LINK = "https://sachinpc202.netlify.app/projects";
@@ -148,39 +166,37 @@ interface ProjectInfo {
 
 // Static project information for projects not on GitHub or need custom descriptions
 const STATIC_PROJECTS_INFO: { [key: string]: Omit<ProjectInfo, 'name'> } = {
+  'Music-Genre-Classifier': {
+    description: "Real-time music classification system using deep learning and audio signal processing. Analyzes audio features to identify music genres with high accuracy.",
+    category: "ai_ml",
+    isFeatured: true
+  },
+  'Financial-Anomaly-Detection': {
+    description: "Machine learning system for detecting unusual patterns in financial transactions. Uses advanced algorithms to identify potential fraud or anomalies.",
+    category: "ai_ml",
+    isFeatured: true
+  },
   'HomeExpenseTracker': {
-    description: "A modern, full-stack web application that simplifies household expense management. Built with React.js frontend and Node.js/Express backend, featuring user authentication, expense categorization, budget tracking, and interactive data visualization. Includes real-time expense monitoring, monthly/yearly reports, and responsive design for mobile and desktop use.",
+    description: "A modern, full-stack web application that simplifies household expense management. Built with React.js frontend and Node.js/Express backend, featuring user authentication, expense categorization, budget tracking, and interactive data visualization.",
     category: "business",
     isFeatured: true
   },
   'my-portfolio': {
-    description: "Personal portfolio website showcasing projects, skills, and experience. Built with Next.js, TypeScript, and Tailwind CSS, featuring an AI-powered chatbot assistant (this very bot you're talking to!), dynamic GitHub integration, and modern responsive design. The chatbot is powered by Google's Gemini AI but fully implemented and customized by Sachin.",
+    description: "An intelligent chatbot (the one you're talking to!) powered by Google's Gemini AI. Features natural conversation, custom knowledge integration, and context-aware responses to help visitors learn about my work and experience.",
     category: "web_dev",
     isFeatured: true
   },
-  'SemanticFAQ System': {
-    description: "NLP solution using sentence embeddings and cosine similarity for efficient question answering.",
+  'SemanticFAQ-System': {
+    description: "Natural Language Processing solution using sentence embeddings and cosine similarity for efficient question answering. Helps businesses automate customer support.",
     category: "ai_ml"
   },
-  'MovieRecommendationEngine': {
-    description: "Python-based machine learning system for personalized movie suggestions.",
+  'SentimentAnalyzer': {
+    description: "Desktop application for sentiment analysis with review visualization and topic extraction. Helps businesses understand customer feedback.",
     category: "ai_ml"
-  },
-  'SentimentAnalyzerApp': {
-    description: "Desktop tool for sentiment analysis with review visualization and topic extraction.",
-    category: "ai_ml"
-  },
-  'BankingApp': {
-    description: "Secure app with role-based access, SHA-256 login, and transaction management.",
-    category: "business"
   },
   'GrantManagementSystem': {
-    description: "Full-Stack system for role-based access using .NET, HTML, CSS, JS.",
+    description: "Full-Stack system for role-based access using .NET, featuring secure authentication and comprehensive grant lifecycle management.",
     category: "business"
-  },
-  'High-ValueTransaction': {
-    description: "ML model using Random Forest to detect anomalous high-value transactions.",
-    category: "data_analytics"
   }
 };
 
@@ -528,10 +544,13 @@ ${workHistoryForPrompt}
 
 **Technical Skills:**
 * Programming Languages: ${TECHNICAL_SKILLS.programmingLanguages}
-* Frameworks: ${TECHNICAL_SKILLS.frameworks}
+* AI Frameworks: ${TECHNICAL_SKILLS.aiFrameworks}
+* Web Frameworks: ${TECHNICAL_SKILLS.webFrameworks}
+* AI Tools: ${TECHNICAL_SKILLS.aiTools}
 * Databases: ${TECHNICAL_SKILLS.databases}
-* Software & Tools: ${TECHNICAL_SKILLS.softwareTools}
-* API Testing: ${TECHNICAL_SKILLS.apiTesting}
+* Cloud Platforms: ${TECHNICAL_SKILLS.cloudPlatforms}
+* Dev Tools: ${TECHNICAL_SKILLS.devTools}
+* Data Processing: ${TECHNICAL_SKILLS.dataProcessing}
 
 **Leadership and Mentoring:**
 ${leadershipForPrompt}

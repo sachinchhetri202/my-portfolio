@@ -52,16 +52,16 @@ export default function Nav() {
 
   return (
     <nav 
-      className={`fixed top-0 left-0 right-0 w-full px-8 py-4 z-50 backdrop-blur shadow-lg transition-all duration-300 ${scrolled ? 'bg-gray-900/60 text-green-400/80' : 'bg-gray-900/90 text-green-400'} hover:bg-gray-900/90 hover:text-green-400`}>
+      className={`fixed top-0 left-0 right-0 w-full px-4 sm:px-8 py-2 sm:py-4 z-50 backdrop-blur shadow-lg transition-all duration-300 ${scrolled ? 'bg-gray-900/60 text-green-400/80' : 'bg-gray-900/90 text-green-400'} hover:bg-gray-900/90 hover:text-green-400`}>
     
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         {/* Brand area */}
-        <div className="flex items-center space-x-4">
-          <span className="font-mono font-bold text-green-400">$</span>
-          <Link href="/" className="font-mono font-bold text-lg hover:text-white transition">
-            SachinChhetri
+        <div className="flex flex-col sm:flex-row sm:items-center">
+          <Link href="/" className="flex items-baseline font-mono hover:text-white transition">
+            <span className="text-green-400 text-base sm:text-lg font-bold">$</span>
+            <span className="text-xs sm:text-lg font-bold ml-1">SachinChhetri</span>
           </Link>
-          <span className="bg-gray-800 text-sm text-green-300 rounded-full px-3 py-1 font-sans">
+          <span className="text-[10px] sm:text-sm inline-block bg-gray-800 text-green-300 rounded-full px-1.5 sm:px-3 py-0.5 sm:py-1 font-sans sm:ml-3">
             Software Eng.
           </span>
         </div>
@@ -118,7 +118,7 @@ export default function Nav() {
         {/* Mobile toggle button */}
         <button
           onClick={() => setIsOpen((o) => !o)}
-          className="md:hidden text-2xl p-1"
+          className="md:hidden text-xl p-1"
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
         >
           {isOpen ? <FiX /> : <FiMenu />}
@@ -134,15 +134,15 @@ export default function Nav() {
         onKeyDown={handleEscapeKey}
         tabIndex={isOpen ? 0 : -1}
       >
-        <ul className="flex flex-col items-start space-y-4 p-6">
+        <ul className="flex flex-col items-start space-y-3 p-4">
           {links.map(({ href, icon, label }) => (
             <li key={href}>
               <Link
                 href={href}
-                className="flex items-center space-x-2 hover:text-white transition font-mono"
+                className="flex items-center space-x-2 hover:text-white transition font-mono text-sm"
                 onClick={() => setIsOpen(false)}
               >
-                <span className="text-xl">{icon}</span>
+                <span className="text-lg">{icon}</span>
                 <span>/{label}</span>
               </Link>
             </li>
@@ -150,7 +150,7 @@ export default function Nav() {
           <li>
             <Link
               href="/contact"
-              className="block w-full text-center bg-green-500 hover:bg-green-600 text-gray-900 font-mono font-semibold py-2 px-4 rounded transition"
+              className="block w-full text-center bg-green-500 hover:bg-green-600 text-gray-900 font-mono font-semibold py-1.5 px-3 rounded text-sm transition"
               onClick={() => setIsOpen(false)}
             >
               contact.py

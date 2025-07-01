@@ -15,18 +15,18 @@ export default function HomePage() {
     <>
       <PersonSchema />
       <WebsiteSchema />
-      <div className="relative h-full flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-950">
+      <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-950">
         <AnimatedBackground />
-        <div className="relative w-full py-8 sm:py-12 px-4 sm:px-6 md:px-8">
+        <div className="relative w-full pt-24 sm:pt-12 pb-8 sm:py-12 px-4 sm:px-6 md:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-transparent to-green-500/10"
           />
-          <div className="relative z-10 flex flex-col items-center space-y-8 text-center">
+          <div className="relative z-10 flex flex-col items-center space-y-6 sm:space-y-8 text-center">
             {/* Profile */}
-            <div className="relative w-48 h-48 rounded-full ring-4 ring-green-500 overflow-hidden">
+            <div className="relative w-32 h-32 sm:w-48 sm:h-48 rounded-full ring-4 ring-green-500 overflow-hidden">
               <Image
                 src="https://i.postimg.cc/0jbHD5jm/05ae2658-aec3-4526-9e97-1bfe5f5b60f8.jpg"
                 alt="Sachin Chhetri"

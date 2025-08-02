@@ -12,13 +12,18 @@ import {
   FiCode,
   FiDatabase,
   FiGitBranch,
-  FiChevronDown
+  FiChevronDown,
+  FiExternalLink,
+  FiGithub,
+  FiLinkedin,
+  FiMail
 } from 'react-icons/fi'
 
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null)
   const pathname = usePathname()
   
   // Track scroll position to adjust nav transparency
@@ -38,11 +43,38 @@ export default function Nav() {
     }
   }, [])
 
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isOpen && !(event.target as Element).closest('nav')) {
+        setIsOpen(false)
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
   const links = [
-    { href: '/',         icon: <FiTerminal />,  label: 'home'     },
-    { href: '/about',    icon: <FiCode />,      label: 'about'    },
-    { href: '/services', icon: <FiDatabase />,  label: 'services' },
-    { href: '/projects', icon: <FiGitBranch />, label: 'projects' },
+    { href: '/',         icon: <FiTerminal />,  label: 'home',     description: 'Main terminal' },
+    { href: '/about',    icon: <FiCode />,      label: 'about',    description: 'Developer info' },
+    { href: '/services', icon: <FiDatabase />,  label: 'services', description: 'Tech stack' },
+    { href: '/projects', icon: <FiGitBranch />, label: 'projects', description: 'Portfolio' },
+  ]
+
+  const socialLinks = [
+    { href: 'https://github.com/sachinchhetri202', icon: <FiGithub />, label: 'GitHub', external: true },
+    { href: 'https://www.linkedin.com/in/sachin-chhetri-475831199/', icon: <FiLinkedin />, label: 'LinkedIn', external: true },
+    { href: '/contact', icon: <FiMail />, label: 'Contact', external: false },
   ]
 
   // We'll use this function in the mobile menu div
@@ -50,114 +82,334 @@ export default function Nav() {
     if (e.key === 'Escape') setIsOpen(false)
   }
 
-  return (
-    <nav 
-      className={`fixed top-0 left-0 right-0 w-full px-4 sm:px-8 py-2 sm:py-4 z-50 backdrop-blur shadow-lg transition-all duration-300 ${scrolled ? 'bg-gray-900/60 text-green-400/80' : 'bg-gray-900/90 text-green-400'} hover:bg-gray-900/90 hover:text-green-400`}>
-    
-      <div className="max-w-6xl mx-auto flex items-center justify-between">
-        {/* Brand area */}
-        <div className="flex flex-col sm:flex-row sm:items-center">
-          <Link href="/" className="flex items-baseline font-mono hover:text-white transition">
-            <span className="text-green-400 text-base sm:text-lg font-bold">$</span>
-            <span className="text-xs sm:text-lg font-bold ml-1">SachinChhetri</span>
-          </Link>
-          <span className="text-[10px] sm:text-sm inline-block bg-gray-800 text-green-300 rounded-full px-1.5 sm:px-3 py-0.5 sm:py-1 font-sans sm:ml-3">
-            Software Eng.
-          </span>
-        </div>
+  const navVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.25, 0.46, 0.45, 0.94],
+        staggerChildren: 0.1
+      }
+    }
+  }
 
-        {/* Desktop Links */}
-        <ul className="hidden md:flex items-center space-x-6">
-          {links.map(({ href, icon, label }) => (
-            <li key={href}>
+  const linkVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: {
+        duration: 0.4,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
+  }
+
+  const mobileMenuVariants = {
+    closed: {
+      opacity: 0,
+      height: 0,
+      transition: {
+        duration: 0.3,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    },
+    open: {
+      opacity: 1,
+      height: 'auto',
+      transition: {
+        duration: 0.4,
+        ease: [0.25, 0.46, 0.45, 0.94],
+        staggerChildren: 0.1,
+        delayChildren: 0.1
+      }
+    }
+  }
+
+  return (
+    <motion.nav 
+      variants={navVariants}
+      initial="hidden"
+      animate="visible"
+      className={`fixed top-0 left-0 right-0 w-full px-4 sm:px-8 py-3 sm:py-4 z-50 transition-all duration-500 ease-out ${
+        scrolled 
+          ? 'bg-gray-900/95 backdrop-blur-xl shadow-2xl border-b border-green-500/20' 
+          : 'bg-gray-900/80 backdrop-blur-lg shadow-lg'
+      }`}
+    >
+      {/* Animated background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 via-transparent to-green-500/5 opacity-0 hover:opacity-100 transition-opacity duration-700" />
+      
+      <div className="relative max-w-7xl mx-auto flex items-center justify-between">
+        {/* Enhanced Brand area */}
+        <motion.div 
+          variants={linkVariants}
+          className="flex flex-col sm:flex-row sm:items-center group"
+        >
+          <Link 
+            href="/" 
+            className="flex items-baseline font-mono transition-all duration-300 hover:scale-105 relative"
+          >
+            <motion.span 
+              className="text-green-400 text-lg sm:text-xl font-bold"
+              whileHover={{ scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            >
+              $
+            </motion.span>
+            <span className="text-sm sm:text-lg font-bold ml-1 bg-gradient-to-r from-green-400 to-green-300 bg-clip-text text-transparent">
+              SachinChhetri
+            </span>
+            {/* Animated cursor */}
+            <motion.span 
+              className="ml-1 text-green-400 opacity-0 group-hover:opacity-100"
+              animate={{ opacity: [0, 1, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              |
+            </motion.span>
+          </Link>
+          <motion.span 
+            variants={linkVariants}
+            className="text-[10px] sm:text-xs inline-block bg-gradient-to-r from-gray-800 to-gray-700 text-green-300 rounded-full px-2 sm:px-3 py-1 sm:py-1.5 font-sans sm:ml-3 border border-green-500/30 shadow-lg"
+            whileHover={{ scale: 1.05, y: -1 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          >
+            Software Eng.
+          </motion.span>
+        </motion.div>
+
+        {/* Enhanced Desktop Links */}
+        <motion.ul 
+          variants={linkVariants}
+          className="hidden lg:flex items-center space-x-8"
+        >
+          {links.map(({ href, icon, label, description }) => (
+            <motion.li 
+              key={href}
+              variants={linkVariants}
+              onHoverStart={() => setHoveredLink(href)}
+              onHoverEnd={() => setHoveredLink(null)}
+            >
               <Link
                 href={href}
-                className={`flex items-center space-x-1 font-mono transition ${pathname === href ? 'text-white font-bold underline underline-offset-4' : 'hover:text-white'}`}
+                className={`relative flex items-center space-x-2 font-mono transition-all duration-300 group ${
+                  pathname === href 
+                    ? 'text-white font-semibold' 
+                    : 'text-green-400/80 hover:text-white'
+                }`}
                 aria-current={pathname === href ? 'page' : undefined}
               >
-                <span className="text-xl">{icon}</span>
-                <span>/{label}</span>
+                {/* Animated icon */}
+                <motion.span 
+                  className="text-xl"
+                  whileHover={{ rotate: 5, scale: 1.1 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  {icon}
+                </motion.span>
+                <span className="relative">
+                  /{label}
+                  {/* Active indicator */}
+                  {pathname === href && (
+                    <motion.div
+                      layoutId="activeIndicator"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-green-400 to-green-300 rounded-full"
+                      initial={false}
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    />
+                  )}
+                </span>
+                
+                {/* Hover tooltip */}
+                <AnimatePresence>
+                  {hoveredLink === href && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 5, scale: 0.9 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 5, scale: 0.9 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 bg-gray-800/95 backdrop-blur-sm text-green-300 text-xs px-2 py-1.5 rounded border border-green-500/30 whitespace-nowrap z-50 shadow-lg"
+                    >
+                      {description}
+                      <div className="absolute -top-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-gray-800/95 border-l border-t border-green-500/30 rotate-45" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </Link>
-            </li>
+            </motion.li>
           ))}
-          {/* Example dropdown */}
-          <li className="relative">
+          
+          {/* Enhanced dropdown */}
+          <motion.li 
+            variants={linkVariants}
+            className="relative"
+          >
             <button
-              className="flex items-center space-x-1 hover:text-white transition font-mono focus:outline-none"
+              className="flex items-center space-x-2 hover:text-white transition-all duration-300 font-mono focus:outline-none group"
               onClick={() => setDropdownOpen((o) => !o)}
-              onBlur={() => setDropdownOpen(false)}
+              onBlur={() => setTimeout(() => setDropdownOpen(false), 150)}
               aria-haspopup="true"
               aria-expanded={dropdownOpen}
             >
-              <span className="text-xl"><FiChevronDown /></span>
+              <motion.span 
+                className="text-xl"
+                animate={{ rotate: dropdownOpen ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <FiChevronDown />
+              </motion.span>
               <span>More</span>
             </button>
             <AnimatePresence>
               {dropdownOpen && (
-                <motion.ul
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ duration: 0.18 }}
-                  className="absolute right-0 mt-2 w-40 bg-gray-800 rounded-lg shadow-lg py-2 z-50"
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute right-0 mt-3 w-48 bg-gray-800/95 backdrop-blur-xl rounded-xl shadow-2xl border border-green-500/20 py-2 z-50"
                 >
-                  <li>
+                  {socialLinks.map(({ href, icon, label, external }) => (
                     <Link
-                      href="/contact"
-                      className="block px-4 py-2 hover:bg-green-600 hover:text-white text-green-300 font-mono"
+                      key={href}
+                      href={href}
+                      className="flex items-center justify-between px-4 py-3 hover:bg-green-600/20 hover:text-white text-green-300 font-mono transition-all duration-200 group"
+                      target={external ? '_blank' : undefined}
+                      rel={external ? 'noopener noreferrer' : undefined}
                     >
-                      contact.py
+                      <div className="flex items-center space-x-3">
+                        <span className="text-lg group-hover:scale-110 transition-transform duration-200">
+                          {icon}
+                        </span>
+                        <span>{label}</span>
+                      </div>
+                      {external && (
+                        <FiExternalLink className="text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                      )}
                     </Link>
-                  </li>
-                </motion.ul>
+                  ))}
+                </motion.div>
               )}
             </AnimatePresence>
-          </li>
-        </ul>
+          </motion.li>
+        </motion.ul>
 
-        {/* Mobile toggle button */}
-        <button
+        {/* Enhanced Mobile toggle button */}
+        <motion.button
+          variants={linkVariants}
           onClick={() => setIsOpen((o) => !o)}
-          className="md:hidden text-xl p-1"
+          className="lg:hidden relative p-2 rounded-lg hover:bg-green-500/10 transition-colors duration-200 group"
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
+          whileTap={{ scale: 0.95 }}
         >
-          {isOpen ? <FiX /> : <FiMenu />}
-        </button>
+          <motion.div
+            animate={isOpen ? "open" : "closed"}
+            className="relative w-6 h-6"
+          >
+            <motion.span
+              variants={{
+                closed: { rotate: 0, y: 0 },
+                open: { rotate: 45, y: 6 }
+              }}
+              className="absolute w-6 h-0.5 bg-green-400 rounded-full"
+            />
+            <motion.span
+              variants={{
+                closed: { opacity: 1 },
+                open: { opacity: 0 }
+              }}
+              className="absolute w-6 h-0.5 bg-green-400 rounded-full top-2"
+            />
+            <motion.span
+              variants={{
+                closed: { rotate: 0, y: 0 },
+                open: { rotate: -45, y: -6 }
+              }}
+              className="absolute w-6 h-0.5 bg-green-400 rounded-full top-4"
+            />
+          </motion.div>
+        </motion.button>
       </div>
 
-      {/* Mobile menu */}
-      <div
-        className={`
-          md:hidden absolute top-full left-0 w-full bg-gray-900 shadow-lg
-          ${isOpen ? 'block' : 'hidden'}
-        `}
-        onKeyDown={handleEscapeKey}
-        tabIndex={isOpen ? 0 : -1}
-      >
-        <ul className="flex flex-col items-start space-y-3 p-4">
-          {links.map(({ href, icon, label }) => (
-            <li key={href}>
-              <Link
-                href={href}
-                className="flex items-center space-x-2 hover:text-white transition font-mono text-sm"
-                onClick={() => setIsOpen(false)}
-              >
-                <span className="text-lg">{icon}</span>
-                <span>/{label}</span>
-              </Link>
-            </li>
-          ))}
-          <li>
-            <Link
-              href="/contact"
-              className="block w-full text-center bg-green-500 hover:bg-green-600 text-gray-900 font-mono font-semibold py-1.5 px-3 rounded text-sm transition"
-              onClick={() => setIsOpen(false)}
-            >
-              contact.py
-            </Link>
-          </li>
-        </ul>
-      </div>
-    </nav>
+      {/* Enhanced Mobile menu */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            variants={mobileMenuVariants}
+            initial="closed"
+            animate="open"
+            exit="closed"
+            className="lg:hidden absolute top-full left-0 w-full bg-gray-900/95 backdrop-blur-xl shadow-2xl border-t border-green-500/20 overflow-hidden"
+            onKeyDown={handleEscapeKey}
+            tabIndex={isOpen ? 0 : -1}
+          >
+            <div className="p-6 space-y-6">
+              {/* Main navigation links */}
+              <div className="space-y-4">
+                <h3 className="text-green-400 font-mono text-sm uppercase tracking-wider mb-4">
+                  Navigation
+                </h3>
+                {links.map(({ href, icon, label, description }) => (
+                  <motion.div
+                    key={href}
+                    variants={linkVariants}
+                    whileHover={{ x: 5 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  >
+                    <Link
+                      href={href}
+                      className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 font-mono ${
+                        pathname === href
+                          ? 'bg-green-600/20 text-white border border-green-500/30'
+                          : 'text-green-400/80 hover:bg-green-500/10 hover:text-white'
+                      }`}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <span className="text-xl">{icon}</span>
+                      <div className="flex-1">
+                        <div className="font-semibold">/{label}</div>
+                        <div className="text-xs text-green-300/60">{description}</div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Social links */}
+              <div className="space-y-4 pt-4 border-t border-green-500/20">
+                <h3 className="text-green-400 font-mono text-sm uppercase tracking-wider mb-4">
+                  Connect
+                </h3>
+                <div className="grid grid-cols-1 gap-3">
+                  {socialLinks.map(({ href, icon, label, external }) => (
+                    <motion.div
+                      key={href}
+                      variants={linkVariants}
+                      whileHover={{ x: 5 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    >
+                      <Link
+                        href={href}
+                        className="flex items-center space-x-3 p-3 rounded-lg text-green-400/80 hover:bg-green-500/10 hover:text-white transition-all duration-200 font-mono"
+                        onClick={() => setIsOpen(false)}
+                        target={external ? '_blank' : undefined}
+                        rel={external ? 'noopener noreferrer' : undefined}
+                      >
+                        <span className="text-xl">{icon}</span>
+                        <span className="flex-1">{label}</span>
+                        {external && <FiExternalLink className="text-sm" />}
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.nav>
   )
 }

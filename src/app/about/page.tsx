@@ -1,13 +1,26 @@
 // src/app/about/page.tsx
 'use client'
 import Image from 'next/image'
-import { FaBriefcase, FaGraduationCap, FaMusic, FaCode, FaGamepad, FaBinoculars } from 'react-icons/fa'
+import { FaBriefcase, FaGraduationCap, FaMusic, FaCode, FaGamepad, FaBinoculars, FaChevronDown, FaChevronRight } from 'react-icons/fa'
 import { GiWorld } from 'react-icons/gi'
 import AnimatedBackground from '@/components/AnimatedBackground'
 import { SiPython } from 'react-icons/si'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
 
 export default function AboutPage() {
+  const [expandedSections, setExpandedSections] = useState({
+    weberState: true,
+    otherExperience: true
+  })
+
+  const toggleSection = (section: 'weberState' | 'otherExperience') => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }))
+  }
+
   const work = [
     {
       title: 'Assistant Manager',
@@ -18,10 +31,11 @@ export default function AboutPage() {
         'Supervised daily operations and optimized scheduling.',
         'Earned top-100 ranking for cleanliness & service.',
       ],
+      category: 'retail'
     },
     {
       title: 'Marketing & CRM Specialist',
-      org: 'Weber State ISSC Office',
+      org: 'ISSC Office',
       date: '2021 – 2024',
       bullets: [
         'Led marketing campaigns, increasing student engagement.',
@@ -29,10 +43,22 @@ export default function AboutPage() {
         'Created social-media templates using HTML/CSS/JS, Canva & Adobe.',
         'Utilized SQL for data extraction and analysis.',
       ],
+      category: 'weber-state'
+    },
+    {
+      title: 'Computer Science Tutor',
+      org: 'Engineering, Applied Science and Technology',
+      date: '2024 – 2025',
+      bullets: [
+        'Provided one-on-one and group tutoring for students in CS, NET, and WEB courses.',
+        'Supported students in foundational and intermediate Computer Science courses (CS 1400, 1410, 2550, 2420).',
+        'Emphasized troubleshooting, problem-solving, and practical coding skills.',
+      ],
+      category: 'weber-state'
     },
     {
       title: 'Field Trip & Club Travel Assistant',
-      org: 'Weber State University, Study Abroad Office',
+      org: 'Study Abroad Office',
       date: '2025 – Present',
       bullets: [
         'Assisting the Director of Study Abroad with trip planning and execution.',
@@ -40,16 +66,7 @@ export default function AboutPage() {
         'Managing documentation by gathering necessary signatures from designated signatories.',
         'Maintaining a comprehensive database of all university field trips.',
       ],
-    },
-    {
-      title: 'Computer Science Tutor',
-      org: 'Weber State University, Engineering, Applied Science and Technology',
-      date: '2024 – 2025',
-      bullets: [
-        'Provided one-on-one and group tutoring for students in CS, NET, and WEB courses.',
-        'Supported students in foundational and intermediate Computer Science courses (CS 1400, 1410, 2550, 2420).',
-        'Emphasized troubleshooting, problem-solving, and practical coding skills.',
-      ],
+      category: 'weber-state'
     },
   ]
 
@@ -146,92 +163,244 @@ export default function AboutPage() {
           </div>
         </motion.section>
 
-        {/* Work & Education Timeline */}
-        <motion.section initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 sm:px-8 py-10">
-          <div>
-            <h2 className="text-xl font-bold text-green-300 flex items-center gap-2 mb-4"><FaBriefcase /> Work Experience</h2>
-            <ul className="space-y-6">
-              {work.map((item, idx) => (
-                <motion.li
-                  key={item.title}
-                  className="bg-gray-800/80 rounded-xl p-5 shadow-md border-l-4 border-green-500 relative group transition-all duration-300 hover:bg-gray-800/95 hover:shadow-xl hover:shadow-green-900/20"
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.15 }}
-                  whileHover={{
-                    scale: 1.02,
-                    transition: { duration: 0.2 }
-                  }}
-                >
-                  <div className="absolute inset-x-0 h-[2px] bottom-0 bg-gradient-to-r from-transparent via-green-500 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
-                  <div className="absolute top-0 left-0 w-full h-full bg-green-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl" />
-                  <h3 className="text-lg font-bold text-green-200 group-hover:text-green-300 transition-colors">{item.title}</h3>
-                  <span className="text-xs text-gray-400 font-mono group-hover:text-gray-300 transition-colors">{item.org} | {item.date}</span>
-                  <ul className="list-disc pl-5 text-sm text-gray-300 mt-2 space-y-1">
-                    {item.bullets.map((b, i) => (
-                      <motion.li 
-                        key={i}
-                        initial={{ opacity: 0.8 }}
-                        whileHover={{ opacity: 1, x: 5 }}
-                        transition={{ duration: 0.2 }}
+        {/* Work Experience - Two Columns */}
+        <motion.section initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="px-4 sm:px-8 py-10">
+          <h2 className="text-xl font-bold text-green-300 flex items-center gap-2 mb-6"><FaBriefcase /> Work Experience</h2>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Left Column - Weber State Experience */}
+            <div>
+              <motion.button
+                onClick={() => toggleSection('weberState')}
+                className="w-full flex items-center justify-between gap-3 mb-4 p-4 rounded-xl bg-green-900/20 hover:bg-green-900/30 transition-all duration-300 group cursor-pointer border border-green-500/20 hover:border-green-500/40"
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 bg-green-900/60 text-green-300 px-3 py-1 rounded-full text-sm font-mono">
+                    <FaGraduationCap className="text-green-400" />
+                    Weber State University
+                  </div>
+                  <span className="text-xs text-green-400 font-mono bg-green-900/40 px-2 py-1 rounded-full">
+                    {work.filter(item => item.category === 'weber-state').length} positions
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  {!expandedSections.weberState && (
+                    <div className="text-xs text-green-400/70 font-mono hidden sm:block">
+                      Marketing, Tutoring, Study Abroad
+                    </div>
+                  )}
+                  <motion.div
+                    animate={{ rotate: expandedSections.weberState ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-green-400 group-hover:text-green-300 transition-colors"
+                  >
+                    <FaChevronDown />
+                  </motion.div>
+                </div>
+              </motion.button>
+              
+              <AnimatePresence>
+                {expandedSections.weberState ? (
+                  <motion.ul
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="space-y-4 overflow-hidden"
+                  >
+                    {work.filter(item => item.category === 'weber-state').map((item, idx) => (
+                      <motion.li
+                        key={item.title}
+                        className="bg-gray-800/80 rounded-xl p-5 shadow-md border-l-4 border-green-400 relative group transition-all duration-300 hover:bg-gray-800/95 hover:shadow-xl hover:shadow-green-900/20"
+                        initial={{ opacity: 0, x: -30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: idx * 0.15 }}
+                        whileHover={{
+                          scale: 1.02,
+                          transition: { duration: 0.2 }
+                        }}
                       >
-                        {b}
+                        <div className="absolute inset-x-0 h-[2px] bottom-0 bg-gradient-to-r from-transparent via-green-400 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+                        <div className="absolute top-0 left-0 w-full h-full bg-green-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl" />
+                        
+                        {/* Timeline indicator */}
+                        <div className="absolute -left-2 top-6 w-4 h-4 bg-green-400 rounded-full border-2 border-gray-900 shadow-lg"></div>
+                        
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="text-lg font-bold text-green-200 group-hover:text-green-300 transition-colors">{item.title}</h3>
+                          <span className="text-xs text-green-400 font-mono bg-green-900/40 px-2 py-1 rounded-full">WSU</span>
+                        </div>
+                        <span className="text-xs text-gray-400 font-mono group-hover:text-gray-300 transition-colors">{item.org} | {item.date}</span>
+                        <ul className="list-disc pl-5 text-sm text-gray-300 mt-2 space-y-1">
+                          {item.bullets.map((b, i) => (
+                            <motion.li 
+                              key={i}
+                              initial={{ opacity: 0.8 }}
+                              whileHover={{ opacity: 1, x: 5 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              {b}
+                            </motion.li>
+                          ))}
+                        </ul>
+                      </motion.li>
+                    ))}
+                  </motion.ul>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-center py-6 text-green-400/60 text-sm font-mono"
+                  >
+                    Click to expand and view Weber State experience details
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Right Column - Other Experience */}
+            <div>
+              <motion.button
+                onClick={() => toggleSection('otherExperience')}
+                className="w-full flex items-center justify-between gap-3 mb-4 p-4 rounded-xl bg-gray-700/20 hover:bg-gray-700/30 transition-all duration-300 group cursor-pointer border border-gray-500/20 hover:border-gray-500/40"
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 bg-gray-700/60 text-gray-300 px-3 py-1 rounded-full text-sm font-mono">
+                    <FaBriefcase className="text-gray-400" />
+                    Other Experience
+                  </div>
+                  <span className="text-xs text-gray-400 font-mono bg-gray-700/40 px-2 py-1 rounded-full">
+                    {work.filter(item => item.category !== 'weber-state').length} position
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  {!expandedSections.otherExperience && (
+                    <div className="text-xs text-gray-400/70 font-mono hidden sm:block">
+                      Assistant Manager, Tokyo
+                    </div>
+                  )}
+                  <motion.div
+                    animate={{ rotate: expandedSections.otherExperience ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-gray-400 group-hover:text-gray-300 transition-colors"
+                  >
+                    <FaChevronDown />
+                  </motion.div>
+                </div>
+              </motion.button>
+              
+              <AnimatePresence>
+                {expandedSections.otherExperience ? (
+                  <motion.ul
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="space-y-4 overflow-hidden"
+                  >
+                    {work.filter(item => item.category !== 'weber-state').map((item, idx) => (
+                      <motion.li
+                        key={item.title}
+                        className="bg-gray-800/80 rounded-xl p-5 shadow-md border-l-4 border-green-500 relative group transition-all duration-300 hover:bg-gray-800/95 hover:shadow-xl hover:shadow-green-900/20"
+                        initial={{ opacity: 0, x: 30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: idx * 0.15 }}
+                        whileHover={{
+                          scale: 1.02,
+                          transition: { duration: 0.2 }
+                        }}
+                      >
+                        <div className="absolute inset-x-0 h-[2px] bottom-0 bg-gradient-to-r from-transparent via-green-500 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+                        <div className="absolute top-0 left-0 w-full h-full bg-green-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl" />
+                        <h3 className="text-lg font-bold text-green-200 group-hover:text-green-300 transition-colors">{item.title}</h3>
+                        <span className="text-xs text-gray-400 font-mono group-hover:text-gray-300 transition-colors">{item.org} | {item.date}</span>
+                        <ul className="list-disc pl-5 text-sm text-gray-300 mt-2 space-y-1">
+                          {item.bullets.map((b, i) => (
+                            <motion.li 
+                              key={i}
+                              initial={{ opacity: 0.8 }}
+                              whileHover={{ opacity: 1, x: 5 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              {b}
+                            </motion.li>
+                          ))}
+                        </ul>
+                      </motion.li>
+                    ))}
+                  </motion.ul>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-center py-6 text-gray-400/60 text-sm font-mono"
+                  >
+                    Click to expand and view other experience details
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* Education Section - Full Width */}
+        <motion.section initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="px-4 sm:px-8 py-10 border-t border-gray-700">
+          <h2 className="text-xl font-bold text-green-300 flex items-center gap-2 mb-6"><FaGraduationCap /> Education</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {education.map((item, idx) => (
+              <motion.div
+                key={item.school}
+                className="bg-gray-800/80 rounded-xl p-5 shadow-md border-l-4 border-green-500 relative group transition-all duration-300 hover:bg-gray-800/95 hover:shadow-xl hover:shadow-green-900/20"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.15 }}
+                whileHover={{
+                  scale: 1.02,
+                  transition: { duration: 0.2 }
+                }}
+              >
+                <div className="absolute inset-x-0 h-[2px] bottom-0 bg-gradient-to-r from-transparent via-green-500 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+                <div className="absolute top-0 left-0 w-full h-full bg-green-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl" />
+                <h3 className="text-lg font-bold text-green-200 group-hover:text-green-300 transition-colors">{item.school}</h3>
+                {item.period && (
+                  <span className="text-xs text-gray-400 font-mono group-hover:text-gray-300 transition-colors">{item.period}</span>
+                )}
+                {item.detail && (
+                  <div className="text-sm text-gray-300 mt-1 group-hover:text-gray-200 transition-colors">{item.detail}</div>
+                )}
+                {item.degrees && (
+                  <ul className="mt-2 space-y-2">
+                    {item.degrees.map((deg) => (
+                      <motion.li 
+                        key={deg.title} 
+                        className="flex items-center gap-2 bg-gray-900/70 rounded-lg px-4 py-2 group/degree hover:bg-gray-900/90 transition-all duration-300"
+                        whileHover={{ x: 5 }}
+                      >
+                        <motion.span
+                          animate={{ rotate: [0, 15, -15, 0] }}
+                          transition={{ duration: 0.5, delay: 0.2 }}
+                        >
+                          {deg.icon}
+                        </motion.span>
+                        <span className="font-bold text-green-200 group-hover/degree:text-green-300 transition-colors">{deg.title}</span>
+                        <span className="text-xs text-gray-400 font-mono ml-2 group-hover/degree:text-gray-300 transition-colors">{deg.period}</span>
                       </motion.li>
                     ))}
                   </ul>
-                </motion.li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-green-300 flex items-center gap-2 mb-4"><FaGraduationCap /> Education</h2>
-            <ul className="space-y-6">
-              {education.map((item, idx) => (
-                <motion.li
-                  key={item.school}
-                  className="bg-gray-800/80 rounded-xl p-5 shadow-md border-l-4 border-green-500 relative group transition-all duration-300 hover:bg-gray-800/95 hover:shadow-xl hover:shadow-green-900/20"
-                  initial={{ opacity: 0, x: 30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.15 }}
-                  whileHover={{
-                    scale: 1.02,
-                    transition: { duration: 0.2 }
-                  }}
-                >
-                  <div className="absolute inset-x-0 h-[2px] bottom-0 bg-gradient-to-r from-transparent via-green-500 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
-                  <div className="absolute top-0 left-0 w-full h-full bg-green-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl" />
-                  <h3 className="text-lg font-bold text-green-200 group-hover:text-green-300 transition-colors">{item.school}</h3>
-                  {item.period && (
-                    <span className="text-xs text-gray-400 font-mono group-hover:text-gray-300 transition-colors">{item.period}</span>
-                  )}
-                  {item.detail && (
-                    <div className="text-sm text-gray-300 mt-1 group-hover:text-gray-200 transition-colors">{item.detail}</div>
-                  )}
-                  {item.degrees && (
-                    <ul className="mt-2 space-y-2">
-                      {item.degrees.map((deg) => (
-                        <motion.li 
-                          key={deg.title} 
-                          className="flex items-center gap-2 bg-gray-900/70 rounded-lg px-4 py-2 group/degree hover:bg-gray-900/90 transition-all duration-300"
-                          whileHover={{ x: 5 }}
-                        >
-                          <motion.span
-                            animate={{ rotate: [0, 15, -15, 0] }}
-                            transition={{ duration: 0.5, delay: 0.2 }}
-                          >
-                            {deg.icon}
-                          </motion.span>
-                          <span className="font-bold text-green-200 group-hover/degree:text-green-300 transition-colors">{deg.title}</span>
-                          <span className="text-xs text-gray-400 font-mono ml-2 group-hover/degree:text-gray-300 transition-colors">{deg.period}</span>
-                        </motion.li>
-                      ))}
-                    </ul>
-                  )}
-                </motion.li>
-              ))}
-            </ul>
+                )}
+              </motion.div>
+            ))}
           </div>
         </motion.section>
 

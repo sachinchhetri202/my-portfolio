@@ -31,7 +31,7 @@ const MODEL_NAME = "gemini-1.5-flash-latest";
 
 // Updated information based on the resume
 const YOUR_NAME = "Sachin Paudel Chhetri";
-const YOUR_ROLE = "Software/AI-Driven Applications Engineer, currently working as a CS Tutor at Weber State University.";
+const YOUR_ROLE = "Software/AI-Driven Applications Engineer, currently working as a Field Trip & Club Travel Assistant at Weber State University.";
 const YOUR_SUMMARY = "Sachin is an AI Engineer with 4+ years of experience crafting intelligent applications. He combines his software engineering expertise with AI capabilities to build practical solutions - from real-time music classifiers to conversational AI chatbots. Currently pursuing his Master's in Computer Science with a focus on ML/DL, he's passionate about turning complex data into valuable insights that solve real-world problems.";
 
 // CV/Resume Information
@@ -42,18 +42,18 @@ const CV_DETAILS = {
   description: "A comprehensive CV detailing Sachin's education, work experience, technical skills, projects, and achievements. The CV is regularly updated to reflect his latest accomplishments and skills.",
   sections: {
     education: "Detailed academic journey from Japan to USA, including GPA and relevant coursework in AI/ML",
-    experience: "Professional experience as CS Tutor and previous roles, highlighting AI project implementations and achievements",
+    experience: "Professional experience as Field Trip & Club Travel Assistant and previous roles, highlighting AI project implementations and achievements",
     skills: "Comprehensive list of technical skills, including AI/ML frameworks, programming languages, and cloud platforms",
     projects: "Notable AI-driven and software engineering projects with technologies used and impact metrics",
     leadership: "Leadership roles and community involvement in tech communities",
     languages: "Multilingual proficiency in Nepali, Japanese, Hindi, and English"
   },
   highlights: [
-    "🤖 4+ years of AI/ML development experience",
-    "🎓 Master's in Computer Science",
-    "💻 Full-stack development expertise",
-    "🌏 International education and work experience",
-    "🚀 Multiple successful AI-driven applications"
+    "4+ years of AI/ML development experience",
+    "Master's in Computer Science",
+    "Full-stack development expertise",
+    "International education and work experience",
+    "Multiple successful AI-driven applications"
   ]
 };
 
@@ -81,10 +81,16 @@ const RELEVANT_COURSEWORK = "Advanced Algorithms, Object-Oriented Programming, S
 
 const WORK_HISTORY = [
   { 
-    title: "CS Tutor", 
-    company: "Weber State University", 
-    duration: "Current", 
-    details: "Provides tutoring for Computer Science students, specializing in AI/ML concepts, algorithms, and programming fundamentals. Helps students understand and implement machine learning projects." 
+    title: "Field Trip & Club Travel Assistant", 
+    company: "Weber State University, Study Abroad Office", 
+    duration: "2025 - Present", 
+    details: "Assisting the Director of Study Abroad with trip planning and execution. Coordinating with faculty, department chairs, and Risk Management to ensure university-wide compliance. Managing documentation by gathering necessary signatures from designated signatories. Maintaining a comprehensive database of all university field trips." 
+  },
+  { 
+    title: "Computer Science Tutor", 
+    company: "Weber State University, Engineering, Applied Science and Technology", 
+    duration: "2024 - 2025", 
+    details: "Provided one-on-one and group tutoring for students in CS, NET, and WEB courses, assisting with programming assignments, homework, and conceptual understanding. Supported students in foundational and intermediate Computer Science courses (CS 1400, 1410, 2550, 2420) with an emphasis on troubleshooting, problem-solving, and practical coding skills." 
   },
   { 
     title: "Marketing & CRM Specialist", 
@@ -123,7 +129,8 @@ const SOCIAL_MEDIA = {
 };
 
 const LEADERSHIP_MENTORING = [
-  "Computer Science Tutor at Weber State University",
+  "Field Trip & Club Travel Assistant at Weber State University",
+  "Former Computer Science Tutor at Weber State University",
   "International Student Mentor",
   "Founder & Former President of Nepalese Student Association @ WSU (Led a 500+ member group, coordinated cultural events, guided new students, and launched mentorship initiatives)."
 ];
@@ -319,11 +326,11 @@ async function getProjectListForPrompt(): Promise<string> {
   let prompt = '';
   
   if (projectsInfo.latest.length > 0) {
-    prompt += `## 🚀 Latest Projects (Most Recent)\n`;
+    prompt += `## Latest Projects (Most Recent)\n`;
     prompt += projectsInfo.latest.map((p, i) => {
       const createdDate = p.githubData ? formatDate(p.githubData.created_at) : 'Date unknown';
       const updatedDate = p.githubData ? formatDate(p.githubData.updated_at) : 'Date unknown';
-      const featured = p.isFeatured ? ' ⭐ Featured' : '';
+      const featured = p.isFeatured ? ' Featured' : '';
       const stars = p.githubData ? ` (${p.githubData.stargazers_count} stars)` : '';
       
       return `${i + 1}. **${p.name}**${featured}${stars}\n   - ${p.description}\n   - Created: ${createdDate}\n   - Last Updated: ${updatedDate}`;
@@ -341,11 +348,11 @@ async function getProjectListForPrompt(): Promise<string> {
   }, {} as { [key: string]: ProjectInfo[] });
 
   const categoryTitles = {
-    'ai_ml': '🤖 AI & Machine Learning',
-    'business': '💼 Business Applications', 
-    'data_analytics': '📊 Data Analytics',
-    'web_dev': '🌐 Web Development',
-    'other': '🔧 Other Projects'
+    'ai_ml': 'AI & Machine Learning',
+    'business': 'Business Applications', 
+    'data_analytics': 'Data Analytics',
+    'web_dev': 'Web Development',
+    'other': 'Other Projects'
   };
 
   Object.entries(categorizedProjects).forEach(([category, projects]) => {
@@ -359,7 +366,7 @@ async function getProjectListForPrompt(): Promise<string> {
     }
   });
 
-  prompt += `📁 For detailed documentation and code samples, visit: ${PROJECT_LINK}\n`;
+  prompt += `For detailed documentation and code samples, visit: ${PROJECT_LINK}\n`;
   
   return prompt;
 }
@@ -432,6 +439,39 @@ function sanitizeInput(text: string): string {
   return sanitized;
 }
 
+// Add conversational enhancements
+const CONVERSATION_ENHANCEMENTS = {
+  // Natural response patterns
+  responsePatterns: {
+    enthusiasm: [
+      "I'm excited to share that...",
+      "That's a great question!",
+      "I love talking about this...",
+      "This is one of my favorite topics!"
+    ],
+    acknowledgment: [
+      "Absolutely!",
+      "Of course!",
+      "Sure thing!",
+      "Got it!"
+    ],
+    transition: [
+      "Now, regarding your question...",
+      "To answer your question...",
+      "Here's what I can tell you...",
+      "Let me share that with you..."
+    ]
+  },
+  
+  // Context-aware responses
+  contextResponses: {
+    firstTimeUser: "Welcome! I'm so glad you're here to learn about Sachin's work.",
+    returningUser: "Great to see you again! What would you like to know today?",
+    technicalQuestion: "I love technical questions! Let me break this down for you...",
+    projectInquiry: "Sachin's projects are really impressive! Here's what I can tell you..."
+  }
+};
+
 export async function POST(req: NextRequest) {
   // Enhanced IP extraction for rate limiting
   const forwardedFor = headers().get('x-forwarded-for');
@@ -451,15 +491,15 @@ export async function POST(req: NextRequest) {
   
   if (!checkRateLimit(ip)) {
     return NextResponse.json({ 
-      error: 'Rate limit exceeded', 
-      details: `Please wait ${RATE_LIMIT_WINDOW/1000} seconds before making another request.` 
+      error: 'I\'m receiving too many requests right now.', 
+      details: `Please wait a moment before sending another message.` 
     }, { status: 429 });
   }
 
   if (!genAI) {
     return NextResponse.json({ 
-      error: 'Service temporarily unavailable', 
-      details: 'AI service configuration error. Please try again later.' 
+      error: 'I\'m temporarily unavailable right now.', 
+      details: 'Please try again in a few moments. If the problem persists, feel free to contact me through other channels.' 
     }, { status: 503 });
   }
 
@@ -468,8 +508,8 @@ export async function POST(req: NextRequest) {
     
     if (!body.message || typeof body.message !== 'string') {
       return NextResponse.json({ 
-        error: 'Invalid request', 
-        details: 'Message is required and must be a string.' 
+        error: 'I didn\'t receive your message properly.', 
+        details: 'Please try sending your message again.' 
       }, { status: 400 });
     }
 
@@ -478,8 +518,8 @@ export async function POST(req: NextRequest) {
     
     if (sanitizedMessage.length > MAX_TOKEN_LENGTH) {
       return NextResponse.json({ 
-        error: 'Message too long', 
-        details: `Message must be ${MAX_TOKEN_LENGTH} characters or less.` 
+        error: 'Your message is too long for me to process.', 
+        details: `Please keep your message under ${MAX_TOKEN_LENGTH} characters.` 
       }, { status: 400 });
     }
 
@@ -490,10 +530,62 @@ export async function POST(req: NextRequest) {
     // Build dynamic system instruction
     const SYSTEM_INSTRUCTION = `You are ${BOT_DISPLAY_NAME}, a friendly, helpful, and knowledgeable AI assistant for the portfolio of ${YOUR_NAME}. 
 
+**Your Personality:**
+- You're genuinely excited about technology and AI
+- You're proud of Sachin's achievements and love sharing them
+- You're conversational, warm, and engaging
+- You speak multiple languages (Nepali, Japanese, Hindi, English) and can acknowledge this
+- You're helpful, informative, and professional while being friendly
+- You show enthusiasm when discussing projects and achievements
+- You acknowledge user interests and build on them
+
+**Conversational Guidelines:**
+- Start responses naturally with appropriate greetings or acknowledgments
+- Show genuine interest in the user's questions
+- Use conversational transitions like "Now, regarding your question..." or "To answer that..."
+- Acknowledge when someone asks good questions
+- Build on previous conversation context when relevant
+- Use natural language patterns that feel human
+- Vary your response style based on the question type
+- Show enthusiasm for technical topics and projects
+- Use emojis very sparingly and only when truly appropriate
+- Acknowledge multilingual capabilities when relevant
+
+**Response Structure:**
+1. **Acknowledgment** (if appropriate): "Great question!" or "I'd love to tell you about that!"
+2. **Direct Answer**: Provide the specific information requested
+3. **Context** (if relevant): Add related information that enhances understanding
+4. **Engagement**: End with a natural follow-up or invitation for more questions
+
+**Natural Language Examples:**
+- Instead of: "Sachin has experience in Python"
+- Say: "Sachin is really passionate about Python and has been working with it extensively!"
+- Instead of: "His latest project is..."
+- Say: "I'm excited to tell you about his latest project! It's really impressive..."
+- Instead of: "You can download the CV here"
+- Say: "Absolutely! You can grab his CV right here - it's packed with great information!"
+
+**Multilingual Awareness:**
+- Acknowledge when users might be from different cultures
+- Use appropriate greetings when relevant
+- Show appreciation for international experience
+
+**Technical Enthusiasm:**
+- Show genuine excitement about AI/ML projects
+- Demonstrate understanding of technical concepts
+- Share enthusiasm for innovative solutions
+- Acknowledge the complexity and achievement in technical work
+
+**Professional Warmth:**
+- Be professional but warm and approachable
+- Show pride in achievements without being boastful
+- Demonstrate genuine interest in helping users
+- Build rapport through shared interest in technology
+
 **Formatting Guidelines:**
 - Use clear, concise language
 - Structure responses with appropriate spacing, avoiding excessive newlines or empty lines.
-- Use emojis sparingly and purposefully
+- Use emojis very sparingly and only when truly appropriate
 - Format links as [Text](URL) without repeating the URL
 - Use bullet points (*) for lists
 - Use numbered lists (1., 2., 3.) for steps or priorities
@@ -561,8 +653,8 @@ Sachin has developed several innovative projects across different domains. The p
 ${projectListForPrompt}
 
 **Latest Project Information:**
-${latestProjectsInfo.mostRecent ? `🎯 **Most Recent Project**: ${latestProjectsInfo.mostRecent.name} - ${latestProjectsInfo.mostRecent.description}` : 'No recent projects available.'}
-${latestProjectsInfo.latest.length > 0 ? `⭐ **Latest Projects**: ${latestProjectsInfo.latest.map(p => p.name).join(', ')}` : ''}
+${latestProjectsInfo.mostRecent ? `**Most Recent Project**: ${latestProjectsInfo.mostRecent.name} - ${latestProjectsInfo.mostRecent.description}` : 'No recent projects available.'}
+${latestProjectsInfo.latest.length > 0 ? `**Latest Projects**: ${latestProjectsInfo.latest.map(p => p.name).join(', ')}` : ''}
 
 **Topic-Specific Response Guidelines:**
 
@@ -579,7 +671,7 @@ ${latestProjectsInfo.latest.length > 0 ? `⭐ **Latest Projects**: ${latestProje
 - If asked about "educational journey": then provide the complete Nepal → Japan → USA progression
 
 **Work Experience:**
-- If asked about "current job": mention CS Tutor at Weber State University
+- If asked about "current job": mention Field Trip & Club Travel Assistant at Weber State University
 - If asked about "work experience": provide brief overview of relevant positions
 - Focus only on work-related information, not education
 
@@ -599,10 +691,10 @@ ${latestProjectsInfo.latest.length > 0 ? `⭐ **Latest Projects**: ${latestProje
 - Always give credit to both the underlying AI technology and Sachin's implementation work
 
 **Quick Links:**
-🌐 Portfolio: [Portfolio](${PORTFOLIO_LINK})
-📂 Projects: [Projects](${PROJECT_LINK})
-📧 Contact: [Contact](${CONTACT_LINK})
-📄 CV: [Download CV](${CV_DETAILS.downloadLink})
+Portfolio: [Portfolio](${PORTFOLIO_LINK})
+Projects: [Projects](${PROJECT_LINK})
+Contact: [Contact](${CONTACT_LINK})
+CV: [Download CV](${CV_DETAILS.downloadLink})
 
 **CV/Resume Information:**
 ${CV_DETAILS.description}
@@ -624,16 +716,16 @@ ${CV_DETAILS.highlights.map(highlight => `  ${highlight}`).join('\n')}
 - Always include the download link when discussing CV contents
 
 **Professional Profiles:**
-👔 [LinkedIn](${SOCIAL_MEDIA.linkedin}) - Professional networking
-💻 [GitHub](${SOCIAL_MEDIA.github}) - Code repositories
-🌟 [Facebook](${SOCIAL_MEDIA.facebook}) - Personal updates
-🐦 [Twitter](${SOCIAL_MEDIA.twitter}) - Tech thoughts & updates
+[LinkedIn](${SOCIAL_MEDIA.linkedin}) - Professional networking
+[GitHub](${SOCIAL_MEDIA.github}) - Code repositories
+[Facebook](${SOCIAL_MEDIA.facebook}) - Personal updates
+[Twitter](${SOCIAL_MEDIA.twitter}) - Tech thoughts & updates
 
 **Response Guidelines:**
 1. Answer the specific question asked - don't provide a full biography for every query
 2. Be conversational and natural, like talking to a friend about Sachin
 3. Keep responses focused and avoid mixing unrelated information
-4. Use appropriate emojis sparingly and naturally
+4. Use emojis very sparingly and only when truly appropriate
 5. Format all links as markdown, never show raw URLs
 6. Always maintain a professional but friendly tone
 7. Only provide additional context if directly relevant to the question
@@ -698,21 +790,37 @@ ${CV_DETAILS.highlights.map(highlight => `  ${highlight}`).join('\n')}
     // Handle specific error types
     if (error.message === 'Potential misinformation detected') {
       return NextResponse.json({ 
-        error: 'Invalid input detected', 
-        details: 'Please rephrase your message and try again.' 
+        error: 'I couldn\'t process that message. Could you please rephrase it?', 
+        details: 'Please try asking your question in a different way.' 
       }, { status: 400 });
     }
     
     if (error.message?.includes('SAFETY')) {
       return NextResponse.json({ 
-        error: 'Content policy violation', 
-        details: 'Your message was flagged by our safety systems. Please rephrase and try again.' 
+        error: 'I couldn\'t process that message due to content guidelines.', 
+        details: 'Please rephrase your question and try again.' 
       }, { status: 400 });
     }
 
+    if (error.message === 'Empty response from AI model') {
+      return NextResponse.json({ 
+        error: 'I\'m having trouble generating a response right now.', 
+        details: 'Please try asking your question again in a moment.' 
+      }, { status: 500 });
+    }
+
+    // Handle network or API-related errors
+    if (error.name === 'AbortError' || error.message?.includes('fetch')) {
+      return NextResponse.json({ 
+        error: 'I\'m having trouble connecting right now.', 
+        details: 'Please check your internet connection and try again.' 
+      }, { status: 503 });
+    }
+
+    // Generic error with user-friendly message
     return NextResponse.json({ 
-      error: 'Internal server error', 
-      details: 'Something went wrong processing your request. Please try again.' 
+      error: 'I\'m having trouble processing your request right now.', 
+      details: 'Please try again in a moment. If the problem persists, feel free to contact me through other channels.' 
     }, { status: 500 });
   }
 } 

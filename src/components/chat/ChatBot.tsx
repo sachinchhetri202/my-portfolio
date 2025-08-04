@@ -25,16 +25,96 @@ const MAX_MESSAGE_LENGTH = 1000;
 const TEASER_DELAY = 2000; // 2 seconds for teaser to appear
 
 const BOT_NAME = "Sachin.dev Assistant";
-const WELCOME_MESSAGE_CONTENT = `नमस्ते! こんにちは! Hello! 👋
-I am ${BOT_NAME}, here to help you learn about Sachin, his skills, and projects. You can also ask me about his CV/resume - I can show you what's included and help you download it! Feel free to ask me anything!`;
+const WELCOME_MESSAGE_CONTENT = `नमस्ते! こんにちは! Hello!
 
+I'm ${BOT_NAME}, and I'm genuinely excited to help you learn about Sachin! 
+
+I can tell you about his AI projects, work experience, skills, and even help you download his CV. I speak multiple languages (just like Sachin!) and love talking about technology.
+
+What would you like to know? Feel free to ask me anything!`;
+
+// Enhanced quick replies with better engagement
 const QUICK_REPLIES = [
-  "How can I get Sachin's CV?",
-  "What's in the CV?",
-  "Show latest projects",
-  "Tell me about skills",
-  "Work experience"
+  "Tell me about Sachin's latest project",
+  "What's his work experience?",
+  "Show me his technical skills",
+  "How can I get his CV?",
+  "What makes him unique?"
 ];
+
+// Context-aware quick replies based on conversation
+const getContextualQuickReplies = (conversationContext: any) => {
+  const { topicsDiscussed, userEngagement } = conversationContext;
+  
+  // If user has shown interest in projects, prioritize project-related replies
+  if (topicsDiscussed.some((topic: string) => topic.includes('project'))) {
+    return [
+      "Tell me about another project",
+      "What technologies did he use?",
+      "Show me his GitHub",
+      "What's his development process?",
+      "Any recent updates?"
+    ];
+  }
+  
+  // If user has shown interest in skills, prioritize skill-related replies
+  if (topicsDiscussed.some((topic: string) => topic.includes('skill') || topic.includes('technology'))) {
+    return [
+      "What's his strongest skill?",
+      "Show me his projects",
+      "Tell me about his experience",
+      "What tools does he use?",
+      "How does he stay updated?"
+    ];
+  }
+  
+  // If user has shown interest in work experience
+  if (topicsDiscussed.some((topic: string) => topic.includes('work') || topic.includes('job') || topic.includes('experience'))) {
+    return [
+      "What's his current role?",
+      "Tell me about his projects",
+      "Show me his skills",
+      "What's his background?",
+      "How can I contact him?"
+    ];
+  }
+  
+  // Default replies for new users or general interest
+  return QUICK_REPLIES;
+};
+
+// Add conversation context and personality traits
+const CONVERSATION_STYLES = {
+  casual: {
+    greetings: ["Hey there!", "Hi!", "Hello!", "Hey!"],
+    acknowledgments: ["Got it!", "Sure thing!", "Absolutely!", "Of course!"],
+    thinking: ["Let me think about that...", "Hmm, let me see...", "That's interesting..."],
+    enthusiasm: ["That's awesome!", "Great question!", "I love that you asked about this!"]
+  },
+  professional: {
+    greetings: ["Hello!", "Good day!", "Greetings!"],
+    acknowledgments: ["Understood.", "Certainly.", "I'd be happy to help."],
+    thinking: ["Let me provide you with that information...", "I'll share the details..."],
+    enthusiasm: ["Excellent question!", "That's a great point!", "I'm glad you asked about this."]
+  }
+};
+
+// Add personality context to the bot
+const BOT_PERSONALITY = {
+  name: "Sachin.dev Assistant",
+  traits: [
+    "enthusiastic about technology and AI",
+    "proud of Sachin's achievements", 
+    "helpful and informative",
+    "conversational but professional",
+    "multilingual awareness (Nepali, Japanese, Hindi, English)"
+  ],
+  conversationStarters: [
+    "I'm excited to tell you about Sachin's work!",
+    "Feel free to ask me anything about his projects or experience.",
+    "I love talking about technology and AI projects!"
+  ]
+};
 
 // Mobile-optimized Typing Indicator
 const TypingIndicator = ({ isDarkMode }: { isDarkMode: boolean }) => (
@@ -70,41 +150,46 @@ const TypingIndicator = ({ isDarkMode }: { isDarkMode: boolean }) => (
 );
 
 // Mobile Quick Reply Chips
-const QuickReplyChips = ({ onReplyClick, show, isDarkMode }: { 
+const QuickReplyChips = ({ onReplyClick, show, isDarkMode, conversationContext }: { 
   onReplyClick: (reply: string) => void; 
   show: boolean;
   isDarkMode: boolean;
-}) => (
-  <AnimatePresence>
-    {show && (
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        className="px-4 pb-3"
-      >
-        <div className="flex flex-wrap gap-2">
-          {QUICK_REPLIES.map((reply, index) => (
-            <motion.button
-              key={reply}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.1 }}
-              onClick={() => onReplyClick(reply)}
-              className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                isDarkMode
-                  ? 'bg-gray-800 text-gray-200 border border-gray-600 active:bg-gray-700'
-                  : 'bg-white text-violet-700 border border-violet-200 active:bg-violet-50'
-              }`}
-            >
-              {reply}
-            </motion.button>
-          ))}
-        </div>
-      </motion.div>
-    )}
-  </AnimatePresence>
-);
+  conversationContext: any;
+}) => {
+  const contextualReplies = getContextualQuickReplies(conversationContext);
+  
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="px-4 pb-3"
+        >
+          <div className="flex flex-wrap gap-2">
+            {contextualReplies.map((reply, index) => (
+              <motion.button
+                key={reply}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.1 }}
+                onClick={() => onReplyClick(reply)}
+                className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  isDarkMode
+                    ? 'bg-gray-800 text-gray-200 border border-gray-600 active:bg-gray-700 hover:bg-gray-700'
+                    : 'bg-white text-violet-700 border border-violet-200 active:bg-violet-50 hover:bg-violet-50'
+                }`}
+              >
+                {reply}
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
 
 // Mobile-optimized Message Bubble
 const MessageBubble = ({ message, isUser, isDarkMode }: { 
@@ -240,6 +325,14 @@ export function ChatBot() {
   const inputRef = useRef<HTMLInputElement>(null);
   const mobileInputRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Add conversation context and personality traits
+  const [conversationContext, setConversationContext] = useState({
+    userInterests: [] as string[],
+    conversationTone: 'casual' as 'casual' | 'professional',
+    topicsDiscussed: [] as string[],
+    userEngagement: 0
+  });
 
   useEffect(() => {
     setMessages([
@@ -422,11 +515,20 @@ export function ChatBot() {
 
       if (!response.ok) {
         const errorData = await response.json();
+        
+        // Handle rate limiting with retry
         if (response.status === 429 && retryCount < MAX_RETRIES) {
           await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * (retryCount + 1)));
           return sendMessageToAPI(message, history, retryCount + 1);
         }
-        throw new Error(errorData.error || errorData.details || `API Error: ${response.statusText}`);
+        
+        // Return user-friendly error message from API
+        if (errorData.error) {
+          throw new Error(errorData.error);
+        }
+        
+        // Fallback error message
+        throw new Error('I\'m having trouble processing your request right now. Please try again.');
       }
 
       const data = await response.json();
@@ -435,7 +537,14 @@ export function ChatBot() {
       if (error.name === 'AbortError') {
         throw new Error('Request was cancelled.');
       }
-      throw error;
+      
+      // If it's already a user-friendly error message, pass it through
+      if (error.message && !error.message.includes('API Error') && !error.message.includes('Internal server error')) {
+        throw error;
+      }
+      
+      // Provide a generic user-friendly error message
+      throw new Error('I\'m having trouble processing your request right now. Please try again.');
     }
   };
 
@@ -465,6 +574,13 @@ export function ChatBot() {
     setShowQuickReplies(false);
     sessionStorage.setItem('chatInteracted', 'true');
 
+    // Update conversation context
+    setConversationContext(prev => ({
+      ...prev,
+      userEngagement: prev.userEngagement + 1,
+      topicsDiscussed: [...prev.topicsDiscussed, messageText.toLowerCase()]
+    }));
+
     const userMessage: ChatMessage = { 
       id: Date.now().toString(), 
       content: messageText, 
@@ -478,14 +594,19 @@ export function ChatBot() {
     setTimeout(() => scrollToBottom(true), 100);
 
     try {
+      // Dynamic timing based on message complexity
+      const messageComplexity = messageText.length > 50 ? 'complex' : 'simple';
+      const baseDelay = messageComplexity === 'complex' ? 1200 : 800;
+      const typingDelay = messageComplexity === 'complex' ? 800 : 500;
+      
       // Step 1: Wait a moment, then mark message as sent
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await new Promise(resolve => setTimeout(resolve, baseDelay));
       setMessages(prev => 
         prev.map(msg => msg.id === userMessage.id ? { ...msg, status: 'sent' as const } : msg)
       );
       
       // Step 2: Wait another moment, then start typing indicator
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, typingDelay));
       setIsTyping(true);
       
       // Step 3: Get the bot response
@@ -507,17 +628,24 @@ export function ChatBot() {
       setTimeout(() => scrollToBottom(true), 200);
     } catch (error: any) {
       console.error('Error sending message:', error);
-      const errorMessageText = error.message || 'An error occurred while sending your message.';
+      
+      // Use the error message from the API if available, otherwise provide a friendly fallback
+      const errorMessageText = error.message || 'I\'m having trouble processing your request right now. Please try again.';
+      
       setError(errorMessageText);
       setIsTyping(false);
+      
+      // Update user message status to error
       setMessages(prev => {
         const updatedMessages = prev.map(msg => msg.id === userMessage.id ? { ...msg, status: 'error' as const } : msg);
+        
+        // Add a helpful error message from the bot
         return [...updatedMessages, { 
           id: (Date.now() + 1).toString(), 
           content: errorMessageText, 
-          role: 'error' as const, 
+          role: 'assistant', 
           timestamp: new Date(), 
-          status: 'error' as const 
+          status: 'sent' as const 
         }];
       });
     } finally {
@@ -738,6 +866,7 @@ export function ChatBot() {
                 onReplyClick={handleQuickReply} 
                 show={showQuickReplies && messages.length === 1 && !isLoading}
                 isDarkMode={isDarkMode}
+                conversationContext={conversationContext}
               />
               
               <div ref={messagesEndRef} />
@@ -942,6 +1071,7 @@ export function ChatBot() {
                 onReplyClick={handleQuickReply} 
                 show={showQuickReplies && messages.length === 1 && !isLoading}
                 isDarkMode={isDarkMode}
+                conversationContext={conversationContext}
               />
 
               {/* Mobile Error Display */}

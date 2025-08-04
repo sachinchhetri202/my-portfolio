@@ -31,12 +31,24 @@ export default function AboutPage() {
       ],
     },
     {
-      title: 'CS Tutor',
-      org: 'Weber State University',
-      date: 'Oct 2024 – Present',
+      title: 'Field Trip & Club Travel Assistant',
+      org: 'Weber State University, Study Abroad Office',
+      date: '2025 – Present',
       bullets: [
-        'Assist students with course materials and assignments.',
-        'Provide one-on-one tutoring in programming and algorithms.',
+        'Assisting the Director of Study Abroad with trip planning and execution.',
+        'Coordinating with faculty, department chairs, and Risk Management to ensure university-wide compliance.',
+        'Managing documentation by gathering necessary signatures from designated signatories.',
+        'Maintaining a comprehensive database of all university field trips.',
+      ],
+    },
+    {
+      title: 'Computer Science Tutor',
+      org: 'Weber State University, Engineering, Applied Science and Technology',
+      date: '2024 – 2025',
+      bullets: [
+        'Provided one-on-one and group tutoring for students in CS, NET, and WEB courses.',
+        'Supported students in foundational and intermediate Computer Science courses (CS 1400, 1410, 2550, 2420).',
+        'Emphasized troubleshooting, problem-solving, and practical coding skills.',
       ],
     },
   ]

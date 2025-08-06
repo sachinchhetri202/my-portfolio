@@ -9,6 +9,69 @@ import AnimatedBackground from '@/components/AnimatedBackground'
 import { ProjectsGridSkeleton, LoadingSpinner } from '@/components/LoadingStates'
 import { ProjectSchema } from '@/components/SchemaMarkup'
 
+// Contributions Section Component
+const ContributionsSection = ({ username }: { username: string }) => {
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Simulate loading for smooth animation
+    const timer = setTimeout(() => setIsLoading(false), 500)
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (isLoading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gray-900/80 backdrop-blur-md rounded-2xl p-6 border border-green-900/30"
+      >
+        <div className="animate-pulse">
+          <div className="h-6 bg-gray-700 rounded w-1/3 mb-4"></div>
+          <div className="h-32 bg-gray-700 rounded"></div>
+        </div>
+      </motion.div>
+    )
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, delay: 0.3 }}
+      className="bg-gray-900/80 backdrop-blur-md rounded-2xl p-6 border border-green-900/30 hover:border-green-400/50 transition-all duration-300"
+    >
+      {/* Header */}
+      <div className="mb-6 text-center">
+        <h3 className="text-xl font-semibold text-green-300 mb-2">Contributions</h3>
+        <p className="text-gray-400 text-sm">My coding journey over the past year</p>
+      </div>
+
+      {/* GitHub Contribution Graph */}
+      <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
+        {/* GitHub Contribution Graph Image */}
+        <div className="relative">
+          <img 
+            src={`https://ghchart.rshah.org/${username}`}
+            alt="GitHub Contributions"
+            className="w-full h-auto rounded-lg"
+            style={{
+              imageRendering: 'crisp-edges'
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Footer Note */}
+      <div className="mt-4 text-center">
+        <p className="text-xs text-gray-500">
+          Each square represents a day • Darker green = more contributions
+        </p>
+      </div>
+    </motion.div>
+  )
+}
+
 interface GitHubRepo {
   id: number;
   name: string;
@@ -387,6 +450,18 @@ export default function ProjectsPage() {
             className="text-center text-gray-400 py-10"
           >
             No repositories found matching the criteria.
+          </motion.div>
+        )}
+
+        {/* Contributions Section */}
+        {!isLoading && !error && repos.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.4 }}
+            className="mt-16"
+          >
+            <ContributionsSection username={GITHUB_CONFIG.username} />
           </motion.div>
         )}
 

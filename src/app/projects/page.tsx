@@ -99,7 +99,7 @@ const GITHUB_CONFIG = {
   // Repositories to exclude (forks, archived, or specific repos you don't want to show)
   excludeRepos: ['sachinchhetri202', 'config-files', 'dotfiles'],
   // Featured repositories (will be shown first)
-  featuredRepos: ['HomeExpenseTracker', 'my-portfolio'],
+  featuredRepos: ['robinhood_api_trading', 'my-portfolio'],
   // Minimum stars to show (set to 0 to show all)
   minStars: 0,
   // Show forks (set to false to hide forked repositories)

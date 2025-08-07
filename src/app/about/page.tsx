@@ -11,10 +11,11 @@ import { useState } from 'react'
 export default function AboutPage() {
   const [expandedSections, setExpandedSections] = useState({
     weberState: true,
-    otherExperience: true
+    otherExperience: true,
+    leadership: true
   })
 
-  const toggleSection = (section: 'weberState' | 'otherExperience') => {
+  const toggleSection = (section: 'weberState' | 'otherExperience' | 'leadership') => {
     setExpandedSections(prev => ({
       ...prev,
       [section]: !prev[section]
@@ -67,6 +68,21 @@ export default function AboutPage() {
         'Maintaining a comprehensive database of all university field trips.',
       ],
       category: 'weber-state'
+    },
+  ]
+
+  const leadership = [
+    {
+      title: 'Founder & Former President',
+      org: 'Nepalese Student Association',
+      date: '2022 – 2024',
+      bullets: [
+        'Led a 500+ member student organization, coordinating cultural events and mentorship initiatives.',
+        'Founded and established the association from the ground up, creating a supportive community for Nepalese students.',
+        'Organized cultural events, guided new students, and launched comprehensive mentorship programs.',
+        'Successfully transitioned leadership and maintained organizational continuity after presidency.',
+      ],
+      reflectionLink: '/reflection/Reflection on my Presidency.pdf'
     },
   ]
 
@@ -349,8 +365,121 @@ export default function AboutPage() {
                   </motion.div>
                 )}
               </AnimatePresence>
+
+              {/* Leadership Section */}
+              <div className="mt-8">
+              <motion.button
+                onClick={() => toggleSection('leadership')}
+                className="w-full flex items-center justify-between gap-3 mb-4 p-4 rounded-xl bg-gray-700/20 hover:bg-gray-700/30 transition-all duration-300 group cursor-pointer border border-gray-500/20 hover:border-gray-500/40"
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 bg-gray-700/60 text-gray-300 px-3 py-1 rounded-full text-sm font-mono">
+                    <FaBriefcase className="text-gray-400" />
+                    Leadership
+                  </div>
+                  <span className="text-xs text-gray-400 font-mono bg-gray-700/40 px-2 py-1 rounded-full">
+                    {leadership.length} position
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  {!expandedSections.leadership && (
+                    <div className="text-xs text-gray-400/70 font-mono hidden sm:block">
+                      Former President, NSA
+                    </div>
+                  )}
+                  <motion.div
+                    animate={{ rotate: expandedSections.leadership ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-gray-400 group-hover:text-gray-300 transition-colors"
+                  >
+                    <FaChevronDown />
+                  </motion.div>
+                </div>
+              </motion.button>
+              
+              <AnimatePresence>
+                {expandedSections.leadership ? (
+                  <motion.ul
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="space-y-4 overflow-hidden"
+                  >
+                    {leadership.map((item, idx) => (
+                      <motion.li
+                        key={item.title}
+                        className="bg-gray-800/80 rounded-xl p-5 shadow-md border-l-4 border-green-500 relative group transition-all duration-300 hover:bg-gray-800/95 hover:shadow-xl hover:shadow-green-900/20"
+                        initial={{ opacity: 0, x: 30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: idx * 0.15 }}
+                        whileHover={{
+                          scale: 1.02,
+                          transition: { duration: 0.2 }
+                        }}
+                      >
+                        <div className="absolute inset-x-0 h-[2px] bottom-0 bg-gradient-to-r from-transparent via-green-500 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+                        <div className="absolute top-0 left-0 w-full h-full bg-green-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl" />
+                        
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="text-lg font-bold text-green-200 group-hover:text-green-300 transition-colors">{item.title}</h3>
+                          <span className="text-xs text-green-400 font-mono bg-green-900/40 px-2 py-1 rounded-full">Leadership</span>
+                        </div>
+                        <span className="text-xs text-gray-400 font-mono group-hover:text-gray-300 transition-colors">{item.org} | {item.date}</span>
+                        <ul className="list-disc pl-5 text-sm text-gray-300 mt-2 space-y-1">
+                          {item.bullets.map((b, i) => (
+                            <motion.li 
+                              key={i}
+                              initial={{ opacity: 0.8 }}
+                              whileHover={{ opacity: 1, x: 5 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              {b}
+                            </motion.li>
+                          ))}
+                        </ul>
+                        
+                        {/* Reflection PDF Link */}
+                        {item.reflectionLink && (
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.3 }}
+                            className="mt-4 pt-4 border-t border-gray-700/50"
+                          >
+                            <a
+                              href={item.reflectionLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-200 hover:scale-105"
+                            >
+                              <FaBriefcase className="text-sm" />
+                              <span className="text-sm font-medium">Read My Presidency Reflection</span>
+                            </a>
+                          </motion.div>
+                        )}
+                      </motion.li>
+                    ))}
+                  </motion.ul>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-center py-6 text-gray-400/60 text-sm font-mono"
+                  >
+                    Click to expand and view leadership experience details
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
+        </div>
         </motion.section>
 
         {/* Education Section - Full Width */}

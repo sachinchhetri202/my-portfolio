@@ -6,7 +6,7 @@ import { GiWorld } from 'react-icons/gi'
 import AnimatedBackground from '@/components/AnimatedBackground'
 import { SiPython } from 'react-icons/si'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function AboutPage() {
   const [expandedSections, setExpandedSections] = useState({
@@ -14,6 +14,21 @@ export default function AboutPage() {
     otherExperience: true,
     leadership: true
   })
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  
+  const images = [
+    "https://i.postimg.cc/4x72mLrY/88fb2859-e5e3-423a-bbfa-eeae0fcb4dbd.png",
+    "https://i.postimg.cc/KjP39B1y/22aa6ca8-f7ad-4cff-8d98-b1b5b39c830b.jpg"
+  ]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % images.length)
+    }, 3000) // Change image every 3 seconds
+
+    return () => clearInterval(interval)
+  }, [images.length])
 
   const toggleSection = (section: 'weberState' | 'otherExperience' | 'leadership') => {
     setExpandedSections(prev => ({
@@ -155,13 +170,23 @@ export default function AboutPage() {
           {/* Image */}
           <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} className="flex justify-center md:justify-end order-1 md:order-2">
             <div className="relative group">
-              <Image
-                src="https://i.postimg.cc/KjP39B1y/22aa6ca8-f7ad-4cff-8d98-b1b5b39c830b.jpg"
-                alt="Sachin Chhetri"
-                width={280}
-                height={310}
-                className="w-64 h-64 sm:w-80 sm:h-80 md:w-[350px] md:h-[390px] rounded-full ring-4 ring-green-400 object-cover shadow-2xl group-hover:scale-105 transition-transform duration-300"
-              />
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentImageIndex}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.2 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                >
+                  <Image
+                    src={images[currentImageIndex]}
+                    alt="Sachin Chhetri"
+                    width={280}
+                    height={310}
+                    className="w-64 h-64 sm:w-80 sm:h-80 md:w-[350px] md:h-[390px] rounded-full ring-4 ring-green-400 object-contain shadow-2xl group-hover:scale-105 transition-transform duration-300"
+                  />
+                </motion.div>
+              </AnimatePresence>
               <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-green-500/90 text-gray-900 px-4 py-1 rounded-full text-xs font-bold shadow-lg">Let&apos;s Connect!</span>
             </div>
           </motion.div>

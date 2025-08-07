@@ -27,19 +27,19 @@ const TEASER_DELAY = 2000; // 2 seconds for teaser to appear
 const BOT_NAME = "Sachin.dev Assistant";
 const WELCOME_MESSAGE_CONTENT = `नमस्ते! こんにちは! Hello!
 
-I'm ${BOT_NAME}, and I'm genuinely excited to help you learn about Sachin! 
+I'm ${BOT_NAME}, excited to help you learn about Sachin! 
 
-I can tell you about his AI projects, work experience, skills, and even help you download his CV. I speak multiple languages (just like Sachin!) and love talking about technology.
+I can tell you about his AI projects, work experience, skills, and help you download his CV. I speak multiple languages and love talking about technology.
 
-What would you like to know? Feel free to ask me anything!`;
+What would you like to know?`;
 
 // Enhanced quick replies with better engagement
 const QUICK_REPLIES = [
-  "Tell me about Sachin's latest project",
-  "What's his work experience?",
-  "Show me his technical skills",
-  "How can I get his CV?",
-  "What makes him unique?"
+  "Latest project",
+  "Work experience",
+  "Technical skills",
+  "Download CV",
+  "What makes him unique"
 ];
 
 // Context-aware quick replies based on conversation
@@ -165,9 +165,16 @@ const QuickReplyChips = ({ onReplyClick, show, isDarkMode, conversationContext }
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className="px-4 pb-3"
+          className="px-3 pb-1.5"
         >
-          <div className="flex flex-wrap gap-2">
+          <div className="mb-2">
+            <p className={`text-xs font-medium mb-1.5 ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-500'
+            }`}>
+              💡 Try asking about:
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
             {contextualReplies.map((reply, index) => (
               <motion.button
                 key={reply}
@@ -175,7 +182,7 @@ const QuickReplyChips = ({ onReplyClick, show, isDarkMode, conversationContext }
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => onReplyClick(reply)}
-                className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                className={`px-2 py-1 rounded-full text-xs font-medium transition-all duration-200 ${
                   isDarkMode
                     ? 'bg-gray-800 text-gray-200 border border-gray-600 active:bg-gray-700 hover:bg-gray-700'
                     : 'bg-white text-violet-700 border border-violet-200 active:bg-violet-50 hover:bg-violet-50'
@@ -242,7 +249,7 @@ const MessageBubble = ({ message, isUser, isDarkMode }: {
       initial={{ opacity: 0, y: 15, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3 px-4`}
+      className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-1.5 px-3`}
     >
       <div className={`flex items-start space-x-2 max-w-[90%] w-full ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`}>
         {/* Avatar */}
@@ -255,7 +262,7 @@ const MessageBubble = ({ message, isUser, isDarkMode }: {
         </div>
         
         {/* Message Content */}
-        <div className={`rounded-2xl px-3 py-3 ${
+        <div className={`rounded-2xl px-2.5 py-2 ${
           isUser 
             ? isDarkMode
               ? 'bg-violet-600 text-white rounded-br-md'
@@ -841,7 +848,7 @@ export function ChatBot() {
             {/* Desktop Messages Area */}
             <div 
               id="desktop-messages-container"
-              className={`flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-1 transition-all duration-300 ${
+              className={`flex-1 overflow-y-auto overflow-x-hidden p-2.5 space-y-0.5 transition-all duration-300 ${
                 isDarkMode 
                   ? 'bg-gradient-to-b from-gray-800/50 to-gray-900' 
                   : 'bg-gradient-to-b from-gray-50/50 to-white'
@@ -1042,7 +1049,7 @@ export function ChatBot() {
                 className="flex-1 overflow-y-auto overflow-x-hidden overscroll-bounce" 
                 style={{ WebkitOverflowScrolling: 'touch' }}
               >
-                <div className="py-4">
+                <div className="py-2.5">
                   <AnimatePresence initial={false}>
                     {messages.map((message) => (
                       <MessageBubble

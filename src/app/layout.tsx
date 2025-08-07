@@ -33,19 +33,20 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://sachinchhetri.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://sachinpc202.netlify.app'),
   title: {
-    default: "Sachin Chhetri | Backend Developer",
+    default: "Sachin Chhetri | AI Engineer",
     template: "%s | Sachin Chhetri"
   },
-  description: "Backend Developer specializing in Python, Django, and modern web technologies. Experienced in full-stack development and API design.",
-  authors: [{ name: "Sachin Chhetri", url: "https://sachinchhetri.com" }],
+  description: "AI Engineer specializing in Python, Machine Learning, and modern AI technologies. Experienced in full-stack development and AI integration.",
+  authors: [{ name: "Sachin Chhetri", url: "https://sachinpc202.netlify.app/" }],
   keywords: [
-    "Backend Developer",
+    "AI Engineer",
+    "Machine Learning Engineer",
     "Software Engineer",
     "Full Stack Developer",
     "Python Developer",
-    "Django Developer",
+    "AI Developer",
     "Node.js",
     "React",
     "Web Development",
@@ -56,25 +57,25 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://sachinchhetri.com",
+    url: "https://sachinpc202.netlify.app",
     siteName: "Sachin Chhetri",
-    title: "Sachin Chhetri | Backend Developer",
-    description: "Backend Developer specializing in Python, Django, and modern web technologies",
+    title: "Sachin Chhetri | AI Engineer",
+    description: "AI Engineer specializing in Python, Machine Learning, and modern AI technologies",
     images: [
       {
         url: "/og-image.jpg", // You'll need to add this image
         width: 1200,
         height: 630,
-        alt: "Sachin Chhetri - Backend Developer"
+        alt: "Sachin Chhetri - AI Engineer"
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sachin Chhetri | Backend Developer",
-    description: "Backend Developer specializing in Python, Django, and modern web technologies",
+    title: "Sachin Chhetri | AI Engineer",
+    description: "AI Engineer specializing in Python, Machine Learning, and modern AI technologies",
     images: ["/og-image.jpg"], // Same image as OpenGraph
-    creator: "@sachinchhetri" // Replace with your Twitter handle if you have one
+    creator: "@sachinchhetri202" 
   },
   robots: {
     index: true,

@@ -21,9 +21,9 @@ interface ProjectSchemaProps {
 
 export const PersonSchema: React.FC<PersonSchemaProps> = ({
   name = "Sachin Chhetri",
-  jobTitle = "Backend Developer & Software Engineer",
+  jobTitle = "AI Engineer & Software Engineer",
   url = "https://sachinpc202.netlify.app",
-  description = "Backend Developer specializing in Python, Django, and modern web technologies. Experienced in full-stack development and API design.",
+  description = "AI Engineer specializing in Python, Machine Learning, and modern AI technologies. Experienced in full-stack development and AI integration.",
   image = "https://i.postimg.cc/0jbHD5jm/05ae2658-aec3-4526-9e97-1bfe5f5b60f8.jpg",
   sameAs = [
     "https://github.com/sachinchhetri202",
@@ -42,7 +42,7 @@ export const PersonSchema: React.FC<PersonSchemaProps> = ({
     "sameAs": sameAs,
     "knowsAbout": [
       "Python",
-      "Django",
+      "Machine Learning",
       "JavaScript",
       "React",
       "Next.js",
@@ -52,7 +52,7 @@ export const PersonSchema: React.FC<PersonSchemaProps> = ({
       "Docker",
       "Git",
       "Web Development",
-      "Backend Development",
+      "AI Development",
       "API Design",
       "Database Engineering"
     ],
@@ -115,7 +115,7 @@ export const WebsiteSchema: React.FC = () => {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Sachin Chhetri Portfolio",
-    "description": "Portfolio website of Sachin Chhetri, Backend Developer and Software Engineer",
+    "description": "Portfolio website of Sachin Chhetri, AI Engineer and Software Engineer",
     "url": "https://sachinpc202.netlify.app",
     "author": {
       "@type": "Person",

@@ -33,13 +33,13 @@ I can tell you about his AI projects, work experience, skills, and even help you
 
 What would you like to know? Feel free to ask me anything!`;
 
-// Enhanced quick replies with better engagement - natural and concise
+// Enhanced quick replies with better engagement
 const QUICK_REPLIES = [
-  "View Projects",
-  "Experience",
-  "Skills",
-  "Get CV",
-  "About Me"
+  "Tell me about Sachin's latest project",
+  "What's his work experience?",
+  "Show me his technical skills",
+  "How can I get his CV?",
+  "What makes him unique?"
 ];
 
 // Context-aware quick replies based on conversation
@@ -49,33 +49,33 @@ const getContextualQuickReplies = (conversationContext: any) => {
   // If user has shown interest in projects, prioritize project-related replies
   if (topicsDiscussed.some((topic: string) => topic.includes('project'))) {
     return [
-      "More Projects",
-      "Tech Stack",
-      "GitHub",
-      "Process",
-      "Updates"
+      "Tell me about another project",
+      "What technologies did he use?",
+      "Show me his GitHub",
+      "What's his development process?",
+      "Any recent updates?"
     ];
   }
   
   // If user has shown interest in skills, prioritize skill-related replies
   if (topicsDiscussed.some((topic: string) => topic.includes('skill') || topic.includes('technology'))) {
     return [
-      "Top Skills",
-      "Projects",
-      "Experience",
-      "Tools",
-      "Learning"
+      "What's his strongest skill?",
+      "Show me his projects",
+      "Tell me about his experience",
+      "What tools does he use?",
+      "How does he stay updated?"
     ];
   }
   
   // If user has shown interest in work experience
   if (topicsDiscussed.some((topic: string) => topic.includes('work') || topic.includes('job') || topic.includes('experience'))) {
     return [
-      "Current Role",
-      "Projects",
-      "Skills",
-      "Background",
-      "Contact"
+      "What's his current role?",
+      "Tell me about his projects",
+      "Show me his skills",
+      "What's his background?",
+      "How can I contact him?"
     ];
   }
   
@@ -165,9 +165,9 @@ const QuickReplyChips = ({ onReplyClick, show, isDarkMode, conversationContext }
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className="px-4 pb-2"
+          className="px-4 pb-3"
         >
-          <div className="flex flex-wrap gap-2 justify-center">
+          <div className="flex flex-wrap gap-2">
             {contextualReplies.map((reply, index) => (
               <motion.button
                 key={reply}
@@ -175,15 +175,11 @@ const QuickReplyChips = ({ onReplyClick, show, isDarkMode, conversationContext }
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => onReplyClick(reply)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 leading-tight ${
+                className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   isDarkMode
                     ? 'bg-gray-800 text-gray-200 border border-gray-600 active:bg-gray-700 hover:bg-gray-700'
                     : 'bg-white text-violet-700 border border-violet-200 active:bg-violet-50 hover:bg-violet-50'
                 }`}
-                style={{ 
-                  minWidth: '100px',
-                  maxWidth: '140px'
-                }}
               >
                 {reply}
               </motion.button>

@@ -2,9 +2,10 @@
 
 import { useState, useRef, useEffect, FormEvent, useCallback } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
-import { PaperAirplaneIcon, ChatBubbleOvalLeftEllipsisIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { PaperAirplaneIcon, ChatBubbleOvalLeftEllipsisIcon, XMarkIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/outline';
 import { FaUser, FaRobot } from 'react-icons/fa';
 import { FiSend } from 'react-icons/fi';
+import { MdEmail } from 'react-icons/md';
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 
@@ -25,6 +26,7 @@ const MAX_MESSAGE_LENGTH = 1000;
 const TEASER_DELAY = 2000; // 2 seconds for teaser to appear
 
 const BOT_NAME = "Sachin.dev Assistant";
+const MAINTENANCE_END_TIME = "2025-08-25T12:00:00Z"; // Update this as needed
 const WELCOME_MESSAGE_CONTENT = `नमस्ते! こんにちは! Hello!
 
 I'm ${BOT_NAME}, excited to help you learn about Sachin! 
@@ -32,6 +34,64 @@ I'm ${BOT_NAME}, excited to help you learn about Sachin!
 I can tell you about his AI projects, work experience, skills, and help you download his CV. I speak multiple languages and love talking about technology.
 
 What would you like to know?`;
+
+// Maintenance Message Component
+const MaintenanceMessage = ({ isDarkMode }: { isDarkMode: boolean }) => {
+  const formattedEndTime = new Date(MAINTENANCE_END_TIME).toLocaleString(undefined, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short'
+  });
+
+  return (
+    <div className={`flex flex-col items-center justify-center h-full p-6 text-center ${
+      isDarkMode ? 'text-gray-300' : 'text-gray-700'
+    }`}>
+      <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${
+        isDarkMode ? 'bg-gray-800' : 'bg-gray-100'
+      }`}>
+        <WrenchScrewdriverIcon className="w-8 h-8 text-violet-500" />
+      </div>
+      
+      <h3 className={`text-lg font-semibold mb-2 ${
+        isDarkMode ? 'text-white' : 'text-gray-900'
+      }`}>
+        Bot Maintenance in Progress
+      </h3>
+      
+      <p className="mb-4 text-sm">
+        I'm currently undergoing scheduled maintenance to improve my capabilities.
+        I'll be back online soon!
+      </p>
+      
+      <div className={`p-4 rounded-lg mb-6 text-sm ${
+        isDarkMode ? 'bg-gray-800' : 'bg-gray-100'
+      }`}>
+        <p className="font-medium mb-2">Expected Return:</p>
+        <p className="text-violet-500">{formattedEndTime}</p>
+      </div>
+      
+      <div className="space-y-3">
+        <p className="text-sm font-medium">Meanwhile, you can reach out via:</p>
+        <a
+          href="mailto:sachinpc202@gmail.com"
+          className={`flex items-center justify-center space-x-2 px-4 py-2 rounded-full transition-colors ${
+            isDarkMode 
+              ? 'bg-gray-800 hover:bg-gray-700 text-white' 
+              : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
+          }`}
+        >
+          <MdEmail className="w-5 h-5" />
+          <span>Email</span>
+        </a>
+      </div>
+    </div>
+  );
+};
 
 // Enhanced quick replies with better engagement
 const QUICK_REPLIES = [
@@ -332,6 +392,10 @@ export function ChatBot() {
   const inputRef = useRef<HTMLInputElement>(null);
   const mobileInputRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  
+  // Check for maintenance mode
+  const isMaintenanceMode = typeof window !== 'undefined' && 
+    process.env.NEXT_PUBLIC_BOT_MAINTENANCE?.toLowerCase() === 'true';
 
   // Add conversation context and personality traits
   const [conversationContext, setConversationContext] = useState({
@@ -716,7 +780,11 @@ export function ChatBot() {
             className="fixed bottom-20 left-4 right-4 z-40 sm:left-auto sm:right-6 sm:max-w-xs"
           >
             <div
-              className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-2xl p-4 shadow-2xl cursor-pointer"
+              className={`${
+                isMaintenanceMode 
+                  ? 'bg-gradient-to-r from-orange-500 to-red-600'
+                  : 'bg-gradient-to-r from-blue-600 to-indigo-700'
+              } text-white rounded-2xl p-4 shadow-2xl cursor-pointer`}
               onClick={() => {
                 setIsOpen(true);
                 setShowTeaser(false);
@@ -724,16 +792,33 @@ export function ChatBot() {
               }}
             >
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                  <FaRobot className="w-5 h-5" />
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                  isMaintenanceMode ? 'bg-orange-400/20' : 'bg-white/20'
+                }`}>
+                  {isMaintenanceMode ? (
+                    <WrenchScrewdriverIcon className="w-5 h-5" />
+                  ) : (
+                    <FaRobot className="w-5 h-5" />
+                  )}
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-sm">Hi! I'm Sachin's AI Assistant</p>
-                  <p className="text-blue-100 text-xs mt-1">Ask me anything about his work!</p>
+                  {isMaintenanceMode ? (
+                    <>
+                      <p className="font-semibold text-sm">Bot Maintenance in Progress</p>
+                      <p className="text-orange-100 text-xs mt-1">Click for more details</p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="font-semibold text-sm">Hi! I'm Sachin's AI Assistant</p>
+                      <p className="text-blue-100 text-xs mt-1">Ask me anything about his work!</p>
+                    </>
+                  )}
                 </div>
               </div>
               <motion.div
-                className="absolute -top-1 -right-1 w-4 h-4 bg-violet-500 rounded-full border-2 border-white"
+                className={`absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${
+                  isMaintenanceMode ? 'bg-orange-500' : 'bg-violet-500'
+                }`}
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
@@ -750,15 +835,23 @@ export function ChatBot() {
               setIsOpen(true);
               sessionStorage.setItem('chatInteracted', 'true');
             }}
-            className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-full shadow-2xl z-50 flex items-center justify-center"
+            className={`fixed bottom-6 right-6 w-14 h-14 text-white rounded-full shadow-2xl z-50 flex items-center justify-center ${
+              isMaintenanceMode 
+                ? 'bg-gradient-to-r from-orange-500 to-red-600'
+                : 'bg-gradient-to-r from-blue-600 to-indigo-700'
+            }`}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             whileTap={{ scale: 0.95 }}
-            aria-label="Open chat assistant"
+            aria-label={isMaintenanceMode ? "Chat maintenance in progress" : "Open chat assistant"}
             style={{ minWidth: '44px', minHeight: '44px' }}
           >
-            <ChatBubbleOvalLeftEllipsisIcon className="w-7 h-7" />
+            {isMaintenanceMode ? (
+              <WrenchScrewdriverIcon className="w-7 h-7" />
+            ) : (
+              <ChatBubbleOvalLeftEllipsisIcon className="w-7 h-7" />
+            )}
           </motion.button>
         )}
       </AnimatePresence>
@@ -848,35 +941,41 @@ export function ChatBot() {
             {/* Desktop Messages Area */}
             <div 
               id="desktop-messages-container"
-              className={`flex-1 overflow-y-auto overflow-x-hidden p-2.5 space-y-0.5 transition-all duration-300 ${
+              className={`flex-1 overflow-y-auto overflow-x-hidden transition-all duration-300 ${
                 isDarkMode 
                   ? 'bg-gradient-to-b from-gray-800/50 to-gray-900' 
                   : 'bg-gradient-to-b from-gray-50/50 to-white'
-              }`}
+              } ${!isMaintenanceMode ? 'p-2.5 space-y-0.5' : ''}`}
             >
-              <AnimatePresence initial={false}>
-                {messages.map((message) => (
-                  <MessageBubble
-                    key={message.id}
-                    message={message}
-                    isUser={message.role === 'user'}
+              {isMaintenanceMode ? (
+                <MaintenanceMessage isDarkMode={isDarkMode} />
+              ) : (
+                <>
+                  <AnimatePresence initial={false}>
+                    {messages.map((message) => (
+                      <MessageBubble
+                        key={message.id}
+                        message={message}
+                        isUser={message.role === 'user'}
+                        isDarkMode={isDarkMode}
+                      />
+                    ))}
+                  </AnimatePresence>
+                  
+                  <AnimatePresence>
+                    {isTyping && <TypingIndicator isDarkMode={isDarkMode} />}
+                  </AnimatePresence>
+                  
+                  <QuickReplyChips 
+                    onReplyClick={handleQuickReply} 
+                    show={showQuickReplies && messages.length === 1 && !isLoading}
                     isDarkMode={isDarkMode}
+                    conversationContext={conversationContext}
                   />
-                ))}
-              </AnimatePresence>
-              
-              <AnimatePresence>
-                {isTyping && <TypingIndicator isDarkMode={isDarkMode} />}
-              </AnimatePresence>
-              
-              <QuickReplyChips 
-                onReplyClick={handleQuickReply} 
-                show={showQuickReplies && messages.length === 1 && !isLoading}
-                isDarkMode={isDarkMode}
-                conversationContext={conversationContext}
-              />
-              
-              <div ref={messagesEndRef} />
+                  
+                  <div ref={messagesEndRef} />
+                </>
+              )}
             </div>
 
             {/* Desktop Error Display */}
@@ -905,8 +1004,8 @@ export function ChatBot() {
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask me anything..."
-                  disabled={isLoading}
+                  placeholder={isMaintenanceMode ? "Chat is currently under maintenance..." : "Ask me anything..."}
+                  disabled={isLoading || isMaintenanceMode}
                   className={`w-full h-12 pl-4 pr-12 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition-all duration-200 disabled:opacity-50 ${
                     isDarkMode 
                       ? 'bg-gray-800 border border-gray-600 text-white placeholder-gray-400' 
@@ -1049,28 +1148,32 @@ export function ChatBot() {
                 className="flex-1 overflow-y-auto overflow-x-hidden overscroll-bounce" 
                 style={{ WebkitOverflowScrolling: 'touch' }}
               >
-                <div className="py-2.5">
-                  <AnimatePresence initial={false}>
-                    {messages.map((message) => (
-                      <MessageBubble
-                        key={message.id}
-                        message={message}
-                        isUser={message.role === 'user'}
-                        isDarkMode={isDarkMode}
-                      />
-                    ))}
-                  </AnimatePresence>
-                  
-                  <AnimatePresence>
-                    {isTyping && (
-                      <div className="px-4">
-                        <TypingIndicator isDarkMode={isDarkMode} />
-                      </div>
-                    )}
-                  </AnimatePresence>
-                  
-                  <div ref={messagesEndRef} />
-                </div>
+                {isMaintenanceMode ? (
+                  <MaintenanceMessage isDarkMode={isDarkMode} />
+                ) : (
+                  <div className="py-2.5">
+                    <AnimatePresence initial={false}>
+                      {messages.map((message) => (
+                        <MessageBubble
+                          key={message.id}
+                          message={message}
+                          isUser={message.role === 'user'}
+                          isDarkMode={isDarkMode}
+                        />
+                      ))}
+                    </AnimatePresence>
+                    
+                    <AnimatePresence>
+                      {isTyping && (
+                        <div className="px-4">
+                          <TypingIndicator isDarkMode={isDarkMode} />
+                        </div>
+                      )}
+                    </AnimatePresence>
+                    
+                    <div ref={messagesEndRef} />
+                  </div>
+                )}
               </div>
 
               {/* Mobile Quick Reply Chips */}
@@ -1105,8 +1208,8 @@ export function ChatBot() {
                       ref={mobileInputRef}
                       value={input}
                       onChange={handleInputChange}
-                      placeholder="Ask me anything..."
-                      disabled={isLoading}
+                      placeholder={isMaintenanceMode ? "Chat is currently under maintenance..." : "Ask me anything..."}
+                      disabled={isLoading || isMaintenanceMode}
                       rows={1}
                       className={`flex-1 resize-none border-0 bg-transparent px-3 py-3 text-sm placeholder-gray-500 focus:outline-none ${
                         isDarkMode ? 'text-white' : 'text-gray-900'

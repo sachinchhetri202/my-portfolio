@@ -26,7 +26,7 @@ const MAX_MESSAGE_LENGTH = 1000;
 const TEASER_DELAY = 2000; // 2 seconds for teaser to appear
 
 const BOT_NAME = "Sachin.dev Assistant";
-const MAINTENANCE_END_TIME = "2025-08-31T12:00:00Z"; // Update this as needed
+const MAINTENANCE_END_TIME = "2025-12-01T12:00:00Z"; // Update this as needed
 const WELCOME_MESSAGE_CONTENT = `नमस्ते! こんにちは! Hello!
 
 I'm ${BOT_NAME}, excited to help you learn about Sachin! 

@@ -24,7 +24,7 @@ const contactInfo = [
   { 
     icon: <FaMapMarkerAlt className="text-green-400 text-xl" />, 
     label: "Location",
-    value: "Ogden, Utah",
+    value: "Ogden, UT",
     description: "Currently based in"
   },
   { 

@@ -1,10 +1,12 @@
-import { HfInference } from '@huggingface/inference';
 import type { KnowledgeChunk } from './knowledgeBase';
 
-// Initialize Hugging Face Inference client (optional - will work without key on free tier)
-const hf = process.env.HUGGINGFACE_API_KEY 
-  ? new HfInference(process.env.HUGGINGFACE_API_KEY)
-  : new HfInference(); // Free tier without API key
+// Lazy-load Hugging Face Inference client to reduce bundle size
+async function getHfClient() {
+  const { HfInference } = await import('@huggingface/inference');
+  return process.env.HUGGINGFACE_API_KEY 
+    ? new HfInference(process.env.HUGGINGFACE_API_KEY)
+    : new HfInference(); // Free tier without API key
+}
 
 // Model to use - using a free, fast model
 // Using a smaller, faster model for better performance
@@ -58,6 +60,9 @@ ${ragContext}
       { role: 'system', content: systemPrompt },
       ...messages.slice(-6) // Keep last 6 messages for context
     ];
+
+    // Lazy-load the Hugging Face client
+    const hf = await getHfClient();
 
     // Try chat completion first (for newer models)
     try {

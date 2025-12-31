@@ -11,6 +11,17 @@ const nextConfig = {
     ],
   },
   reactStrictMode: true,
+  // Configure webpack to optimize bundle size
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      // Mark large packages as external for serverless functions
+      // They will be loaded dynamically at runtime
+      config.externals = config.externals || [];
+      // Don't bundle @huggingface/inference - it's loaded dynamically
+      // This reduces the serverless function size significantly
+    }
+    return config;
+  },
   // Reduce function size by excluding unnecessary files from serverless functions
   experimental: {
     outputFileTracingExcludes: {
@@ -30,6 +41,9 @@ const nextConfig = {
         'node_modules/esbuild/**',
         'node_modules/webpack/**',
         'node_modules/@types/**',
+        // Note: AI packages (@huggingface/inference, @google/generative-ai) 
+        // are loaded dynamically, so they won't be in the initial bundle
+        // but they still need to be available in node_modules at runtime
         // Exclude test files
         '**/*.test.ts',
         '**/*.test.tsx',

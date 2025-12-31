@@ -392,6 +392,7 @@ export function ChatBot() {
   const inputRef = useRef<HTMLInputElement>(null);
   const mobileInputRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const isOpenRef = useRef(isOpen);
   
   // Maintenance mode disabled - chatbot is active
   const isMaintenanceMode = false;
@@ -403,6 +404,11 @@ export function ChatBot() {
     topicsDiscussed: [] as string[],
     userEngagement: 0
   });
+
+  // Update ref when isOpen changes
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+  }, [isOpen]);
 
   useEffect(() => {
     setMessages([
@@ -416,7 +422,7 @@ export function ChatBot() {
     ]);
 
     const finalTeaserTimer = setTimeout(() => {
-      if (!isOpen && !sessionStorage.getItem('chatInteracted')) {
+      if (!isOpenRef.current && !sessionStorage.getItem('chatInteracted')) {
         setShowTeaser(true);
       }
     }, TEASER_DELAY);

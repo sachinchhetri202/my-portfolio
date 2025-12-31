@@ -69,11 +69,12 @@ ${ragContext}
       });
 
       // Extract the response text
-      const responseText = response.choices?.[0]?.message?.content || 
-                          response.generated_text || 
-                          null;
+      const responseText: string | null = 
+        (response.choices?.[0]?.message?.content as string | undefined) || 
+        (response.generated_text as string | undefined) || 
+        null;
 
-      if (responseText) {
+      if (responseText && typeof responseText === 'string') {
         return responseText.trim();
       }
     } catch (chatError) {

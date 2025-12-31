@@ -11,9 +11,52 @@ const nextConfig = {
     ],
   },
   reactStrictMode: true,
+  // Externalize large packages - they'll be available in node_modules at runtime
+  // This prevents them from being bundled into the serverless function
+  serverComponentsExternalPackages: [
+    '@huggingface/inference',
+    '@google/generative-ai',
+  ],
   // Reduce function size by excluding unnecessary files from serverless functions
   experimental: {
     outputFileTracingExcludes: {
+      // API route specific exclusions (most aggressive)
+      '/api/chat': [
+        // Exclude large AI packages - they're dynamically imported
+        'node_modules/@huggingface/**',
+        'node_modules/@google/generative-ai/**',
+        // Exclude platform-specific binaries
+        'node_modules/@swc/**',
+        'node_modules/@next/swc/**',
+        // Exclude build tools
+        'node_modules/esbuild/**',
+        'node_modules/webpack/**',
+        'node_modules/@types/**',
+        // Exclude dev dependencies
+        'node_modules/typescript/**',
+        'node_modules/eslint/**',
+        'node_modules/tailwindcss/**',
+        'node_modules/postcss/**',
+        'node_modules/autoprefixer/**',
+        // Exclude client-only libraries
+        'node_modules/framer-motion/**',
+        'node_modules/react-icons/**',
+        'node_modules/@headlessui/**',
+        'node_modules/@heroicons/**',
+        'node_modules/react-markdown/**',
+        // Exclude documentation and tests
+        'node_modules/**/README.md',
+        'node_modules/**/CHANGELOG.md',
+        'node_modules/**/LICENSE',
+        'node_modules/**/examples/**',
+        'node_modules/**/test/**',
+        'node_modules/**/tests/**',
+        'node_modules/**/__tests__/**',
+        'node_modules/**/__mocks__/**',
+        'node_modules/**/spec/**',
+        'node_modules/**/docs/**',
+        'node_modules/**/*.map',
+      ],
       // Global exclusions for all routes
       '*': [
         // Exclude platform-specific SWC binaries (only need Linux for Netlify)
@@ -64,9 +107,6 @@ const nextConfig = {
         '**/*.spec.tsx',
         '**/__tests__/**',
         '**/__mocks__/**',
-        // Note: AI packages (@huggingface/inference, @google/generative-ai) 
-        // are loaded dynamically, so they won't be in the initial bundle
-        // but they still need to be available in node_modules at runtime
       ],
     },
   },

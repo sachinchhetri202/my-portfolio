@@ -15,8 +15,22 @@ const nextConfig = {
   // This prevents them from being bundled into the serverless function
   serverComponentsExternalPackages: [
     '@huggingface/inference',
-    '@google/generative-ai',
   ],
+  // Configure webpack to externalize packages for API routes
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      // Mark large packages as external for API routes
+      // They will be loaded from node_modules at runtime
+      config.externals = config.externals || [];
+      if (typeof config.externals === 'object' && !Array.isArray(config.externals)) {
+        config.externals = [config.externals];
+      }
+      config.externals.push({
+        '@huggingface/inference': 'commonjs @huggingface/inference',
+      });
+    }
+    return config;
+  },
   // Reduce function size by excluding unnecessary files from serverless functions
   experimental: {
     outputFileTracingExcludes: {
@@ -24,7 +38,6 @@ const nextConfig = {
       '/api/chat': [
         // Exclude large AI packages - they're dynamically imported
         'node_modules/@huggingface/**',
-        'node_modules/@google/generative-ai/**',
         // Exclude platform-specific binaries
         'node_modules/@swc/**',
         'node_modules/@next/swc/**',

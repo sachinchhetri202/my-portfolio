@@ -11,20 +11,10 @@ const nextConfig = {
     ],
   },
   reactStrictMode: true,
-  // Configure webpack to optimize bundle size
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      // Mark large packages as external for serverless functions
-      // They will be loaded dynamically at runtime
-      config.externals = config.externals || [];
-      // Don't bundle @huggingface/inference - it's loaded dynamically
-      // This reduces the serverless function size significantly
-    }
-    return config;
-  },
   // Reduce function size by excluding unnecessary files from serverless functions
   experimental: {
     outputFileTracingExcludes: {
+      // Global exclusions for all routes
       '*': [
         // Exclude platform-specific SWC binaries (only need Linux for Netlify)
         'node_modules/@swc/core-linux-x64-gnu/**',
@@ -41,10 +31,31 @@ const nextConfig = {
         'node_modules/esbuild/**',
         'node_modules/webpack/**',
         'node_modules/@types/**',
-        // Note: AI packages (@huggingface/inference, @google/generative-ai) 
-        // are loaded dynamically, so they won't be in the initial bundle
-        // but they still need to be available in node_modules at runtime
-        // Exclude test files
+        // Exclude development dependencies
+        'node_modules/typescript/**',
+        'node_modules/eslint/**',
+        'node_modules/@eslint/**',
+        'node_modules/tailwindcss/**',
+        'node_modules/postcss/**',
+        'node_modules/autoprefixer/**',
+        'node_modules/framer-motion/**',
+        // Exclude optional dependencies and large packages that aren't needed in serverless
+        'node_modules/.cache/**',
+        'node_modules/.bin/**',
+        // Exclude documentation and examples
+        'node_modules/**/README.md',
+        'node_modules/**/CHANGELOG.md',
+        'node_modules/**/LICENSE',
+        'node_modules/**/examples/**',
+        'node_modules/**/test/**',
+        'node_modules/**/tests/**',
+        'node_modules/**/__tests__/**',
+        'node_modules/**/__mocks__/**',
+        'node_modules/**/spec/**',
+        'node_modules/**/docs/**',
+        // Exclude source maps for dependencies
+        'node_modules/**/*.map',
+        // Exclude test files from our codebase
         '**/*.test.ts',
         '**/*.test.tsx',
         '**/*.test.js',
@@ -53,6 +64,9 @@ const nextConfig = {
         '**/*.spec.tsx',
         '**/__tests__/**',
         '**/__mocks__/**',
+        // Note: AI packages (@huggingface/inference, @google/generative-ai) 
+        // are loaded dynamically, so they won't be in the initial bundle
+        // but they still need to be available in node_modules at runtime
       ],
     },
   },

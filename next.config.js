@@ -11,11 +11,6 @@ const nextConfig = {
     ],
   },
   reactStrictMode: true,
-  // Externalize large packages - they'll be available in node_modules at runtime
-  // This prevents them from being bundled into the serverless function
-  serverComponentsExternalPackages: [
-    '@huggingface/inference',
-  ],
   // Configure webpack to externalize packages for API routes
   webpack: (config, { isServer }) => {
     if (isServer) {

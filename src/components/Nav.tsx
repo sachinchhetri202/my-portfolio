@@ -135,8 +135,8 @@ export default function Nav() {
       animate="visible"
       className={`fixed top-0 left-0 right-0 w-full px-4 sm:px-8 py-3 sm:py-4 z-50 transition-all duration-500 ease-out ${
         scrolled 
-          ? 'bg-slate-900/95 backdrop-blur-xl shadow-2xl border-b border-blue-500/20' 
-          : 'bg-slate-900/80 backdrop-blur-lg shadow-lg'
+          ? 'glass-morphism-dark shadow-2xl border-b border-blue-500/30' 
+          : 'glass-morphism-dark shadow-lg border-b border-blue-500/10'
       }`}
     >
       {/* Animated background gradient */}

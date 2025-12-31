@@ -153,15 +153,16 @@ export default function HomePage() {
               ))}
             </motion.div>
 
-            {/* Enhanced Code snippet */}
+            {/* Enhanced Code snippet with Futuristic Effects */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1.0 }}
               className="relative w-full max-w-2xl mx-4 group"
             >
-              <pre className="bg-slate-900/80 backdrop-blur-sm rounded-xl p-4 sm:p-6 font-mono text-left w-full whitespace-pre-wrap break-words shadow-2xl overflow-x-auto border border-blue-500/20 hover:border-purple-500/40 transition-all duration-300">
-                <code className="block text-xs sm:text-sm md:text-base">
+              <div className="relative gradient-border">
+                <pre className="glass-morphism-dark rounded-xl p-4 sm:p-6 font-mono text-left w-full whitespace-pre-wrap break-words shadow-2xl overflow-x-auto transition-all duration-300 hover:shadow-blue-500/20">
+                  <code className="block text-xs sm:text-sm md:text-base">
                   <span className="text-blue-400">class</span> <span className="text-purple-400">AIEngineer</span><span className="text-slate-400">:</span>
                   <br />
                   <span className="text-blue-400 ml-4">def</span> <span className="text-yellow-300">__init__</span><span className="text-slate-400">(</span><span className="text-blue-300">self</span><span className="text-slate-400">):</span>
@@ -175,16 +176,18 @@ export default function HomePage() {
                   <span className="text-blue-300 ml-8">self</span><span className="text-slate-400">.</span><span className="text-purple-300">education</span> <span className="text-slate-400">=</span> <span className="text-green-400">"MS Computer Science"</span>
                   <br />
                   <span className="text-blue-300 ml-8">self</span><span className="text-slate-400">.</span><span className="text-purple-300">passion</span> <span className="text-slate-400">=</span> <span className="text-green-400">"Building AI-powered solutions"</span>
-                </code>
-              </pre>
-              <div className="absolute top-3 right-3 flex space-x-1.5">
-                <div className="w-2.5 h-2.5 bg-red-500/80 rounded-full"></div>
-                <div className="w-2.5 h-2.5 bg-yellow-500/80 rounded-full"></div>
-                <div className="w-2.5 h-2.5 bg-green-500/80 rounded-full"></div>
+                  </code>
+                </pre>
+                <div className="absolute top-3 right-3 flex space-x-1.5">
+                  <div className="w-2.5 h-2.5 bg-red-500/80 rounded-full animate-pulse"></div>
+                  <div className="w-2.5 h-2.5 bg-yellow-500/80 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="w-2.5 h-2.5 bg-green-500/80 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                </div>
+                <div className="absolute inset-0 scan-line-effect pointer-events-none"></div>
               </div>
             </motion.div>
 
-            {/* Enhanced Buttons */}
+            {/* Enhanced Buttons with Futuristic Effects */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -193,11 +196,11 @@ export default function HomePage() {
             >
               <Link
                 href="/projects"
-                className="group relative flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-medium px-8 py-3.5 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_2rem_-0.5rem_rgba(59,130,246,0.5)] w-full sm:w-auto"
+                className="group relative flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-medium px-8 py-3.5 transition-all duration-300 hover:scale-105 futuristic-button neon-border w-full sm:w-auto overflow-hidden"
                 role="button"
                 aria-label="View Projects"
               >
-                <div className="relative flex w-full items-center justify-center space-x-3">
+                <div className="relative flex w-full items-center justify-center space-x-3 z-10">
                   <span>&lt;/&gt;</span>
                   <span>View Projects</span>
                   <FiArrowRight className="group-hover:translate-x-1 transition-transform duration-200" />
@@ -206,11 +209,11 @@ export default function HomePage() {
 
               <Link
                 href="/about"
-                className="group relative flex items-center justify-center rounded-xl bg-slate-800/50 border-2 border-blue-500/30 hover:border-purple-500/50 backdrop-blur-sm text-slate-100 font-medium px-8 py-3.5 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_2rem_-0.5rem_rgba(168,85,247,0.3)] w-full sm:w-auto"
+                className="group relative flex items-center justify-center rounded-xl glass-morphism-dark border-2 border-blue-500/30 hover:border-purple-500/50 text-slate-100 font-medium px-8 py-3.5 transition-all duration-300 hover:scale-105 hover-lift hover:shadow-[0_0_2rem_-0.5rem_rgba(168,85,247,0.5)] w-full sm:w-auto"
                 role="button"
                 aria-label="About Me"
               >
-                <span>About Me</span>
+                <span className="relative z-10">About Me</span>
               </Link>
 
               <a
@@ -218,12 +221,12 @@ export default function HomePage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackResumeDownload('homepage_hero')}
-                className="group relative flex items-center justify-center rounded-xl bg-slate-800/50 border-2 border-blue-500/30 hover:border-purple-500/50 backdrop-blur-sm text-slate-100 font-medium px-8 py-3.5 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_2rem_-0.5rem_rgba(168,85,247,0.3)] w-full sm:w-auto"
+                className="group relative flex items-center justify-center rounded-xl glass-morphism-dark border-2 border-blue-500/30 hover:border-purple-500/50 text-slate-100 font-medium px-8 py-3.5 transition-all duration-300 hover:scale-105 hover-lift hover:shadow-[0_0_2rem_-0.5rem_rgba(168,85,247,0.5)] w-full sm:w-auto"
                 role="button"
                 aria-label="Download CV"
               >
-                <div className="relative flex w-full items-center justify-center space-x-3">
-                  <FiDownload className="text-blue-400" />
+                <div className="relative flex w-full items-center justify-center space-x-3 z-10">
+                  <FiDownload className="text-blue-400 group-hover:text-purple-400 transition-colors" />
                   <span>Download CV</span>
                 </div>
               </a>
@@ -308,15 +311,17 @@ export default function HomePage() {
                 <motion.div
                   key={tech.name}
                   variants={itemVariants}
-                  className="group relative p-4 rounded-lg bg-slate-800/50 hover:bg-slate-800/80 transition-all duration-300 border border-slate-700/50 hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/10"
-                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="group relative p-4 rounded-lg glass-morphism-dark hover:bg-slate-800/90 transition-all duration-300 border border-slate-700/50 hover:border-blue-500/50 hover-lift"
+                  whileHover={{ scale: 1.05, y: -5, rotate: [0, -1, 1, 0] }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 >
-                  <div className="text-3xl text-blue-400 mb-3 group-hover:text-purple-400 group-hover:scale-110 transition-all duration-300">
+                  <div className="text-3xl text-blue-400 mb-3 group-hover:text-purple-400 group-hover:scale-110 transition-all duration-300 glow-effect">
                     {tech.icon}
                   </div>
                   <div className="text-sm font-medium text-white">{tech.name}</div>
-                  <div className="text-xs text-blue-300/60">{tech.category}</div>
+                  <div className="text-xs text-blue-300/60 group-hover:text-purple-300/80 transition-colors">{tech.category}</div>
+                  {/* Subtle glow on hover */}
+                  <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-500/0 via-blue-500/10 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
                 </motion.div>
               ))}
             </motion.div>
@@ -351,17 +356,17 @@ export default function HomePage() {
             >
               <Link
                 href="/contact"
-                className="group relative flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-medium px-8 py-3 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/50"
+                className="group relative flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-medium px-8 py-3 transition-all duration-300 hover:scale-105 futuristic-button neon-border overflow-hidden"
               >
-                <span>Get In Touch</span>
-                <FiExternalLink className="ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+                <span className="relative z-10">Get In Touch</span>
+                <FiExternalLink className="ml-2 group-hover:translate-x-1 transition-transform duration-200 relative z-10" />
               </Link>
               <Link
                 href="/services"
-                className="group relative flex items-center justify-center rounded-xl bg-slate-800/50 hover:bg-slate-800/70 text-blue-400 font-medium px-8 py-3 border border-blue-500/30 hover:border-purple-500/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                className="group relative flex items-center justify-center rounded-xl glass-morphism-dark text-blue-400 font-medium px-8 py-3 border border-blue-500/30 hover:border-purple-500/50 transition-all duration-300 hover:scale-105 hover-lift"
               >
-                <span>View Services</span>
-                <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+                <span className="relative z-10">View Services</span>
+                <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform duration-200 relative z-10" />
               </Link>
             </motion.div>
           </motion.div>

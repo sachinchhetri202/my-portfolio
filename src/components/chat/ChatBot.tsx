@@ -312,24 +312,28 @@ const MessageBubble = ({ message, isUser, isDarkMode }: {
       className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-1.5 px-3`}
     >
       <div className={`flex items-start space-x-2 max-w-[90%] w-full ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`}>
-        {/* Avatar */}
-        <div className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center ${
-          isUser 
-            ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white' 
-            : 'bg-gradient-to-br from-blue-600 to-purple-600 text-white'
-        }`}>
+        {/* Avatar with Glow Effect */}
+        <motion.div 
+          className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center glow-effect ${
+            isUser 
+              ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white' 
+              : 'bg-gradient-to-br from-blue-600 to-purple-600 text-white'
+          }`}
+          whileHover={{ scale: 1.1 }}
+          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+        >
           {isUser ? <FaUser className="w-3 h-3" /> : <FaRobot className="w-3 h-3" />}
-        </div>
+        </motion.div>
         
-        {/* Message Content */}
-        <div className={`rounded-2xl px-2.5 py-2 ${
+        {/* Message Content with Glassmorphism */}
+        <div className={`rounded-2xl px-2.5 py-2 transition-all duration-300 ${
           isUser 
             ? isDarkMode
-              ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-br-md'
-              : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-br-md'
+              ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-br-md shadow-lg shadow-blue-500/20'
+              : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-br-md shadow-lg shadow-blue-500/20'
             : isDarkMode
-              ? 'bg-slate-800 text-slate-100 rounded-bl-md'
-              : 'bg-slate-100 text-slate-900 rounded-bl-md'
+              ? 'glass-morphism-dark text-slate-100 rounded-bl-md border border-blue-500/20'
+              : 'glass-morphism text-slate-900 rounded-bl-md border border-blue-200/30'
         }`}>
           {isUser ? (
             <p className="text-sm leading-relaxed break-words">{message.content}</p>
@@ -840,22 +844,35 @@ export function ChatBot() {
               setIsOpen(true);
               sessionStorage.setItem('chatInteracted', 'true');
             }}
-            className={`fixed bottom-6 right-6 w-14 h-14 text-white rounded-full shadow-2xl z-50 flex items-center justify-center ${
+            className={`fixed bottom-6 right-6 w-14 h-14 text-white rounded-full shadow-2xl z-50 flex items-center justify-center overflow-hidden ${
               isMaintenanceMode 
                 ? 'bg-gradient-to-r from-orange-500 to-red-600'
-                : 'bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600'
+                : 'bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 neon-border'
             }`}
             initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
+            animate={{ 
+              opacity: 1, 
+              scale: 1
+            }}
             exit={{ opacity: 0, scale: 0.8 }}
+            whileHover={{ scale: 1.15, rotate: 5 }}
             whileTap={{ scale: 0.95 }}
+            transition={{ 
+              type: "spring", 
+              stiffness: 300, 
+              damping: 20
+            }}
             aria-label={isMaintenanceMode ? "Chat maintenance in progress" : "Open chat assistant"}
             style={{ minWidth: '44px', minHeight: '44px' }}
           >
+            {/* Shimmer effect overlay */}
+            {!isMaintenanceMode && (
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+            )}
             {isMaintenanceMode ? (
-              <WrenchScrewdriverIcon className="w-7 h-7" />
+              <WrenchScrewdriverIcon className="w-7 h-7 relative z-10" />
             ) : (
-              <ChatBubbleOvalLeftEllipsisIcon className="w-7 h-7" />
+              <ChatBubbleOvalLeftEllipsisIcon className="w-7 h-7 relative z-10" />
             )}
           </motion.button>
         )}
@@ -892,34 +909,52 @@ export function ChatBot() {
                 ease: "easeInOut"
               } 
             }}
-            className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[min(320px,calc(100vw-2rem))] h-[450px] sm:w-[380px] sm:h-[540px] lg:w-[420px] lg:h-[580px] flex flex-col rounded-2xl shadow-2xl border overflow-hidden transition-all duration-300 hidden sm:flex ${
-              isDarkMode 
-                ? 'bg-slate-900 border-slate-700/50' 
-                : 'bg-white border-slate-200/50'
+            className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[min(320px,calc(100vw-2rem))] h-[450px] sm:w-[380px] sm:h-[540px] lg:w-[420px] lg:h-[580px] flex flex-col rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 hidden sm:flex border-2 ${
+              isDarkMode ? 'border-blue-500/30' : 'border-blue-200/40'
             }`}
             style={{
               backdropFilter: 'blur(20px)',
-              background: isDarkMode ? 'rgba(15, 23, 42, 0.98)' : 'rgba(255, 255, 255, 0.98)'
+              background: isDarkMode ? 'rgba(15, 23, 42, 0.85)' : 'rgba(255, 255, 255, 0.85)',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(59, 130, 246, 0.2)'
             }}
           >
-            {/* Desktop Header */}
-            <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 text-white p-4 flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center ring-2 ring-white/30">
-                  <FaRobot className="w-5 h-5" />
+            {/* Desktop Header with Futuristic Effects */}
+            <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 text-white p-4 flex items-center justify-between overflow-hidden">
+              {/* Animated background shimmer */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+              
+              <div className="flex items-center space-x-3 relative z-10">
+                <div className="relative w-10 h-10 bg-white/20 rounded-full flex items-center justify-center ring-2 ring-white/30 glow-effect">
+                  <motion.div
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                  >
+                    <FaRobot className="w-5 h-5" />
+                  </motion.div>
+                  {/* Pulse indicator */}
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full ring-2 ring-white/50 animate-ping"></div>
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full"></div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg tracking-tight font-montserrat">
+                  <h3 className="font-semibold text-lg tracking-tight font-montserrat text-white drop-shadow-lg">
                     {BOT_NAME}
                   </h3>
-                  <p className="text-blue-100 text-xs">Online • Ready to help</p>
+                  <p className="text-blue-100 text-xs flex items-center gap-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
+                    </span>
+                    Online • Ready to help
+                  </p>
                 </div>
               </div>
               
-              <div className="flex items-center space-x-2">
-                <button
+              <div className="flex items-center space-x-2 relative z-10">
+                <motion.button
                   onClick={() => setIsDarkMode(!isDarkMode)}
-                  className="p-2 rounded-full text-white/80 hover:text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200"
+                  whileHover={{ scale: 1.1, rotate: 15 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="p-2 rounded-full text-white/80 hover:text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200 glass-morphism"
                   aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
                 >
                   {isDarkMode ? (
@@ -931,26 +966,29 @@ export function ChatBot() {
                       <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                     </svg>
                   )}
-                </button>
+                </motion.button>
                 
-                <button
+                <motion.button
                   onClick={() => setIsOpen(false)}
-                  className="p-2 rounded-full text-white/80 hover:text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200"
+                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="p-2 rounded-full text-white/80 hover:text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200 glass-morphism"
                   aria-label="Close chat"
                 >
                   <XMarkIcon className="w-5 h-5" />
-                </button>
+                </motion.button>
               </div>
             </div>
 
-            {/* Desktop Messages Area */}
+            {/* Desktop Messages Area with Glassmorphism */}
             <div 
               id="desktop-messages-container"
               className={`flex-1 overflow-y-auto overflow-x-hidden transition-all duration-300 ${
                 isDarkMode 
-                  ? 'bg-gradient-to-b from-slate-800/50 to-slate-900' 
-                  : 'bg-gradient-to-b from-slate-50/50 to-white'
+                  ? 'bg-gradient-to-b from-slate-800/30 to-slate-900/50' 
+                  : 'bg-gradient-to-b from-slate-50/30 to-white/50'
               } ${!isMaintenanceMode ? 'p-2.5 space-y-0.5' : ''}`}
+              style={{ backdropFilter: 'blur(10px)' }}
             >
               {isMaintenanceMode ? (
                 <MaintenanceMessage isDarkMode={isDarkMode} />
@@ -997,11 +1035,11 @@ export function ChatBot() {
               )}
             </AnimatePresence>
 
-            {/* Desktop Input Bar */}
-            <div             className={`p-4 border-t transition-all duration-300 ${
+            {/* Desktop Input Bar with Glassmorphism */}
+            <div className={`p-4 border-t transition-all duration-300 glass-morphism-dark ${
               isDarkMode 
-                ? 'bg-slate-900 border-slate-700' 
-                : 'bg-white border-slate-100'
+                ? 'border-blue-500/20' 
+                : 'border-blue-200/30'
             }`}>
               <form onSubmit={handleSend} className="relative">
                 <input
@@ -1011,18 +1049,20 @@ export function ChatBot() {
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={isMaintenanceMode ? "Chat is currently under maintenance..." : "Ask me anything..."}
                   disabled={isLoading || isMaintenanceMode}
-                  className={`w-full h-12 pl-4 pr-12 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 disabled:opacity-50 ${
+                  className={`w-full h-12 pl-4 pr-12 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 disabled:opacity-50 glass-morphism border ${
                     isDarkMode 
-                      ? 'bg-slate-800 border border-slate-600 text-white placeholder-slate-400' 
-                      : 'bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-500'
+                      ? 'border-blue-500/30 text-white placeholder-slate-400 focus:border-purple-500/50' 
+                      : 'border-blue-200/50 text-slate-900 placeholder-slate-500 focus:border-purple-400/50'
                   }`}
                   style={{ fontSize: '16px' }}
                 />
                 
-                <button
+                <motion.button
                   type="submit"
                   disabled={isLoading || !input.trim()}
-                  className="absolute right-2 top-2 w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 disabled:bg-slate-300 text-white rounded-full flex items-center justify-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 disabled:cursor-not-allowed"
+                  whileHover={!isLoading && input.trim() ? { scale: 1.1 } : {}}
+                  whileTap={!isLoading && input.trim() ? { scale: 0.9 } : {}}
+                  className="absolute right-2 top-2 w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 disabled:bg-slate-300 text-white rounded-full flex items-center justify-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 disabled:cursor-not-allowed neon-border"
                   aria-label="Send message"
                 >
                   {isLoading ? (
@@ -1034,7 +1074,7 @@ export function ChatBot() {
                   ) : (
                     <FiSend className="w-4 h-4" />
                   )}
-                </button>
+                </motion.button>
               </form>
             </div>
           </motion.div>
@@ -1092,7 +1132,7 @@ export function ChatBot() {
             >
               {/* Mobile Header */}
               <div className={`flex items-center justify-between px-4 py-3 border-b ${
-                isDarkMode ? 'border-slate-700' : 'border-slate-200'
+                isDarkMode ? 'border-slate-700 bg-slate-900' : 'border-slate-200 bg-white'
               }`} style={{ minHeight: '48px' }}>
                 {/* Mobile Drag Handle */}
                 <div className="absolute top-2 left-1/2 transform -translate-x-1/2">
@@ -1105,7 +1145,7 @@ export function ChatBot() {
                   <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
                     <FaRobot className="w-4 h-4 text-white" />
                   </div>
-                  <h3 className={`font-semibold text-base ${
+                  <h3 className={`font-semibold text-base drop-shadow-lg ${
                     isDarkMode ? 'text-white' : 'text-slate-900'
                   }`}>
                     {BOT_NAME}

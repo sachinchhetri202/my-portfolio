@@ -135,12 +135,12 @@ export default function Nav() {
       animate="visible"
       className={`fixed top-0 left-0 right-0 w-full px-4 sm:px-8 py-3 sm:py-4 z-50 transition-all duration-500 ease-out ${
         scrolled 
-          ? 'bg-gray-900/95 backdrop-blur-xl shadow-2xl border-b border-green-500/20' 
-          : 'bg-gray-900/80 backdrop-blur-lg shadow-lg'
+          ? 'bg-slate-900/95 backdrop-blur-xl shadow-2xl border-b border-blue-500/20' 
+          : 'bg-slate-900/80 backdrop-blur-lg shadow-lg'
       }`}
     >
       {/* Animated background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 via-transparent to-green-500/5 opacity-0 hover:opacity-100 transition-opacity duration-700" />
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-blue-500/5 opacity-0 hover:opacity-100 transition-opacity duration-700" />
       
       <div className="relative max-w-7xl mx-auto flex items-center justify-between">
         {/* Enhanced Brand area */}
@@ -152,32 +152,17 @@ export default function Nav() {
             href="/" 
             className="flex items-baseline font-mono transition-all duration-300 hover:scale-105 relative"
           >
-            <motion.span 
-              className="text-green-400 text-lg sm:text-xl font-bold"
-              whileHover={{ scale: 1.1 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            >
-              $
-            </motion.span>
-            <span className="text-sm sm:text-lg font-bold ml-1 bg-gradient-to-r from-green-400 to-green-300 bg-clip-text text-transparent">
-              SachinChhetri
+            <span className="text-sm sm:text-lg font-bold ml-1 bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+              Sachin Chhetri
             </span>
-            {/* Animated cursor */}
-            <motion.span 
-              className="ml-1 text-green-400 opacity-0 group-hover:opacity-100"
-              animate={{ opacity: [0, 1, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              |
-            </motion.span>
           </Link>
           <motion.span 
             variants={linkVariants}
-            className="text-[10px] sm:text-xs inline-block bg-gradient-to-r from-gray-800 to-gray-700 text-green-300 rounded-full px-2 sm:px-3 py-1 sm:py-1.5 font-sans sm:ml-3 border border-green-500/30 shadow-lg"
+            className="text-[10px] sm:text-xs inline-block bg-gradient-to-r from-blue-600/20 to-purple-600/20 text-blue-300 rounded-full px-2 sm:px-3 py-1 sm:py-1.5 font-sans sm:ml-3 border border-blue-500/30 shadow-lg backdrop-blur-sm"
             whileHover={{ scale: 1.05, y: -1 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            Software Eng.
+            AI Engineer
           </motion.span>
         </motion.div>
 
@@ -195,28 +180,28 @@ export default function Nav() {
             >
               <Link
                 href={href}
-                className={`relative flex items-center space-x-2 font-mono transition-all duration-300 group ${
+                className={`relative flex items-center space-x-2 font-medium transition-all duration-300 group ${
                   pathname === href 
                     ? 'text-white font-semibold' 
-                    : 'text-green-400/80 hover:text-white'
+                    : 'text-slate-300/80 hover:text-white'
                 }`}
                 aria-current={pathname === href ? 'page' : undefined}
               >
                 {/* Animated icon */}
                 <motion.span 
-                  className="text-xl"
+                  className="text-lg text-blue-400 group-hover:text-purple-400"
                   whileHover={{ rotate: 5, scale: 1.1 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
                   {icon}
                 </motion.span>
                 <span className="relative">
-                  /{label}
+                  {label.charAt(0).toUpperCase() + label.slice(1)}
                   {/* Active indicator */}
                   {pathname === href && (
                     <motion.div
                       layoutId="activeIndicator"
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-green-400 to-green-300 rounded-full"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"
                       initial={false}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
@@ -231,10 +216,10 @@ export default function Nav() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 5, scale: 0.9 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 bg-gray-800/95 backdrop-blur-sm text-green-300 text-xs px-2 py-1.5 rounded border border-green-500/30 whitespace-nowrap z-50 shadow-lg"
+                      className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 bg-slate-800/95 backdrop-blur-sm text-blue-300 text-xs px-2 py-1.5 rounded border border-blue-500/30 whitespace-nowrap z-50 shadow-lg"
                     >
                       {description}
-                      <div className="absolute -top-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-gray-800/95 border-l border-t border-green-500/30 rotate-45" />
+                      <div className="absolute -top-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-slate-800/95 border-l border-t border-blue-500/30 rotate-45" />
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -270,13 +255,13 @@ export default function Nav() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute right-0 mt-3 w-48 bg-gray-800/95 backdrop-blur-xl rounded-xl shadow-2xl border border-green-500/20 py-2 z-50"
+                  className="absolute right-0 mt-3 w-48 bg-slate-800/95 backdrop-blur-xl rounded-xl shadow-2xl border border-blue-500/20 py-2 z-50"
                 >
                   {socialLinks.map(({ href, icon, label, external }) => (
                     <Link
                       key={href}
                       href={href}
-                      className="flex items-center justify-between px-4 py-3 hover:bg-green-600/20 hover:text-white text-green-300 font-mono transition-all duration-200 group"
+                      className="flex items-center justify-between px-4 py-3 hover:bg-blue-600/20 hover:text-white text-blue-300 font-medium transition-all duration-200 group"
                       target={external ? '_blank' : undefined}
                       rel={external ? 'noopener noreferrer' : undefined}
                     >
@@ -301,7 +286,7 @@ export default function Nav() {
         <motion.button
           variants={linkVariants}
           onClick={() => setIsOpen((o) => !o)}
-          className="lg:hidden relative p-2 rounded-lg hover:bg-green-500/10 transition-colors duration-200 group"
+          className="lg:hidden relative p-2 rounded-lg hover:bg-blue-500/10 transition-colors duration-200 group"
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
           whileTap={{ scale: 0.95 }}
         >
@@ -314,21 +299,21 @@ export default function Nav() {
                 closed: { rotate: 0, y: 0 },
                 open: { rotate: 45, y: 6 }
               }}
-              className="absolute w-6 h-0.5 bg-green-400 rounded-full"
+              className="absolute w-6 h-0.5 bg-blue-400 rounded-full"
             />
             <motion.span
               variants={{
                 closed: { opacity: 1 },
                 open: { opacity: 0 }
               }}
-              className="absolute w-6 h-0.5 bg-green-400 rounded-full top-2"
+              className="absolute w-6 h-0.5 bg-blue-400 rounded-full top-2"
             />
             <motion.span
               variants={{
                 closed: { rotate: 0, y: 0 },
                 open: { rotate: -45, y: -6 }
               }}
-              className="absolute w-6 h-0.5 bg-green-400 rounded-full top-4"
+              className="absolute w-6 h-0.5 bg-blue-400 rounded-full top-4"
             />
           </motion.div>
         </motion.button>
@@ -342,14 +327,14 @@ export default function Nav() {
             initial="closed"
             animate="open"
             exit="closed"
-            className="lg:hidden absolute top-full left-0 w-full bg-gray-900/95 backdrop-blur-xl shadow-2xl border-t border-green-500/20 overflow-hidden"
+            className="lg:hidden absolute top-full left-0 w-full bg-slate-900/95 backdrop-blur-xl shadow-2xl border-t border-blue-500/20 overflow-hidden"
             onKeyDown={handleEscapeKey}
             tabIndex={isOpen ? 0 : -1}
           >
             <div className="p-6 space-y-6">
               {/* Main navigation links */}
               <div className="space-y-4">
-                <h3 className="text-green-400 font-mono text-sm uppercase tracking-wider mb-4">
+                <h3 className="text-blue-400 font-medium text-sm uppercase tracking-wider mb-4">
                   Navigation
                 </h3>
                 {links.map(({ href, icon, label, description }) => (
@@ -361,17 +346,17 @@ export default function Nav() {
                   >
                     <Link
                       href={href}
-                      className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 font-mono ${
+                      className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 font-medium ${
                         pathname === href
-                          ? 'bg-green-600/20 text-white border border-green-500/30'
-                          : 'text-green-400/80 hover:bg-green-500/10 hover:text-white'
+                          ? 'bg-blue-600/20 text-white border border-blue-500/30'
+                          : 'text-slate-300/80 hover:bg-blue-500/10 hover:text-white'
                       }`}
                       onClick={() => setIsOpen(false)}
                     >
-                      <span className="text-xl">{icon}</span>
+                      <span className="text-xl text-blue-400">{icon}</span>
                       <div className="flex-1">
-                        <div className="font-semibold">/{label}</div>
-                        <div className="text-xs text-green-300/60">{description}</div>
+                        <div className="font-semibold">{label.charAt(0).toUpperCase() + label.slice(1)}</div>
+                        <div className="text-xs text-blue-300/60">{description}</div>
                       </div>
                     </Link>
                   </motion.div>
@@ -379,8 +364,8 @@ export default function Nav() {
               </div>
 
               {/* Social links */}
-              <div className="space-y-4 pt-4 border-t border-green-500/20">
-                <h3 className="text-green-400 font-mono text-sm uppercase tracking-wider mb-4">
+              <div className="space-y-4 pt-4 border-t border-blue-500/20">
+                <h3 className="text-blue-400 font-medium text-sm uppercase tracking-wider mb-4">
                   Connect
                 </h3>
                 <div className="grid grid-cols-1 gap-3">
@@ -393,7 +378,7 @@ export default function Nav() {
                     >
                       <Link
                         href={href}
-                        className="flex items-center space-x-3 p-3 rounded-lg text-green-400/80 hover:bg-green-500/10 hover:text-white transition-all duration-200 font-mono"
+                        className="flex items-center space-x-3 p-3 rounded-lg text-blue-400/80 hover:bg-blue-500/10 hover:text-white transition-all duration-200 font-medium"
                         onClick={() => setIsOpen(false)}
                         target={external ? '_blank' : undefined}
                         rel={external ? 'noopener noreferrer' : undefined}

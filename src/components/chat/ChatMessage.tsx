@@ -4,3 +4,4 @@ export interface ChatMessage {
   role: 'user' | 'assistant';
   timestamp: Date;
 }
+

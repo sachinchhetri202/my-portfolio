@@ -53,7 +53,12 @@ const AnimatedBackground: FC = () => {
 
       draw(): void {
         if (!ctx) return
-        ctx.fillStyle = 'rgba(0, 255, 0, 0.2)'
+        // Professional blue/purple gradient particles
+        const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, particleSize * 2)
+        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.3)') // blue-500
+        gradient.addColorStop(0.5, 'rgba(168, 85, 247, 0.2)') // purple-500
+        gradient.addColorStop(1, 'rgba(59, 130, 246, 0)')
+        ctx.fillStyle = gradient
         ctx.beginPath()
         ctx.arc(this.x, this.y, particleSize, 0, Math.PI * 2)
         ctx.fill()
@@ -66,7 +71,8 @@ const AnimatedBackground: FC = () => {
 
     const animate = () => {
       if (!ctx || !canvas) return
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'
+      // More subtle fade for professional look
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       particles.forEach(particle => {

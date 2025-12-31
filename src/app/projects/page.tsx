@@ -24,7 +24,7 @@ const ContributionsSection = ({ username }: { username: string }) => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gray-900/80 backdrop-blur-md rounded-2xl p-6 border border-green-900/30"
+        className="bg-slate-900/80 backdrop-blur-md rounded-2xl p-6 border border-blue-shades-900/30"
       >
         <div className="animate-pulse">
           <div className="h-6 bg-gray-700 rounded w-1/3 mb-4"></div>
@@ -39,11 +39,11 @@ const ContributionsSection = ({ username }: { username: string }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, delay: 0.3 }}
-      className="bg-gray-900/80 backdrop-blur-md rounded-2xl p-6 border border-green-900/30 hover:border-green-400/50 transition-all duration-300"
+      className="bg-slate-900/80 backdrop-blur-md rounded-2xl p-6 border border-blue-shades-900/30 hover:border-blue-shades-400/50 transition-all duration-300"
     >
       {/* Header */}
       <div className="mb-6 text-center">
-        <h3 className="text-xl font-semibold text-green-300 mb-2">Contributions</h3>
+        <h3 className="text-xl font-semibold text-blue-shades-300 mb-2">Contributions</h3>
         <p className="text-gray-400 text-sm">My coding journey over the past year</p>
       </div>
 
@@ -276,12 +276,12 @@ export default function ProjectsPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="absolute inset-0 bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-gray-950/90 -z-5"
+        className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-slate-900/90 to-slate-950/90 -z-5"
       />
       
       {/* Animated Background Accent */}
       <div className="pointer-events-none absolute inset-0 z-0">
-        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-gradient-to-br from-green-500/20 via-green-400/10 to-transparent rounded-full blur-3xl opacity-70 animate-pulse"></div>
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-gradient-to-br from-blue-shades-500/20 via-purple-shades-400/10 to-transparent rounded-full blur-3xl opacity-70 animate-pulse"></div>
       </div>
       
       <div className="relative z-10 max-w-6xl mx-auto space-y-16">
@@ -291,7 +291,7 @@ export default function ProjectsPage() {
           transition={{ duration: 0.7 }}
           className="text-center"
         >
-          <h1 className="text-3xl sm:text-4xl font-bold text-green-300 drop-shadow-lg mb-4">
+          <h1 className="text-3xl sm:text-4xl font-bold text-blue-shades-300 drop-shadow-lg mb-4">
             My Projects
           </h1>
           <p className="text-gray-400 text-base sm:text-lg">
@@ -339,10 +339,10 @@ export default function ProjectsPage() {
               return (
                 <motion.div
                   key={repo.id}
-                  className={`group bg-gray-900/80 backdrop-blur-md rounded-2xl p-6 shadow-2xl border transition-all duration-300 overflow-hidden relative ${
+                  className={`group bg-slate-900/80 backdrop-blur-md rounded-2xl p-6 shadow-2xl border transition-all duration-300 overflow-hidden relative ${
                     isFeatured 
-                      ? 'border-green-400/50 hover:border-green-400 hover:shadow-green-900/30' 
-                      : 'border-green-900/30 hover:border-green-400/70 hover:shadow-green-900/20'
+                      ? 'border-blue-shades-400/50 hover:border-blue-shades-400 hover:shadow-blue-shades-900/30' 
+                      : 'border-blue-shades-900/30 hover:border-purple-shades-400/70 hover:shadow-purple-shades-900/20'
                   }`}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -352,7 +352,7 @@ export default function ProjectsPage() {
                 >
                   {/* Featured Badge */}
                   {isFeatured && (
-                    <div className="absolute top-4 right-4 bg-green-500 text-gray-900 text-xs font-bold px-2 py-1 rounded-full">
+                    <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-shades-500 to-purple-shades-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                       Featured
                     </div>
                   )}
@@ -369,13 +369,13 @@ export default function ProjectsPage() {
                         {repo.topics.slice(0, 3).map((topic) => (
                           <span
                             key={topic}
-                            className="px-2 py-1 bg-gray-800/70 rounded-full text-xs text-green-300 font-mono"
+                            className="px-2 py-1 bg-slate-800/70 rounded-full text-xs text-blue-shades-300 font-mono"
                           >
                             {topic}
                           </span>
                         ))}
                         {repo.topics.length > 3 && (
-                          <span className="px-2 py-1 bg-gray-800/70 rounded-full text-xs text-gray-400 font-mono">
+                          <span className="px-2 py-1 bg-slate-800/70 rounded-full text-xs text-slate-400 font-mono">
                             +{repo.topics.length - 3}
                           </span>
                         )}
@@ -389,24 +389,24 @@ export default function ProjectsPage() {
                   </p>
 
                   {/* Stats */}
-                  <div className="flex items-center justify-between text-xs text-green-200/80 mb-4">
-                    <div className="flex items-center gap-4">
-                      <span className="flex items-center gap-1">
+                  <div className="flex items-center justify-between text-xs text-blue-shades-200/80 mb-4">
+                  <div className="flex items-center gap-4">
+                    <span className="flex items-center gap-1 text-blue-shades-200/80">
                         <FaStar className="text-yellow-400" />
                         {repo.stargazers_count}
                       </span>
-                      <span className="flex items-center gap-1">
+                      <span className="flex items-center gap-1 text-blue-shades-200/80">
                         <FaCodeBranch />
                         {repo.forks_count}
                       </span>
-                      <span className="flex items-center gap-1">
+                      <span className="flex items-center gap-1 text-blue-shades-200/80">
                         <FaEye />
                         {repo.watchers_count}
                       </span>
                     </div>
                     
                     {repo.language && (
-                      <span className="px-2 py-1 bg-gray-800/70 rounded-full text-xs text-green-300 font-mono">
+                      <span className="px-2 py-1 bg-slate-800/70 rounded-full text-xs text-purple-shades-300 font-mono">
                         {repo.language}
                       </span>
                     )}
@@ -428,8 +428,8 @@ export default function ProjectsPage() {
                         rel="noopener noreferrer"
                         className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                           link.primary
-                            ? 'bg-green-600 hover:bg-green-700 text-white'
-                            : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+                            ? 'bg-gradient-to-r from-blue-shades-600 to-purple-shades-600 hover:from-blue-shades-700 hover:to-purple-shades-700 text-white'
+                            : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
                         }`}
                       >
                         <link.icon className="text-sm" />
@@ -469,7 +469,7 @@ export default function ProjectsPage() {
           <Link
             href={`https://github.com/${GITHUB_CONFIG.username}?tab=repositories`}
             target="_blank"
-            className="inline-flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-gray-900 font-semibold py-3 px-6 rounded-lg transition shadow-lg"
+            className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-shades-500 to-purple-shades-500 hover:from-blue-shades-600 hover:to-purple-shades-600 text-white font-semibold py-3 px-6 rounded-lg transition shadow-lg"
           >
             <FaGithub />
             <span>View All on GitHub</span>

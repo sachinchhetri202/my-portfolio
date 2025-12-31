@@ -29,7 +29,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
-  themeColor: '#111827', // matches your dark theme
+  themeColor: '#0F172A', // matches new dark theme (slate-900)
 }
 
 export const metadata: Metadata = {
@@ -101,8 +101,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         className={`${inter.variable} ${robotoMono.variable} ${montserrat.variable}`}
       >
         <body className="
-          bg-gray-950 
-          text-green-300 
+          bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950
+          text-slate-100 
           font-sans               /* uses --font-geist-sans */
           flex flex-col min-h-screen
         ">

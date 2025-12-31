@@ -5,27 +5,9 @@ import Link from 'next/link'
 import { SiPython, SiCloudflare, SiGit, SiReact, SiNextdotjs, SiTailwindcss, SiJavascript, SiTypescript, SiMongodb, SiVercel } from 'react-icons/si'
 import { FiArrowRight, FiDownload, FiGithub, FiLinkedin, FiMail, FiExternalLink } from 'react-icons/fi'
 import { motion } from 'framer-motion'
-import { useState, useEffect } from 'react'
 import AnimatedBackground from '../components/AnimatedBackground'
 import { PersonSchema, WebsiteSchema } from '../components/SchemaMarkup'
 import { useResumeDownload } from '../components/Analytics'
-
-// Client-side only clock component
-function Clock() {
-  const [currentTime, setCurrentTime] = useState('--:--:--')
-  
-  useEffect(() => {
-    const updateTime = () => {
-      setCurrentTime(new Date().toLocaleTimeString())
-    }
-    
-    updateTime() // Set initial time
-    const timer = setInterval(updateTime, 1000)
-    return () => clearInterval(timer)
-  }, [])
-  
-  return <span className="text-green-300/60"># {currentTime}</span>
-}
 
 export default function HomePage() {
   const trackResumeDownload = useResumeDownload()
@@ -83,7 +65,7 @@ export default function HomePage() {
     <>
       <PersonSchema />
       <WebsiteSchema />
-      <div className="relative min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-950">
+      <div className="relative min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
         <AnimatedBackground />
         
         {/* Hero Section */}
@@ -92,13 +74,13 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-transparent to-green-500/10"
+            className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/5 to-blue-600/10"
           />
           
           <div className="relative z-10 flex flex-col items-center space-y-6 sm:space-y-8 text-center max-w-6xl mx-auto">
             {/* Profile with enhanced styling */}
             <motion.div 
-              className="relative w-32 h-32 sm:w-48 sm:h-48 rounded-full ring-4 ring-green-500 overflow-hidden group"
+              className="relative w-32 h-32 sm:w-48 sm:h-48 rounded-full ring-4 ring-blue-500/50 overflow-hidden group shadow-2xl shadow-blue-500/20"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
@@ -108,18 +90,18 @@ export default function HomePage() {
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-green-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 via-purple-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </motion.div>
 
-            {/* Terminal command with time */}
+            {/* Professional tagline */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="font-mono text-green-400 text-sm sm:text-base flex items-center space-x-4"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 backdrop-blur-sm"
             >
-              <span>$ python manage.py runserver</span>
-              <Clock />
+              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+              <span className="text-sm text-blue-300 font-medium">Building Intelligent Solutions</span>
             </motion.div>
 
             {/* Enhanced Headline */}
@@ -127,13 +109,13 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight"
             >
-              <span className="bg-gradient-to-r from-green-300 via-green-400 to-green-200 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-400 via-blue-300 to-purple-400 bg-clip-text text-transparent animate-gradient">
                 AI Engineer
               </span>
               <br />
-              <span className="bg-gradient-to-r from-green-200 via-green-300 to-green-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-blue-300 bg-clip-text text-transparent">
                 & Software Developer
               </span>
             </motion.h1>
@@ -143,7 +125,7 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="text-lg sm:text-xl text-gray-300 max-w-3xl leading-relaxed"
+              className="text-lg sm:text-xl text-slate-300 max-w-3xl leading-relaxed"
             >
               Building intelligent applications with Python and modern frameworks. 
               Currently pursuing MS in Computer Science, specializing in AI-powered solutions.
@@ -154,17 +136,17 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="flex flex-wrap justify-center gap-6 text-3xl sm:text-4xl text-green-400"
+              className="flex flex-wrap justify-center gap-6 text-3xl sm:text-4xl"
             >
               {techStack.slice(0, 5).map((tech, index) => (
                 <motion.div
                   key={tech.name}
                   whileHover={{ scale: 1.2, rotate: 5 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                  className="group relative"
+                  className="group relative text-blue-400 hover:text-purple-400 transition-colors duration-300"
                 >
                   {tech.icon}
-                  <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-green-300 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                  <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-slate-800/95 backdrop-blur-sm text-blue-300 text-xs px-2 py-1 rounded border border-blue-500/30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10 shadow-lg">
                     {tech.name}
                   </div>
                 </motion.div>
@@ -178,29 +160,27 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 1.0 }}
               className="relative w-full max-w-2xl mx-4 group"
             >
-              <pre className="bg-gray-800/80 backdrop-blur-sm rounded-xl p-4 sm:p-6 font-mono text-left w-full whitespace-pre-wrap break-words shadow-xl overflow-x-auto border border-green-500/20 hover:border-green-400/40 transition-colors duration-300">
-                <code className="block text-xs sm:text-sm md:text-base text-green-200">
-                  {`class AIEngineer:
-    def __init__(self):
-        self.name = "Sachin Chhetri"
-        self.role = "AI Engineer & Software Developer"
-        self.skills = ["Python", "React", "Next.js", "MongoDB"]
-        self.education = "MS Computer Science"
-        self.passion = "Building AI-powered solutions"
-    
-    def introduce(self):
-        return f"Hello, I'm {self.name}, {self.role}"
-    
-    def get_skills(self):
-        return self.skills`}
+              <pre className="bg-slate-900/80 backdrop-blur-sm rounded-xl p-4 sm:p-6 font-mono text-left w-full whitespace-pre-wrap break-words shadow-2xl overflow-x-auto border border-blue-500/20 hover:border-purple-500/40 transition-all duration-300">
+                <code className="block text-xs sm:text-sm md:text-base">
+                  <span className="text-blue-400">class</span> <span className="text-purple-400">AIEngineer</span><span className="text-slate-400">:</span>
+                  <br />
+                  <span className="text-blue-400 ml-4">def</span> <span className="text-yellow-300">__init__</span><span className="text-slate-400">(</span><span className="text-blue-300">self</span><span className="text-slate-400">):</span>
+                  <br />
+                  <span className="text-blue-300 ml-8">self</span><span className="text-slate-400">.</span><span className="text-purple-300">name</span> <span className="text-slate-400">=</span> <span className="text-green-400">"Sachin Chhetri"</span>
+                  <br />
+                  <span className="text-blue-300 ml-8">self</span><span className="text-slate-400">.</span><span className="text-purple-300">role</span> <span className="text-slate-400">=</span> <span className="text-green-400">"AI Engineer & Software Developer"</span>
+                  <br />
+                  <span className="text-blue-300 ml-8">self</span><span className="text-slate-400">.</span><span className="text-purple-300">skills</span> <span className="text-slate-400">=</span> <span className="text-slate-300">[</span><span className="text-green-400">"Python"</span><span className="text-slate-400">,</span> <span className="text-green-400">"React"</span><span className="text-slate-400">,</span> <span className="text-green-400">"Next.js"</span><span className="text-slate-400">,</span> <span className="text-green-400">"MongoDB"</span><span className="text-slate-300">]</span>
+                  <br />
+                  <span className="text-blue-300 ml-8">self</span><span className="text-slate-400">.</span><span className="text-purple-300">education</span> <span className="text-slate-400">=</span> <span className="text-green-400">"MS Computer Science"</span>
+                  <br />
+                  <span className="text-blue-300 ml-8">self</span><span className="text-slate-400">.</span><span className="text-purple-300">passion</span> <span className="text-slate-400">=</span> <span className="text-green-400">"Building AI-powered solutions"</span>
                 </code>
               </pre>
-              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="flex space-x-1">
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                </div>
+              <div className="absolute top-3 right-3 flex space-x-1.5">
+                <div className="w-2.5 h-2.5 bg-red-500/80 rounded-full"></div>
+                <div className="w-2.5 h-2.5 bg-yellow-500/80 rounded-full"></div>
+                <div className="w-2.5 h-2.5 bg-green-500/80 rounded-full"></div>
               </div>
             </motion.div>
 
@@ -213,28 +193,24 @@ export default function HomePage() {
             >
               <Link
                 href="/projects"
-                className="group relative flex items-center justify-center rounded-xl bg-gray-900 border-2 border-green-500/30 transition-all duration-300 hover:border-green-400 hover:scale-105 hover:shadow-[0_0_2rem_-0.5rem_#4ade80] w-full sm:w-auto"
+                className="group relative flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-medium px-8 py-3.5 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_2rem_-0.5rem_rgba(59,130,246,0.5)] w-full sm:w-auto"
                 role="button"
                 aria-label="View Projects"
               >
-                <div className="relative flex w-full items-center justify-center space-x-3 px-8 py-3.5">
-                  <code className="text-lg font-semibold bg-gradient-to-r from-green-400 to-green-300 bg-clip-text text-transparent">&lt;/&gt;</code>
-                  <span className="font-medium bg-gradient-to-r from-green-400 to-green-300 bg-clip-text text-transparent">View Projects</span>
-                  <FiArrowRight className="text-green-400 group-hover:translate-x-1 transition-transform duration-200" />
+                <div className="relative flex w-full items-center justify-center space-x-3">
+                  <span>&lt;/&gt;</span>
+                  <span>View Projects</span>
+                  <FiArrowRight className="group-hover:translate-x-1 transition-transform duration-200" />
                 </div>
-                <div className="absolute inset-x-0 h-[2px] bottom-0 bg-gradient-to-r from-transparent via-green-500 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
               </Link>
 
               <Link
                 href="/about"
-                className="group relative flex items-center justify-center rounded-xl bg-gray-900 border-2 border-green-500/30 transition-all duration-300 hover:border-green-400 hover:scale-105 hover:shadow-[0_0_2rem_-0.5rem_#4ade80] w-full sm:w-auto"
+                className="group relative flex items-center justify-center rounded-xl bg-slate-800/50 border-2 border-blue-500/30 hover:border-purple-500/50 backdrop-blur-sm text-slate-100 font-medium px-8 py-3.5 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_2rem_-0.5rem_rgba(168,85,247,0.3)] w-full sm:w-auto"
                 role="button"
                 aria-label="About Me"
               >
-                <div className="relative flex w-full items-center justify-center px-8 py-3.5">
-                  <span className="font-medium bg-gradient-to-r from-green-400 to-green-300 bg-clip-text text-transparent">About Me</span>
-                </div>
-                <div className="absolute inset-x-0 h-[2px] bottom-0 bg-gradient-to-r from-transparent via-green-500 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+                <span>About Me</span>
               </Link>
 
               <a
@@ -242,15 +218,14 @@ export default function HomePage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackResumeDownload('homepage_hero')}
-                className="group relative flex items-center justify-center rounded-xl bg-gray-900 border-2 border-green-500/30 transition-all duration-300 hover:border-green-400 hover:scale-105 hover:shadow-[0_0_2rem_-0.5rem_#4ade80] w-full sm:w-auto"
+                className="group relative flex items-center justify-center rounded-xl bg-slate-800/50 border-2 border-blue-500/30 hover:border-purple-500/50 backdrop-blur-sm text-slate-100 font-medium px-8 py-3.5 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_2rem_-0.5rem_rgba(168,85,247,0.3)] w-full sm:w-auto"
                 role="button"
                 aria-label="Download CV"
               >
-                <div className="relative flex w-full items-center justify-center space-x-3 px-8 py-3.5">
-                  <FiDownload className="text-green-400" />
-                  <span className="font-medium bg-gradient-to-r from-green-400 to-green-300 bg-clip-text text-transparent">Download CV</span>
+                <div className="relative flex w-full items-center justify-center space-x-3">
+                  <FiDownload className="text-blue-400" />
+                  <span>Download CV</span>
                 </div>
-                <div className="absolute inset-x-0 h-[2px] bottom-0 bg-gradient-to-r from-transparent via-green-500 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
               </a>
             </motion.div>
 
@@ -267,7 +242,7 @@ export default function HomePage() {
                   href={social.href}
                   target={social.href.startsWith('http') ? '_blank' : undefined}
                   rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="text-green-400 hover:text-white transition-colors duration-300 p-2 rounded-lg hover:bg-green-500/10"
+                  className="text-blue-400 hover:text-purple-400 transition-colors duration-300 p-3 rounded-lg hover:bg-blue-500/10 border border-blue-500/20 hover:border-purple-500/40"
                   whileHover={{ scale: 1.1, rotate: 5 }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
@@ -299,10 +274,10 @@ export default function HomePage() {
                   className="text-center group"
                   whileHover={{ scale: 1.05 }}
                 >
-                  <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-400 to-green-300 bg-clip-text text-transparent mb-2">
+                  <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
                     {stat.number}
                   </div>
-                  <div className="text-gray-400 text-sm font-medium">{stat.label}</div>
+                  <div className="text-slate-400 text-sm font-medium">{stat.label}</div>
                 </motion.div>
               ))}
             </motion.div>
@@ -310,7 +285,7 @@ export default function HomePage() {
         </section>
 
         {/* Tech Stack Section */}
-        <section className="relative py-16 px-4 sm:px-6 md:px-8 bg-gray-900/50">
+        <section className="relative py-16 px-4 sm:px-6 md:px-8 bg-slate-900/30 backdrop-blur-sm">
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -320,7 +295,7 @@ export default function HomePage() {
           >
             <motion.h2
               variants={itemVariants}
-              className="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-green-400 to-green-300 bg-clip-text text-transparent"
+              className="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent"
             >
               Skills & Technologies
             </motion.h2>
@@ -333,15 +308,15 @@ export default function HomePage() {
                 <motion.div
                   key={tech.name}
                   variants={itemVariants}
-                  className="group relative p-4 rounded-lg bg-gray-800/50 hover:bg-gray-800/80 transition-all duration-300 border border-transparent hover:border-green-500/30"
+                  className="group relative p-4 rounded-lg bg-slate-800/50 hover:bg-slate-800/80 transition-all duration-300 border border-slate-700/50 hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/10"
                   whileHover={{ scale: 1.05, y: -5 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 >
-                  <div className="text-3xl text-green-400 mb-3 group-hover:scale-110 transition-transform duration-300">
+                  <div className="text-3xl text-blue-400 mb-3 group-hover:text-purple-400 group-hover:scale-110 transition-all duration-300">
                     {tech.icon}
                   </div>
                   <div className="text-sm font-medium text-white">{tech.name}</div>
-                  <div className="text-xs text-green-300/60">{tech.category}</div>
+                  <div className="text-xs text-blue-300/60">{tech.category}</div>
                 </motion.div>
               ))}
             </motion.div>
@@ -359,13 +334,13 @@ export default function HomePage() {
           >
             <motion.h2
               variants={itemVariants}
-              className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-green-400 to-green-300 bg-clip-text text-transparent"
+              className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent"
             >
               Let's Build Something Together
             </motion.h2>
             <motion.p
               variants={itemVariants}
-              className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto"
+              className="text-lg text-slate-300 mb-8 max-w-2xl mx-auto"
             >
               Whether you need a web application, AI integration, or software solution, 
               I'm here to help bring your ideas to life with modern technologies.
@@ -376,14 +351,14 @@ export default function HomePage() {
             >
               <Link
                 href="/contact"
-                className="group relative flex items-center justify-center rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium px-8 py-3 transition-all duration-300 hover:scale-105"
+                className="group relative flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-medium px-8 py-3 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/50"
               >
                 <span>Get In Touch</span>
                 <FiExternalLink className="ml-2 group-hover:translate-x-1 transition-transform duration-200" />
               </Link>
               <Link
                 href="/services"
-                className="group relative flex items-center justify-center rounded-xl bg-gray-800 hover:bg-gray-700 text-green-400 font-medium px-8 py-3 border border-green-500/30 hover:border-green-400 transition-all duration-300 hover:scale-105"
+                className="group relative flex items-center justify-center rounded-xl bg-slate-800/50 hover:bg-slate-800/70 text-blue-400 font-medium px-8 py-3 border border-blue-500/30 hover:border-purple-500/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
               >
                 <span>View Services</span>
                 <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform duration-200" />

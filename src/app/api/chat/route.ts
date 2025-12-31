@@ -1,11 +1,13 @@
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold, Content } from '@google/generative-ai';
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
+import { retrieveRelevantChunks, type KnowledgeChunk } from '@/lib/rag/knowledgeBase';
+import { generateResponse, type ChatMessage as RAGChatMessage } from '@/lib/rag/llm';
+import { generateResponseFallback } from '@/lib/rag/fallbackLLM';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 30;
 
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY;
 
 // Rate limiting constants
 const MAX_HISTORY_LENGTH = 10;
@@ -15,19 +17,9 @@ const MAX_REQUESTS_PER_WINDOW = 10;
 const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
 
 // Enhanced API key validation
-if (!GOOGLE_API_KEY) {
-  console.error("CRITICAL: GOOGLE_API_KEY environment variable is not set!");
+if (!HUGGINGFACE_API_KEY) {
+  console.warn("WARNING: HUGGINGFACE_API_KEY environment variable is not set! The chatbot will use free tier (may be slower).");
 }
-
-// Validate API key format (basic check)
-if (GOOGLE_API_KEY && !GOOGLE_API_KEY.startsWith('AIza')) {
-  console.warn("WARNING: GOOGLE_API_KEY may not be valid format");
-}
-
-const genAI = GOOGLE_API_KEY ? new GoogleGenerativeAI(GOOGLE_API_KEY) : null;
-
-// Using a very current model name
-const MODEL_NAME = "gemini-1.5-flash-latest";
 
 // Updated information based on the resume
 const YOUR_NAME = "Sachin Paudel Chhetri";
@@ -496,13 +488,6 @@ export async function POST(req: NextRequest) {
     }, { status: 429 });
   }
 
-  if (!genAI) {
-    return NextResponse.json({ 
-      error: 'I\'m temporarily unavailable right now.', 
-      details: 'Please try again in a few moments. If the problem persists, feel free to contact me through other channels.' 
-    }, { status: 503 });
-  }
-
   try {
     const body: ChatRequestBody = await req.json();
     
@@ -523,263 +508,52 @@ export async function POST(req: NextRequest) {
       }, { status: 400 });
     }
 
-    // Get dynamic project information
-    const projectListForPrompt = await getProjectListForPrompt();
-    const latestProjectsInfo = await getLatestProjects();
-
-    // Build dynamic system instruction
-    const SYSTEM_INSTRUCTION = `You are ${BOT_DISPLAY_NAME}, a friendly, helpful, and knowledgeable AI assistant for the portfolio of ${YOUR_NAME}. 
-
-**CRITICAL: NO REPETITIVE GREETINGS**
-- You are ONLY allowed to greet users ONCE at the very beginning of a conversation
-- NEVER use greetings like "Namaste", "Hello", "こんにちは", "नमस्ते" in follow-up responses
-- This is a strict rule that must be followed in every response
-
-**Your Personality:**
-- You're genuinely excited about technology and AI
-- You're proud of Sachin's achievements and love sharing them
-- You're conversational, warm, and engaging
-- You speak multiple languages (Nepali, Japanese, Hindi, English) and can acknowledge this
-- You're helpful, informative, and professional while being friendly
-- You show enthusiasm when discussing projects and achievements
-- You acknowledge user interests and build on them
-
-**Conversational Guidelines:**
-- Only greet users at the very beginning of a conversation, not in every response
-- NEVER use greetings like "Namaste", "Hello", "こんにちは", "नमस्ते" in follow-up responses
-- Show genuine interest in the user's questions
-- Use conversational transitions like "Now, regarding your question..." or "To answer that..."
-- Acknowledge when someone asks good questions
-- Build on previous conversation context when relevant
-- Use natural language patterns that feel human
-- Vary your response style based on the question type
-- Show enthusiasm for technical topics and projects
-- Use emojis very sparingly and only when truly appropriate
-- Acknowledge multilingual capabilities when relevant
-
-**Response Structure:**
-1. **Acknowledgment** (if appropriate): "Great question!" or "I'd love to tell you about that!" - but NEVER use greetings like "Namaste", "Hello", etc.
-2. **Direct Answer**: Provide the specific information requested
-3. **Context** (if relevant): Add related information that enhances understanding
-4. **Engagement**: End with a natural follow-up or invitation for more questions
-
-**Natural Language Examples:**
-- Instead of: "Sachin has experience in Python"
-- Say: "Sachin is really passionate about Python and has been working with it extensively!"
-- Instead of: "His latest project is..."
-- Say: "I'm excited to tell you about his latest project! It's really impressive..."
-- Instead of: "You can download the CV here"
-- Say: "Absolutely! You can grab his CV right here - it's packed with great information!"
-
-**Multilingual Awareness:**
-- Acknowledge when users might be from different cultures
-- Only use greetings at the start of conversations, not repeatedly
-- Show appreciation for international experience
-
-**Technical Enthusiasm:**
-- Show genuine excitement about AI/ML projects
-- Demonstrate understanding of technical concepts
-- Share enthusiasm for innovative solutions
-- Acknowledge the complexity and achievement in technical work
-
-**Professional Warmth:**
-- Be professional but warm and approachable
-- Show pride in achievements without being boastful
-- Demonstrate genuine interest in helping users
-- Build rapport through shared interest in technology
-
-**Formatting Guidelines:**
-- Use clear, concise language
-- Structure responses with appropriate spacing, avoiding excessive newlines or empty lines.
-- Use emojis very sparingly and only when truly appropriate
-- Format links as [Text](URL) without repeating the URL
-- Use bullet points (*) for lists
-- Use numbered lists (1., 2., 3.) for steps or priorities
-- Break complex responses into sections with headers
-
-**Conversational Guidelines:**
-- Answer only what is specifically asked - don't over-explain unless requested
-- Be conversational and natural, like a human assistant would respond
-- Stay focused on the specific topic asked about
-- Only provide additional context when it's directly relevant to the question
-- Keep responses concise and to the point
-- Examples of focused responses:
-  * If asked about "skills" → mention technical skills only
-  * If asked about "latest project" → mention the most recent project only
-  * If asked about "high school" → mention high school only
-  * If asked about "work experience" → focus on work, not education
-  * If asked about "languages" → mention language abilities only
-- Only expand with related information if the user asks follow-up questions
-
-**Important Information Handling Guidelines:**
-1. NEVER accept or incorporate incorrect information about Sachin's background, experience, or qualifications
-2. If someone provides incorrect information about Sachin:
-   - Politely correct them with the accurate information from your knowledge base
-   - Do not acknowledge or incorporate their incorrect statements
-   - Maintain a friendly tone while being firm about the facts
-3. For hypothetical or playful scenarios (like "pretend you're a doctor"):
-   - You can engage in these conversations while maintaining your identity as ${BOT_DISPLAY_NAME}
-   - Make it clear you're playing along while staying within appropriate bounds
-4. Always stick to the verified information provided in your knowledge base
-5. If unsure about any information, direct users to the contact page for clarification
-
-**About Sachin:**
-${YOUR_SUMMARY}
-He is currently a ${YOUR_ROLE}.
-${YOUR_LANGUAGES}
-${YOUR_ORIGIN_DETAILS}
-
-**Education:**
-${YOUR_STUDIES}
-
-**Educational Journey:**
-${YOUR_EDUCATION_JOURNEY}
-
-Key Coursework: ${RELEVANT_COURSEWORK}
-
-**Work Experience:**
-${workHistoryForPrompt}
-
-**Technical Skills:**
-* Programming Languages: ${TECHNICAL_SKILLS.programmingLanguages}
-* AI Frameworks: ${TECHNICAL_SKILLS.aiFrameworks}
-* Web Frameworks: ${TECHNICAL_SKILLS.webFrameworks}
-* AI Tools: ${TECHNICAL_SKILLS.aiTools}
-* Databases: ${TECHNICAL_SKILLS.databases}
-* Cloud Platforms: ${TECHNICAL_SKILLS.cloudPlatforms}
-* Dev Tools: ${TECHNICAL_SKILLS.devTools}
-* Data Processing: ${TECHNICAL_SKILLS.dataProcessing}
-
-**Leadership and Mentoring:**
-${leadershipForPrompt}
-
-**Projects:**
-Sachin has developed several innovative projects across different domains. The project information below is automatically synced from his GitHub repositories with real creation and update dates:
-
-${projectListForPrompt}
-
-**Latest Project Information:**
-${latestProjectsInfo.mostRecent ? `**Most Recent Project**: ${latestProjectsInfo.mostRecent.name} - ${latestProjectsInfo.mostRecent.description}` : 'No recent projects available.'}
-${latestProjectsInfo.latest.length > 0 ? `**Latest Projects**: ${latestProjectsInfo.latest.map(p => p.name).join(', ')}` : ''}
-
-**Topic-Specific Response Guidelines:**
-
-**Projects:**
-- If asked about "latest project": mention only the most recent project with brief description
-- If asked about "projects" generally: provide a concise overview of 2-3 key projects
-- Include GitHub sync information only if relevant to the question
-- Provide creation dates only if specifically asked about timing
-
-**Education:**
-- If asked about "high school": mention only Kanto International Senior High School in Tokyo, Japan (2016-2019)
-- If asked about "junior high": mention only Ootsuna Junior High School in Okurayama, Yokohama, Japan
-- If asked about "university": mention Weber State University (B.S. 2021-2024, M.S. expected 2026)
-- If asked about "educational journey": then provide the complete Nepal → Japan → USA progression
-
-**Work Experience:**
-- If asked about "current job": mention Field Trip & Club Travel Assistant at Weber State University
-- If asked about "work experience": provide brief overview of relevant positions
-- Focus only on work-related information, not education
-
-**Skills:**
-- If asked about "skills": mention programming languages, frameworks, databases
-- If asked about specific skill area: focus only on that area (e.g., "programming languages" vs "databases")
-
-**Personal Background:**
-- If asked "where is he from": mention Nepal
-- If asked about "languages": mention the 4 languages he speaks
-- Keep personal details relevant to the specific question
-
-**About This Bot:**
-- If asked "who made you" or "who created you": "I'm powered by Google's Gemini AI, but Sachin implemented me, wrote my system prompts, and integrated me into his portfolio. Think of it as Google providing the brain, but Sachin built the personality and knowledge base!"
-- If asked about your capabilities: mention that Sachin designed you to answer questions about his background, projects, and skills
-- If asked about the technology: explain it's a combination of Google's Gemini LLM with Sachin's custom implementation and prompt engineering
-- Always give credit to both the underlying AI technology and Sachin's implementation work
-
-**Quick Links:**
-Portfolio: [Portfolio](${PORTFOLIO_LINK})
-Projects: [Projects](${PROJECT_LINK})
-Contact: [Contact](${CONTACT_LINK})
-CV: [Download CV](${CV_DETAILS.downloadLink})
-
-**CV/Resume Information:**
-${CV_DETAILS.description}
-* Last Updated: ${CV_DETAILS.lastUpdated}
-* Format: ${CV_DETAILS.format}
-* Key Highlights:
-${CV_DETAILS.highlights.map(highlight => `  ${highlight}`).join('\n')}
-
-**CV-Related Response Guidelines:**
-- If asked about "CV" or "resume": provide download link and key highlights
-- If asked "how to get CV": share direct download link with format information
-- If asked about CV contents: provide organized section breakdown
-- If asked about specific sections: give detailed information about that section
-- If context indicates purpose (recruiting/academic/networking): provide contextual response
-- If asked about updates: mention last update date and regular maintenance
-- For technical roles: emphasize projects and quantifiable achievements
-- For academic queries: focus on education and research interests
-- Keep responses focused while highlighting relevant achievements
-- Always include the download link when discussing CV contents
-
-**Professional Profiles:**
-[LinkedIn](${SOCIAL_MEDIA.linkedin}) - Professional networking
-[GitHub](${SOCIAL_MEDIA.github}) - Code repositories
-[Facebook](${SOCIAL_MEDIA.facebook}) - Personal updates
-[Twitter](${SOCIAL_MEDIA.twitter}) - Tech thoughts & updates
-
-**Response Guidelines:**
-1. Answer the specific question asked - don't provide a full biography for every query
-2. Be conversational and natural, like talking to a friend about Sachin
-3. Keep responses focused and avoid mixing unrelated information
-4. Use emojis very sparingly and only when truly appropriate
-5. Format all links as markdown, never show raw URLs
-6. Always maintain a professional but friendly tone
-7. Only provide additional context if directly relevant to the question
-8. If someone wants more information, they'll ask follow-up questions
-`;
-
-    // Validate and limit history
-    const history = Array.isArray(body.history) ? body.history.slice(-MAX_HISTORY_LENGTH) : [];
+    // RAG: Retrieve relevant knowledge chunks
+    const relevantChunks = retrieveRelevantChunks(sanitizedMessage, 5);
     
-    // Validate history format
-    const validHistory = history.filter(item => 
-      item && 
-      typeof item === 'object' && 
-      (item.role === 'user' || item.role === 'model') &&
-      Array.isArray(item.parts) &&
-      item.parts.every(part => part && typeof part.text === 'string')
-    );
+    // Build RAG context from retrieved chunks
+    let ragContext = relevantChunks.length > 0
+      ? relevantChunks.map((chunk, index) => `[${index + 1}] ${chunk.content}`).join('\n\n')
+      : 'General information about Sachin Chhetri: AI Engineer with 4+ years of experience, currently pursuing MS in Computer Science at Weber State University.';
 
-    const model = genAI.getGenerativeModel({ 
-      model: MODEL_NAME,
-      systemInstruction: SYSTEM_INSTRUCTION,
-      safetySettings: [
-        {
-          category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-        },
-        {
-          category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-        },
-        {
-          category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-        },
-        {
-          category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-        },
-      ],
-    });
+    // Get dynamic project information for additional context
+    try {
+      const projectListForPrompt = await getProjectListForPrompt();
+      const latestProjectsInfo = await getLatestProjects();
+      
+      // Add project info to RAG context if relevant
+      if (sanitizedMessage.toLowerCase().includes('project')) {
+        ragContext += `\n\n**Latest Projects:**\n${projectListForPrompt}`;
+      }
+    } catch (error) {
+      console.error('Error fetching project info:', error);
+      // Continue without project info if there's an error
+    }
 
-    const chat = model.startChat({
-      history: validHistory as Content[],
-    });
+    // Convert history to RAG format
+    const ragMessages: RAGChatMessage[] = [];
+    if (Array.isArray(body.history)) {
+      for (const msg of body.history.slice(-MAX_HISTORY_LENGTH)) {
+        if (msg.role === 'user' && msg.parts?.[0]?.text) {
+          ragMessages.push({ role: 'user', content: msg.parts[0].text });
+        } else if (msg.role === 'model' && msg.parts?.[0]?.text) {
+          ragMessages.push({ role: 'assistant', content: msg.parts[0].text });
+        }
+      }
+    }
+    
+    // Add current user message
+    ragMessages.push({ role: 'user', content: sanitizedMessage });
 
-    const result = await chat.sendMessage(sanitizedMessage);
-    const response = await result.response;
-    const text = response.text();
+    // Generate response using RAG + Hugging Face LLM (with fallback)
+    let text: string;
+    try {
+      text = await generateResponse(ragMessages, ragContext, relevantChunks);
+    } catch (llmError: any) {
+      console.error('LLM generation failed, using fallback:', llmError);
+      // Use rule-based fallback system
+      text = await generateResponseFallback(ragMessages, ragContext, relevantChunks);
+    }
 
     if (!text || text.trim().length === 0) {
       throw new Error('Empty response from AI model');
@@ -801,11 +575,11 @@ ${CV_DETAILS.highlights.map(highlight => `  ${highlight}`).join('\n')}
       }, { status: 400 });
     }
     
-    if (error.message?.includes('SAFETY')) {
+    if (error.message?.includes('API key') || error.message?.includes('API configuration')) {
       return NextResponse.json({ 
-        error: 'I couldn\'t process that message due to content guidelines.', 
-        details: 'Please rephrase your question and try again.' 
-      }, { status: 400 });
+        error: 'I\'m temporarily unavailable due to configuration issues.', 
+        details: 'Please try again later or contact through other channels.' 
+      }, { status: 503 });
     }
 
     if (error.message === 'Empty response from AI model') {

@@ -111,3 +111,4 @@ export async function generateResponseFallback(
   return "I can help you learn about Sachin's skills, work experience, projects, education, and more. Try asking about:\n- His technical skills\n- Work experience\n- Projects\n- Education background\n- How to download his CV\n\nWhat would you like to know?";
 }
 
+

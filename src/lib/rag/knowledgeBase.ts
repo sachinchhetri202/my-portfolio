@@ -248,3 +248,4 @@ export function retrieveRelevantChunks(query: string, topK: number = 5): Knowled
     .map(item => item.chunk);
 }
 
+

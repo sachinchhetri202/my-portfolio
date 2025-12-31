@@ -5,10 +5,12 @@
 [build.environment]
   NODE_VERSION = "18.17.0"
   NPM_VERSION = "9.6.7"
+  # Optimize for smaller function size
+  NEXT_TELEMETRY_DISABLED = "1"
 
-# Uncomment this if you want to use the Netlify Next.js plugin
-# [[plugins]]
-#   package = "@netlify/plugin-nextjs"
+# Use the Netlify Next.js plugin (handles optimization automatically)
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 [build.processing.html]
   pretty_urls = true
